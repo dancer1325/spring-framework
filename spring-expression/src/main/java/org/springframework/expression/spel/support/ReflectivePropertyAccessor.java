@@ -57,7 +57,7 @@ import org.springframework.util.StringUtils;
  * for reading and possibly also for writing on a target instance.
  *
  * <p>A property can be referenced through a public getter method (when being read)
- * or a public setter method (when being written), and also as a public field.
+ * or a public setter method (when being written), and also through a public field.
  *
  * @author Andy Clement
  * @author Juergen Hoeller
@@ -87,7 +87,7 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 
 
 	/**
-	 * Create a new property accessor for reading as well writing.
+	 * Create a new property accessor for reading as well as writing.
 	 * @see #ReflectivePropertyAccessor(boolean)
 	 */
 	public ReflectivePropertyAccessor() {
@@ -155,6 +155,7 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 	}
 
 	@Override
+	@SuppressWarnings("NullAway")
 	public TypedValue read(EvaluationContext context, @Nullable Object target, String name) throws AccessException {
 		Assert.state(target != null, "Target must not be null");
 		Class<?> type = (target instanceof Class<?> clazz ? clazz : target.getClass());
@@ -504,16 +505,18 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 	}
 
 	/**
-	 * Attempt to create an optimized property accessor tailored for a property of a
-	 * particular name on a particular class. The general ReflectivePropertyAccessor
-	 * will always work but is not optimal due to the need to lookup which reflective
-	 * member (method/field) to use each time read() is called. This method will just
-	 * return the ReflectivePropertyAccessor instance if it is unable to build a more
-	 * optimal accessor.
-	 * <p>Note: An optimal accessor is currently only usable for read attempts.
+	 * Attempt to create an optimized property accessor tailored for a property
+	 * of a particular name on a particular class.
+	 * <p>The general {@link ReflectivePropertyAccessor} will always work but is
+	 * not optimal due to the need to look up which reflective member (method or
+	 * field) to use each time {@link #read(EvaluationContext, Object, String)}
+	 * is called.
+	 * <p>This method will return this {@code ReflectivePropertyAccessor} instance
+	 * if it is unable to build a optimized accessor.
+	 * <p>Note: An optimized accessor is currently only usable for read attempts.
 	 * Do not call this method if you need a read-write accessor.
-	 * @see OptimalPropertyAccessor
 	 */
+	@SuppressWarnings("NullAway")
 	public PropertyAccessor createOptimalAccessor(EvaluationContext context, @Nullable Object target, String name) {
 		// Don't be clever for arrays or a null target...
 		if (target == null) {
@@ -597,19 +600,20 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 
 
 	/**
-	 * An optimized form of a PropertyAccessor that will use reflection but only knows
-	 * how to access a particular property on a particular class. This is unlike the
-	 * general ReflectivePropertyResolver which manages a cache of methods/fields that
-	 * may be invoked to access different properties on different classes. This optimal
-	 * accessor exists because looking up the appropriate reflective object by class/name
-	 * on each read is not cheap.
+	 * An optimized {@link CompilablePropertyAccessor} that will use reflection
+	 * but only knows how to access a particular property on a particular class.
+	 * <p>This is unlike the general {@link ReflectivePropertyAccessor} which
+	 * manages a cache of methods and fields that may be invoked to access
+	 * different properties on different classes.
+	 * <p>This optimized accessor exists because looking up the appropriate
+	 * reflective method or field on each read is not cheap.
 	 */
-	public static class OptimalPropertyAccessor implements CompilablePropertyAccessor {
+	private static class OptimalPropertyAccessor implements CompilablePropertyAccessor {
 
 		/**
 		 * The member being accessed.
 		 */
-		public final Member member;
+		private final Member member;
 
 		private final TypeDescriptor typeDescriptor;
 
@@ -696,7 +700,7 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 				return true;
 			}
 			if (this.originalMethod != null) {
-				return (ReflectionHelper.findPublicDeclaringClass(this.originalMethod) != null);
+				return (CodeFlow.findPublicDeclaringClass(this.originalMethod) != null);
 			}
 			return false;
 		}
@@ -715,7 +719,7 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 		public void generateCode(String propertyName, MethodVisitor mv, CodeFlow cf) {
 			Class<?> publicDeclaringClass = this.member.getDeclaringClass();
 			if (!Modifier.isPublic(publicDeclaringClass.getModifiers()) && this.originalMethod != null) {
-				publicDeclaringClass = ReflectionHelper.findPublicDeclaringClass(this.originalMethod);
+				publicDeclaringClass = CodeFlow.findPublicDeclaringClass(this.originalMethod);
 			}
 			Assert.state(publicDeclaringClass != null && Modifier.isPublic(publicDeclaringClass.getModifiers()),
 					() -> "Failed to find public declaring class for: " +

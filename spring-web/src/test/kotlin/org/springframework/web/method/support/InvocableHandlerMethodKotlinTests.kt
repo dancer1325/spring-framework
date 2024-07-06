@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2023 the original author or authors.
+ * Copyright 2002-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.springframework.web.testfixture.servlet.MockHttpServletRequest
 import org.springframework.web.testfixture.servlet.MockHttpServletResponse
 
 /**
- * Kotlin unit tests for {@link InvocableHandlerMethod}.
+ * Kotlin unit tests for [InvocableHandlerMethod].
  *
  * @author Sebastien Deleuze
  */
@@ -85,6 +85,15 @@ class InvocableHandlerMethodKotlinTests {
 	}
 
 	@Test
+	fun private() {
+		composite.addResolver(StubArgumentResolver(Float::class.java, 1.2f))
+		val value = getInvocable(Handler::class.java, Float::class.java).invokeForRequest(request, null)
+
+		Assertions.assertThat(getStubResolver(0).resolvedParameters).hasSize(1)
+		Assertions.assertThat(value).isEqualTo("1.2")
+	}
+
+	@Test
 	fun valueClass() {
 		composite.addResolver(StubArgumentResolver(Long::class.java, 1L))
 		val value = getInvocable(ValueClassHandler::class.java, Long::class.java).invokeForRequest(request, null)
@@ -113,6 +122,13 @@ class InvocableHandlerMethodKotlinTests {
 	}
 
 	@Test
+	fun valueClassWithPrivateConstructor() {
+		composite.addResolver(StubArgumentResolver(Char::class.java, 'a'))
+		val value = getInvocable(ValueClassHandler::class.java, Char::class.java).invokeForRequest(request, null)
+		Assertions.assertThat(value).isEqualTo('a')
+	}
+
+	@Test
 	fun propertyAccessor() {
 		val value = getInvocable(PropertyAccessorHandler::class.java).invokeForRequest(request, null)
 		Assertions.assertThat(value).isEqualTo("foo")
@@ -132,6 +148,14 @@ class InvocableHandlerMethodKotlinTests {
 		val value = getInvocable(ExtensionHandler::class.java, CustomException::class.java, Int::class.java)
 			.invokeForRequest(request, null)
 		Assertions.assertThat(value).isEqualTo("foo-20")
+	}
+
+	@Test
+	fun genericParameter() {
+		val horse = Animal("horse")
+		composite.addResolver(StubArgumentResolver(Animal::class.java, horse))
+		val value = getInvocable(AnimalHandler::class.java, Named::class.java).invokeForRequest(request, null)
+		Assertions.assertThat(value).isEqualTo(horse.name)
 	}
 
 	private fun getInvocable(clazz: Class<*>, vararg argTypes: Class<*>): InvocableHandlerMethod {
@@ -167,6 +191,8 @@ class InvocableHandlerMethodKotlinTests {
 			return null
 		}
 
+		private fun private(value: Float) = value.toString()
+
 	}
 
 	private class ValueClassHandler {
@@ -183,6 +209,8 @@ class InvocableHandlerMethodKotlinTests {
 		fun valueClassWithNullable(limit: LongValueClass?) =
 			limit?.value
 
+		fun valueClassWithPrivateConstructor(limit: ValueClassWithPrivateConstructor) =
+			limit.value
 	}
 
 	private class PropertyAccessorHandler {
@@ -202,6 +230,19 @@ class InvocableHandlerMethodKotlinTests {
 		}
 	}
 
+	private abstract class GenericHandler<T : Named> {
+
+		fun handle(named: T) = named.name
+	}
+
+	private class AnimalHandler : GenericHandler<Animal>()
+
+	interface Named {
+		val name: String
+	}
+
+	data class Animal(override val name: String) : Named
+
 	@JvmInline
 	value class LongValueClass(val value: Long)
 
@@ -214,6 +255,13 @@ class InvocableHandlerMethodKotlinTests {
 			if (value.isEmpty()) {
 				throw IllegalArgumentException()
 			}
+		}
+	}
+
+	@JvmInline
+	value class ValueClassWithPrivateConstructor private constructor(val value: Char) {
+		companion object {
+			fun from(value: Char) = ValueClassWithPrivateConstructor(value)
 		}
 	}
 

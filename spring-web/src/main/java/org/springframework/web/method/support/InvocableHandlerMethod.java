@@ -29,7 +29,6 @@ import kotlin.reflect.KParameter;
 import kotlin.reflect.KType;
 import kotlin.reflect.full.KClasses;
 import kotlin.reflect.jvm.KCallablesJvm;
-import kotlin.reflect.jvm.KTypesJvm;
 import kotlin.reflect.jvm.ReflectJvmMapping;
 
 import org.springframework.context.MessageSource;
@@ -281,7 +280,6 @@ public class InvocableHandlerMethod extends HandlerMethod {
 
 	/**
 	 * Invoke the given Kotlin coroutine suspended function.
-	 *
 	 * <p>The default implementation invokes
 	 * {@link CoroutinesUtils#invokeSuspendingFunction(Method, Object, Object...)},
 	 * but subclasses can override this method to use
@@ -293,20 +291,21 @@ public class InvocableHandlerMethod extends HandlerMethod {
 		return CoroutinesUtils.invokeSuspendingFunction(method, target, args);
 	}
 
+
 	/**
 	 * Inner class to avoid a hard dependency on Kotlin at runtime.
 	 */
 	private static class KotlinDelegate {
 
 		@Nullable
-		@SuppressWarnings("deprecation")
+		@SuppressWarnings({"deprecation", "DataFlowIssue"})
 		public static Object invokeFunction(Method method, Object target, Object[] args) throws InvocationTargetException, IllegalAccessException {
 			KFunction<?> function = ReflectJvmMapping.getKotlinFunction(method);
 			// For property accessors
 			if (function == null) {
 				return method.invoke(target, args);
 			}
-			if (method.isAccessible() && !KCallablesJvm.isAccessible(function)) {
+			if (!KCallablesJvm.isAccessible(function)) {
 				KCallablesJvm.setAccessible(function, true);
 			}
 			Map<KParameter, Object> argMap = CollectionUtils.newHashMap(args.length + 1);
@@ -318,11 +317,13 @@ public class InvocableHandlerMethod extends HandlerMethod {
 						Object arg = args[index];
 						if (!(parameter.isOptional() && arg == null)) {
 							KType type = parameter.getType();
-							if (!(type.isMarkedNullable() && arg == null)) {
-								KClass<?> kClass = KTypesJvm.getJvmErasure(type);
-								if (KotlinDetector.isInlineClass(JvmClassMappingKt.getJavaClass(kClass))) {
-									arg = KClasses.getPrimaryConstructor(kClass).call(arg);
+							if (!(type.isMarkedNullable() && arg == null) && type.getClassifier() instanceof KClass<?> kClass
+									&& KotlinDetector.isInlineClass(JvmClassMappingKt.getJavaClass(kClass))) {
+								KFunction<?> constructor = KClasses.getPrimaryConstructor(kClass);
+								if (!KCallablesJvm.isAccessible(constructor)) {
+									KCallablesJvm.setAccessible(constructor, true);
 								}
+								arg = constructor.call(arg);
 							}
 							argMap.put(parameter, arg);
 						}
@@ -333,7 +334,6 @@ public class InvocableHandlerMethod extends HandlerMethod {
 			Object result = function.callBy(argMap);
 			return (result == Unit.INSTANCE ? null : result);
 		}
-
 	}
 
 }

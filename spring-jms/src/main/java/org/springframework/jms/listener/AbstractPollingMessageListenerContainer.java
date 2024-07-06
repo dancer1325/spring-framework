@@ -339,7 +339,13 @@ public abstract class AbstractPollingMessageListenerContainer extends AbstractMe
 						}
 						status.setRollbackOnly();
 					}
-					handleListenerException(ex);
+					try {
+						handleListenerException(ex);
+					}
+					catch (Throwable throwable) {
+						observation.error(throwable);
+						throw throwable;
+					}
 					// Rethrow JMSException to indicate an infrastructure problem
 					// that may have to trigger recovery...
 					if (ex instanceof JMSException jmsException) {

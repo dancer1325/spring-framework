@@ -26,7 +26,6 @@ import io.micrometer.observation.tck.TestObservationRegistry;
 import jakarta.jms.MessageListener;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.apache.activemq.artemis.junit.EmbeddedActiveMQExtension;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -37,6 +36,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.jms.core.JmsTemplate;
 
 import static io.micrometer.observation.tck.TestObservationRegistryAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Named.named;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -63,8 +63,6 @@ class MessageListenerContainerObservationTests {
 	@ParameterizedTest(name = "[{index}] {0}")
 	@MethodSource("listenerContainers")
 	void shouldRecordJmsProcessObservations(AbstractMessageListenerContainer listenerContainer) throws Exception {
-		JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
-		jmsTemplate.convertAndSend("spring.test.observation", "message content");
 		CountDownLatch latch = new CountDownLatch(1);
 		listenerContainer.setConnectionFactory(connectionFactory);
 		listenerContainer.setObservationRegistry(registry);
@@ -72,10 +70,13 @@ class MessageListenerContainerObservationTests {
 		listenerContainer.setMessageListener((MessageListener) message -> latch.countDown());
 		listenerContainer.afterPropertiesSet();
 		listenerContainer.start();
+		JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
+		jmsTemplate.convertAndSend("spring.test.observation", "message content");
 		latch.await(2, TimeUnit.SECONDS);
 		assertThat(registry).hasObservationWithNameEqualTo("jms.message.process")
 				.that()
 				.hasHighCardinalityKeyValue("messaging.destination.name", "spring.test.observation");
+		assertThat(registry).hasNumberOfObservationsEqualTo(1);
 		listenerContainer.stop();
 		listenerContainer.shutdown();
 	}
@@ -83,8 +84,6 @@ class MessageListenerContainerObservationTests {
 	@ParameterizedTest(name = "[{index}] {0}")
 	@MethodSource("listenerContainers")
 	void shouldHaveObservationScopeInErrorHandler(AbstractMessageListenerContainer listenerContainer) throws Exception {
-		JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
-		jmsTemplate.convertAndSend("spring.test.observation", "message content");
 		CountDownLatch latch = new CountDownLatch(1);
 		AtomicReference<Observation> observationInErrorHandler = new AtomicReference<>();
 		listenerContainer.setConnectionFactory(connectionFactory);
@@ -99,11 +98,15 @@ class MessageListenerContainerObservationTests {
 		});
 		listenerContainer.afterPropertiesSet();
 		listenerContainer.start();
+		JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
+		jmsTemplate.convertAndSend("spring.test.observation", "message content");
 		latch.await(2, TimeUnit.SECONDS);
-		Assertions.assertThat(observationInErrorHandler.get()).isNotNull();
+		assertThat(observationInErrorHandler.get()).isNotNull();
 		assertThat(registry).hasObservationWithNameEqualTo("jms.message.process")
 				.that()
-				.hasHighCardinalityKeyValue("messaging.destination.name", "spring.test.observation");
+				.hasHighCardinalityKeyValue("messaging.destination.name", "spring.test.observation")
+				.hasLowCardinalityKeyValue("exception", "none");
+		assertThat(registry).hasNumberOfObservationsEqualTo(1);
 		listenerContainer.stop();
 		listenerContainer.shutdown();
 	}

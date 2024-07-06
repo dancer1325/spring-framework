@@ -305,7 +305,7 @@ public abstract class ClassUtils {
 		}
 		catch (ClassNotFoundException ex) {
 			int lastDotIndex = name.lastIndexOf(PACKAGE_SEPARATOR);
-			int previousDotIndex = name.lastIndexOf(PACKAGE_SEPARATOR, lastDotIndex -1);
+			int previousDotIndex = name.lastIndexOf(PACKAGE_SEPARATOR, lastDotIndex - 1);
 			if (lastDotIndex != -1 && previousDotIndex != -1 && Character.isUpperCase(name.charAt(previousDotIndex + 1))) {
 				String nestedClassName =
 						name.substring(0, lastDotIndex) + NESTED_CLASS_SEPARATOR + name.substring(lastDotIndex + 1);
@@ -544,6 +544,7 @@ public abstract class ClassUtils {
 	 * @param clazz the class to check
 	 * @return the original class, or a primitive wrapper for the original primitive type
 	 */
+	@SuppressWarnings("NullAway")
 	public static Class<?> resolvePrimitiveIfNecessary(Class<?> clazz) {
 		Assert.notNull(clazz, "Class must not be null");
 		return (clazz.isPrimitive() && clazz != void.class ? primitiveTypeToWrapperMap.get(clazz) : clazz);
@@ -557,7 +558,7 @@ public abstract class ClassUtils {
 	 * @see Void
 	 * @see Void#TYPE
 	 */
-	public static boolean isVoidType(Class<?> type) {
+	public static boolean isVoidType(@Nullable Class<?> type) {
 		return (type == void.class || type == Void.class);
 	}
 

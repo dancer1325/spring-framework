@@ -34,6 +34,7 @@ import java.util.SortedSet;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import org.springframework.lang.Contract;
 import org.springframework.lang.Nullable;
 
 /**
@@ -61,6 +62,7 @@ public abstract class CollectionUtils {
 	 * @param collection the Collection to check
 	 * @return whether the given Collection is empty
 	 */
+	@Contract("null -> true")
 	public static boolean isEmpty(@Nullable Collection<?> collection) {
 		return (collection == null || collection.isEmpty());
 	}
@@ -71,6 +73,7 @@ public abstract class CollectionUtils {
 	 * @param map the Map to check
 	 * @return whether the given Map is empty
 	 */
+	@Contract("null -> true")
 	public static boolean isEmpty(@Nullable Map<?, ?> map) {
 		return (map == null || map.isEmpty());
 	}
@@ -512,6 +515,10 @@ public abstract class CollectionUtils {
 	 * Return a (partially unmodifiable) map that combines the provided two
 	 * maps. Invoking {@link Map#put(Object, Object)} or {@link Map#putAll(Map)}
 	 * on the returned map results in an {@link UnsupportedOperationException}.
+	 *
+	 * <p>In the case of a key collision, {@code first} takes precedence over
+	 * {@code second}. In other words, entries in {@code second} with a key
+	 * that is also mapped by {@code first} are effectively ignored.
 	 * @param first the first map to compose
 	 * @param second the second map to compose
 	 * @return a new map that composes the given two maps
@@ -528,6 +535,10 @@ public abstract class CollectionUtils {
 	 * {@link UnsupportedOperationException} {@code putFunction} is
 	 * {@code null}. The same applies to {@link Map#putAll(Map)} and
 	 * {@code putAllFunction}.
+	 *
+	 * <p>In the case of a key collision, {@code first} takes precedence over
+	 * {@code second}. In other words, entries in {@code second} with a key
+	 * that is also mapped by {@code first} are effectively ignored.
 	 * @param first the first map to compose
 	 * @param second the second map to compose
 	 * @param putFunction applied when {@code Map::put} is invoked. If

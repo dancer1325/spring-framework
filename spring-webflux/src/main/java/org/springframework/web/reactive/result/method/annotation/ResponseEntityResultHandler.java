@@ -108,7 +108,6 @@ public class ResponseEntityResultHandler extends AbstractMessageWriterResultHand
 				isSupportedType(result.getReturnType().getGeneric().toClass());
 	}
 
-	@Nullable
 	private static Class<?> resolveReturnValueType(HandlerResult result) {
 		Class<?> valueType = result.getReturnType().toClass();
 		Object value = result.getReturnValue();
@@ -129,7 +128,7 @@ public class ResponseEntityResultHandler extends AbstractMessageWriterResultHand
 
 
 	@Override
-	@SuppressWarnings("ConstantConditions")
+	@SuppressWarnings({"ConstantConditions", "NullAway"})
 	public Mono<Void> handleResult(ServerWebExchange exchange, HandlerResult result) {
 
 		Mono<?> returnValueMono;

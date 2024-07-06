@@ -270,12 +270,17 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 				setCacheManager(this.beanFactory.getBean(CacheManager.class));
 			}
 			catch (NoUniqueBeanDefinitionException ex) {
-				throw new IllegalStateException("No CacheResolver specified, and no unique bean of type " +
-						"CacheManager found. Mark one as primary or declare a specific CacheManager to use.", ex);
+				StringBuilder message = new StringBuilder("no CacheResolver specified and expected a single CacheManager bean, but found ");
+				message.append(ex.getNumberOfBeansFound());
+				if (ex.getBeanNamesFound() != null) {
+					message.append(": [").append(StringUtils.collectionToCommaDelimitedString(ex.getBeanNamesFound())).append("]");
+				}
+				message.append(" - mark one as primary or declare a specific CacheManager to use.");
+				throw new NoUniqueBeanDefinitionException(CacheManager.class, ex.getNumberOfBeansFound(), message.toString());
 			}
 			catch (NoSuchBeanDefinitionException ex) {
-				throw new IllegalStateException("No CacheResolver specified, and no bean of type CacheManager found. " +
-						"Register a CacheManager bean or remove the @EnableCaching annotation from your configuration.", ex);
+				throw new NoSuchBeanDefinitionException(CacheManager.class, "no CacheResolver specified - "
+						+ "register a CacheManager bean or remove the @EnableCaching annotation from your configuration.");
 			}
 		}
 		this.initialized = true;
@@ -503,7 +508,10 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 			if (CompletableFuture.class.isAssignableFrom(context.getMethod().getReturnType())) {
 				CompletableFuture<?> result = cache.retrieve(key);
 				if (result != null) {
-					return result.thenCompose(value -> (CompletableFuture<?>) evaluate(
+					return result.exceptionally(ex -> {
+						getErrorHandler().handleCacheGetError((RuntimeException) ex, cache, key);
+						return null;
+					}).thenCompose(value -> (CompletableFuture<?>) evaluate(
 							(value != null ? CompletableFuture.completedFuture(unwrapCacheValue(value)) : null),
 							invoker, method, contexts));
 				}
@@ -630,7 +638,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 		if (result instanceof CompletableFuture<?> future) {
 			return future.whenComplete((value, ex) -> {
 				if (ex == null) {
-					performCacheEvicts(applicable, result);
+					performCacheEvicts(applicable, value);
 				}
 			});
 		}
@@ -1096,7 +1104,13 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 				}
 			}
 			if (KotlinDetector.isKotlinReflectPresent() && KotlinDetector.isSuspendingFunction(method)) {
-				return Mono.fromFuture(cache.retrieve(key, () -> ((Mono<?>) invokeOperation(invoker)).toFuture()));
+				return Mono.fromFuture(cache.retrieve(key, () -> {
+					Mono<?> mono = ((Mono<?>) invokeOperation(invoker));
+					if (mono == null) {
+						mono = Mono.empty();
+					}
+					return mono.toFuture();
+				}));
 			}
 			return NOT_HANDLED;
 		}
@@ -1106,7 +1120,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 			ReactiveAdapter adapter = (result != null ? this.registry.getAdapter(result.getClass()) : null);
 			if (adapter != null) {
 				return adapter.fromPublisher(Mono.from(adapter.toPublisher(result))
-						.doOnSuccess(value -> performCacheEvicts(contexts, result)));
+						.doOnSuccess(value -> performCacheEvicts(contexts, value)));
 			}
 			return NOT_HANDLED;
 		}
@@ -1125,12 +1139,30 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 				if (adapter.isMultiValue()) {
 					return adapter.fromPublisher(Flux.from(Mono.fromFuture(cachedFuture))
 							.switchIfEmpty(Flux.defer(() -> (Flux) evaluate(null, invoker, method, contexts)))
-							.flatMap(v -> evaluate(valueToFlux(v, contexts), invoker, method, contexts)));
+							.flatMap(v -> evaluate(valueToFlux(v, contexts), invoker, method, contexts))
+							.onErrorResume(RuntimeException.class, ex -> {
+								try {
+									getErrorHandler().handleCacheGetError((RuntimeException) ex, cache, key);
+									return evaluate(null, invoker, method, contexts);
+								}
+								catch (RuntimeException exception) {
+									return Flux.error(exception);
+								}
+							}));
 				}
 				else {
 					return adapter.fromPublisher(Mono.fromFuture(cachedFuture)
 							.switchIfEmpty(Mono.defer(() -> (Mono) evaluate(null, invoker, method, contexts)))
-							.flatMap(v -> evaluate(Mono.justOrEmpty(unwrapCacheValue(v)), invoker, method, contexts)));
+							.flatMap(v -> evaluate(Mono.justOrEmpty(unwrapCacheValue(v)), invoker, method, contexts))
+							.onErrorResume(RuntimeException.class, ex -> {
+								try {
+									getErrorHandler().handleCacheGetError((RuntimeException) ex, cache, key);
+									return evaluate(null, invoker, method, contexts);
+								}
+								catch (RuntimeException exception) {
+									return Mono.error(exception);
+								}
+							}));
 				}
 			}
 			return NOT_HANDLED;

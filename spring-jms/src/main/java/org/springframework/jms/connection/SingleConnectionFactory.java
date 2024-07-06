@@ -332,6 +332,7 @@ public class SingleConnectionFactory implements ConnectionFactory, QueueConnecti
 	 * @throws jakarta.jms.JMSException if thrown by JMS API methods
 	 * @see #initConnection()
 	 */
+	@SuppressWarnings("NullAway")
 	protected Connection getConnection() throws JMSException {
 		this.connectionLock.lock();
 		try {
@@ -574,13 +575,10 @@ public class SingleConnectionFactory implements ConnectionFactory, QueueConnecti
 			logger.debug("Closing shared JMS Connection: " + con);
 		}
 		try {
-			try {
+			try (con) {
 				if (this.startedCount > 0) {
 					con.stop();
 				}
-			}
-			finally {
-				con.close();
 			}
 		}
 		catch (jakarta.jms.IllegalStateException ex) {

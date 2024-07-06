@@ -21,9 +21,7 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Array;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.core.MethodParameter;
@@ -36,7 +34,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ConcurrentReferenceHashMap;
 import org.springframework.util.MethodInvoker;
 
 /**
@@ -49,14 +46,6 @@ import org.springframework.util.MethodInvoker;
  * @since 3.0
  */
 public abstract class ReflectionHelper {
-
-	/**
-	 * Cache for equivalent methods in a public declaring class in the type
-	 * hierarchy of the method's declaring class.
-	 * @since 6.2
-	 */
-	private static final Map<Method, Class<?>> publicDeclaringClassCache = new ConcurrentReferenceHashMap<>(256);
-
 
 	/**
 	 * Compare argument arrays and return information about whether they match.
@@ -314,7 +303,8 @@ public abstract class ReflectionHelper {
 				TypeDescriptor sourceType = TypeDescriptor.forObject(argument);
 				if (argument == null) {
 					// Perform the equivalent of GenericConversionService.convertNullSource() for a single argument.
-					if (targetType.getElementTypeDescriptor().getObjectType() == Optional.class) {
+					TypeDescriptor elementDesc = targetType.getElementTypeDescriptor();
+					if (elementDesc != null && elementDesc.getObjectType() == Optional.class) {
 						arguments[varargsPosition] = Optional.empty();
 						conversionOccurred = true;
 					}
@@ -402,7 +392,8 @@ public abstract class ReflectionHelper {
 				TypeDescriptor sourceType = TypeDescriptor.forObject(argument);
 				if (argument == null) {
 					// Perform the equivalent of GenericConversionService.convertNullSource() for a single argument.
-					if (varArgContentType.getElementTypeDescriptor().getObjectType() == Optional.class) {
+					TypeDescriptor elementDesc = varArgContentType.getElementTypeDescriptor();
+					if (elementDesc != null && elementDesc.getObjectType() == Optional.class) {
 						arguments[varargsPosition] = Optional.empty();
 						conversionOccurred = true;
 					}
@@ -427,7 +418,6 @@ public abstract class ReflectionHelper {
 			}
 			// Otherwise, convert remaining arguments to the varargs element type.
 			else {
-				Assert.state(varArgContentType != null, "No element type");
 				for (int i = varargsPosition; i < arguments.length; i++) {
 					Object argument = arguments[i];
 					arguments[i] = converter.convertValue(argument, TypeDescriptor.forObject(argument), varArgContentType);
@@ -458,24 +448,29 @@ public abstract class ReflectionHelper {
 	}
 
 	/**
-	 * Package up the arguments so that they correctly match what is expected in requiredParameterTypes.
-	 * <p>For example, if requiredParameterTypes is {@code (int, String[])} because the second parameter
-	 * was declared {@code String...}, then if arguments is {@code [1,"a","b"]} then it must be
-	 * repackaged as {@code [1,new String[]{"a","b"}]} in order to match the expected types.
+	 * Package up the supplied {@code args} so that they correctly match what is
+	 * expected in {@code requiredParameterTypes}.
+	 * <p>For example, if {@code requiredParameterTypes} is {@code (int, String[])}
+	 * because the second parameter was declared as {@code String...}, then if
+	 * {@code args} is {@code [1, "a", "b"]} it must be repackaged as
+	 * {@code [1, new String[] {"a", "b"}]} in order to match the expected types.
 	 * @param requiredParameterTypes the types of the parameters for the invocation
-	 * @param args the arguments to be setup ready for the invocation
-	 * @return a repackaged array of arguments where any varargs setup has been done
+	 * @param args the arguments to be set up for the invocation
+	 * @return a repackaged array of arguments where any varargs setup has performed
 	 */
 	public static Object[] setupArgumentsForVarargsInvocation(Class<?>[] requiredParameterTypes, Object... args) {
-		// Check if array already built for final argument
+		Assert.notEmpty(requiredParameterTypes, "Required parameter types array must not be empty");
+
 		int parameterCount = requiredParameterTypes.length;
+		Class<?> lastRequiredParameterType = requiredParameterTypes[parameterCount - 1];
+		Assert.isTrue(lastRequiredParameterType.isArray(),
+				"The last required parameter type must be an array to support varargs invocation");
+
 		int argumentCount = args.length;
+		Object lastArgument = (argumentCount > 0 ? args[argumentCount - 1] : null);
 
 		// Check if repackaging is needed...
-		if (parameterCount != args.length ||
-				requiredParameterTypes[parameterCount - 1] !=
-						(args[argumentCount - 1] != null ? args[argumentCount - 1].getClass() : null)) {
-
+		if (parameterCount != argumentCount || !lastRequiredParameterType.isInstance(lastArgument)) {
 			// Create an array for the leading arguments plus the varargs array argument.
 			Object[] newArgs = new Object[parameterCount];
 			// Copy all leading arguments to the new array, omitting the varargs array argument.
@@ -487,7 +482,7 @@ public abstract class ReflectionHelper {
 			if (argumentCount >= parameterCount) {
 				varargsArraySize = argumentCount - (parameterCount - 1);
 			}
-			Class<?> componentType = requiredParameterTypes[parameterCount - 1].componentType();
+			Class<?> componentType = lastRequiredParameterType.componentType();
 			Object varargsArray = Array.newInstance(componentType, varargsArraySize);
 			for (int i = 0; i < varargsArraySize; i++) {
 				Array.set(varargsArray, i, args[parameterCount - 1 + i]);
@@ -496,67 +491,8 @@ public abstract class ReflectionHelper {
 			newArgs[newArgs.length - 1] = varargsArray;
 			return newArgs;
 		}
+
 		return args;
-	}
-
-	/**
-	 * Find the first public class or interface in the method's class hierarchy
-	 * that declares the supplied method.
-	 * <p>Sometimes the reflective method discovery logic finds a suitable method
-	 * that can easily be called via reflection but cannot be called from generated
-	 * code when compiling the expression because of visibility restrictions. For
-	 * example, if a non-public class overrides {@code toString()}, this method
-	 * will traverse up the type hierarchy to find the first public type that
-	 * declares the method (if there is one). For {@code toString()}, it may
-	 * traverse as far as {@link Object}.
-	 * @param method the method to process
-	 * @return the public class or interface that declares the method, or
-	 * {@code null} if no such public type could be found
-	 * @since 6.2
-	 */
-	@Nullable
-	public static Class<?> findPublicDeclaringClass(Method method) {
-		return publicDeclaringClassCache.computeIfAbsent(method, key -> {
-				// If the method is already defined in a public type, return that type.
-				if (Modifier.isPublic(key.getDeclaringClass().getModifiers())) {
-					return key.getDeclaringClass();
-				}
-				Method interfaceMethod = ClassUtils.getInterfaceMethodIfPossible(key, null);
-				// If we found an interface method whose type is public, return the interface type.
-				if (!interfaceMethod.equals(key)) {
-					if (Modifier.isPublic(interfaceMethod.getDeclaringClass().getModifiers())) {
-						return interfaceMethod.getDeclaringClass();
-					}
-				}
-				// Attempt to search the type hierarchy.
-				Class<?> superclass = key.getDeclaringClass().getSuperclass();
-				if (superclass != null) {
-					return findPublicDeclaringClass(superclass, key.getName(), key.getParameterTypes());
-				}
-				// Otherwise, no public declaring class found.
-				return null;
-			});
-	}
-
-	@Nullable
-	private static Class<?> findPublicDeclaringClass(
-			Class<?> declaringClass, String methodName, Class<?>[] parameterTypes) {
-
-		if (Modifier.isPublic(declaringClass.getModifiers())) {
-			try {
-				declaringClass.getDeclaredMethod(methodName, parameterTypes);
-				return declaringClass;
-			}
-			catch (NoSuchMethodException ex) {
-				// Continue below...
-			}
-		}
-
-		Class<?> superclass = declaringClass.getSuperclass();
-		if (superclass != null) {
-			return findPublicDeclaringClass(superclass, methodName, parameterTypes);
-		}
-		return null;
 	}
 
 

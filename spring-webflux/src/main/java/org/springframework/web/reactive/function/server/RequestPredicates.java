@@ -843,7 +843,7 @@ public abstract class RequestPredicates {
 		@Override
 		public boolean test(ServerRequest request) {
 			String pathExtension = UriUtils.extractFileExtension(request.path());
-			return this.extensionPredicate.test(pathExtension);
+			return (pathExtension != null && this.extensionPredicate.test(pathExtension));
 		}
 
 		@Override
@@ -1331,7 +1331,7 @@ public abstract class RequestPredicates {
 		public String pathVariable(String name) {
 			Map<String, String> pathVariables = pathVariables();
 			if (pathVariables.containsKey(name)) {
-				return pathVariables().get(name);
+				return pathVariables.get(name);
 			}
 			else {
 				throw new IllegalArgumentException("No path variable with name \"" + name + "\" available");

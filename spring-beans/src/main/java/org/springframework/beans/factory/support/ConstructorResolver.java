@@ -63,6 +63,7 @@ import org.springframework.beans.factory.config.DependencyDescriptor;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.core.CollectionFactory;
+import org.springframework.core.KotlinDetector;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.core.ParameterNameDiscoverer;
@@ -130,6 +131,7 @@ class ConstructorResolver {
 	 * or {@code null} if none (-> use constructor argument values from bean definition)
 	 * @return a BeanWrapper for the new instance
 	 */
+	@SuppressWarnings("NullAway")
 	public BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mbd,
 			@Nullable Constructor<?>[] chosenCtors, @Nullable Object[] explicitArgs) {
 
@@ -391,6 +393,7 @@ class ConstructorResolver {
 	 * method, or {@code null} if none (-> use constructor argument values from bean definition)
 	 * @return a BeanWrapper for the new instance
 	 */
+	@SuppressWarnings("NullAway")
 	public BeanWrapper instantiateUsingFactoryMethod(
 			String beanName, RootBeanDefinition mbd, @Nullable Object[] explicitArgs) {
 
@@ -620,6 +623,11 @@ class ConstructorResolver {
 				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 						"Invalid factory method '" + mbd.getFactoryMethodName() + "' on class [" +
 						factoryClass.getName() + "]: needs to have a non-void return type!");
+			}
+			else if (KotlinDetector.isKotlinPresent() && KotlinDetector.isSuspendingFunction(factoryMethodToUse)) {
+				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
+						"Invalid factory method '" + mbd.getFactoryMethodName() + "' on class [" +
+								factoryClass.getName() + "]: suspending functions are not supported!");
 			}
 			else if (ambiguousFactoryMethods != null) {
 				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
@@ -1435,6 +1443,7 @@ class ConstructorResolver {
 		}
 
 		@Override
+		@Nullable
 		public Object resolveShortcut(BeanFactory beanFactory) {
 			String shortcut = this.shortcut;
 			return (shortcut != null ? beanFactory.getBean(shortcut, getDependencyType()) : null);

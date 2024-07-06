@@ -81,6 +81,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements SyncHa
 
 
 	@Override
+	@Nullable
 	public Object resolveArgumentValue(MethodParameter parameter, Message<?> message) {
 		NamedValueInfo namedValueInfo = getNamedValueInfo(parameter);
 		MethodParameter nestedParameter = parameter.nestedIfOptional();
@@ -97,9 +98,9 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements SyncHa
 				arg = resolveEmbeddedValuesAndExpressions(namedValueInfo.defaultValue);
 			}
 			else if (namedValueInfo.required && !nestedParameter.isOptional()) {
-				handleMissingValue(namedValueInfo.name, nestedParameter, message);
+				handleMissingValue(resolvedName.toString(), nestedParameter, message);
 			}
-			arg = handleNullValue(namedValueInfo.name, arg, nestedParameter.getNestedParameterType());
+			arg = handleNullValue(resolvedName.toString(), arg, nestedParameter.getNestedParameterType());
 		}
 		else if ("".equals(arg) && namedValueInfo.defaultValue != null) {
 			arg = resolveEmbeddedValuesAndExpressions(namedValueInfo.defaultValue);
@@ -113,7 +114,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements SyncHa
 					arg = resolveEmbeddedValuesAndExpressions(namedValueInfo.defaultValue);
 				}
 				else if (namedValueInfo.required && !nestedParameter.isOptional()) {
-					handleMissingValue(namedValueInfo.name, nestedParameter, message);
+					handleMissingValue(resolvedName.toString(), nestedParameter, message);
 				}
 			}
 		}

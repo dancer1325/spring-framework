@@ -36,6 +36,7 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
+import org.springframework.lang.Contract;
 import org.springframework.lang.Nullable;
 
 /**
@@ -58,6 +59,7 @@ import org.springframework.lang.Nullable;
  * @author Arjen Poutsma
  * @author Sam Brannen
  * @author Brian Clozel
+ * @author Sebastien Deleuze
  * @since 16 April 2001
  */
 public abstract class StringUtils {
@@ -69,6 +71,8 @@ public abstract class StringUtils {
 	private static final char FOLDER_SEPARATOR_CHAR = '/';
 
 	private static final String WINDOWS_FOLDER_SEPARATOR = "\\";
+
+	private static final String DOUBLE_BACKSLASHES = "\\\\";
 
 	private static final String TOP_PATH = "..";
 
@@ -122,8 +126,9 @@ public abstract class StringUtils {
 	 * @see #hasLength(String)
 	 * @see #hasText(CharSequence)
 	 */
+	@Contract("null -> false")
 	public static boolean hasLength(@Nullable CharSequence str) {
-		return (str != null && str.length() > 0);
+		return (str != null && !str.isEmpty());  // as of JDK 15
 	}
 
 	/**
@@ -135,6 +140,7 @@ public abstract class StringUtils {
 	 * @see #hasLength(CharSequence)
 	 * @see #hasText(String)
 	 */
+	@Contract("null -> false")
 	public static boolean hasLength(@Nullable String str) {
 		return (str != null && !str.isEmpty());
 	}
@@ -158,6 +164,7 @@ public abstract class StringUtils {
 	 * @see #hasLength(CharSequence)
 	 * @see Character#isWhitespace
 	 */
+	@Contract("null -> false")
 	public static boolean hasText(@Nullable CharSequence str) {
 		if (str == null) {
 			return false;
@@ -188,6 +195,7 @@ public abstract class StringUtils {
 	 * @see #hasLength(String)
 	 * @see Character#isWhitespace
 	 */
+	@Contract("null -> false")
 	public static boolean hasText(@Nullable String str) {
 		return (str != null && !str.isBlank());
 	}
@@ -690,7 +698,7 @@ public abstract class StringUtils {
 	 * Normalize the path by suppressing sequences like "path/.." and
 	 * inner simple dots.
 	 * <p>The result is convenient for path comparison. For other uses,
-	 * notice that Windows separators ("\") are replaced by simple slashes.
+	 * notice that Windows separators ("\" and "\\") are replaced by simple slashes.
 	 * <p><strong>NOTE</strong> that {@code cleanPath} should not be depended
 	 * upon in a security context. Other mechanisms should be used to prevent
 	 * path-traversal issues.
@@ -702,7 +710,15 @@ public abstract class StringUtils {
 			return path;
 		}
 
-		String normalizedPath = replace(path, WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
+		String normalizedPath;
+		// Optimize when there is no backslash
+		if (path.indexOf('\\') != -1) {
+			normalizedPath = replace(path, DOUBLE_BACKSLASHES, FOLDER_SEPARATOR);
+			normalizedPath = replace(normalizedPath, WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
+		}
+		else {
+			normalizedPath = path;
+		}
 		String pathToUse = normalizedPath;
 
 		// Shortcut if there is no work to do
@@ -853,7 +869,7 @@ public abstract class StringUtils {
 		if (!localeValue.contains("_") && !localeValue.contains(" ")) {
 			validateLocalePart(localeValue);
 			Locale resolved = Locale.forLanguageTag(localeValue);
-			if (resolved.getLanguage().length() > 0) {
+			if (!resolved.getLanguage().isEmpty()) {
 				return resolved;
 			}
 		}
@@ -1182,7 +1198,7 @@ public abstract class StringUtils {
 			if (trimTokens) {
 				token = token.trim();
 			}
-			if (!ignoreEmptyTokens || token.length() > 0) {
+			if (!ignoreEmptyTokens || !token.isEmpty()) {
 				tokens.add(token);
 			}
 		}
@@ -1244,7 +1260,7 @@ public abstract class StringUtils {
 				result.add(deleteAny(str.substring(pos, delPos), charsToDelete));
 				pos = delPos + delimiter.length();
 			}
-			if (str.length() > 0 && pos <= str.length()) {
+			if (!str.isEmpty() && pos <= str.length()) {
 				// Add rest of String, but not in case of empty input.
 				result.add(deleteAny(str.substring(pos), charsToDelete));
 			}

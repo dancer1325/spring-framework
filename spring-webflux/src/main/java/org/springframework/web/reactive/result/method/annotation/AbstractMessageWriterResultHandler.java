@@ -165,7 +165,7 @@ public abstract class AbstractMessageWriterResultHandler extends HandlerResultHa
 	 * @return indicates completion or error
 	 * @since 5.0.2
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked", "ConstantConditions"})
+	@SuppressWarnings({"rawtypes", "unchecked", "ConstantConditions", "NullAway"})
 	protected Mono<Void> writeBody(@Nullable Object body, MethodParameter bodyParameter,
 			@Nullable MethodParameter actualParam, ServerWebExchange exchange) {
 
@@ -217,7 +217,7 @@ public abstract class AbstractMessageWriterResultHandler extends HandlerResultHa
 			throw ex;
 		}
 
-		// For ProblemDetail, fall back on RFC 7807 format
+		// For ProblemDetail, fall back on RFC 9457 format
 		if (bestMediaType == null && ProblemDetail.class.isAssignableFrom(elementType.toClass())) {
 			bestMediaType = selectMediaType(exchange, () -> getMediaTypesFor(elementType), this.problemMediaTypes);
 		}

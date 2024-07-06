@@ -26,16 +26,20 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
+import example.Color;
+import example.FruitMap;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.IndexAccessor;
 import org.springframework.expression.Operation;
 import org.springframework.expression.OperatorOverloader;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.ReflectiveIndexAccessor;
 import org.springframework.expression.spel.support.SimpleEvaluationContext;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.expression.spel.testresources.Inventor;
@@ -252,6 +256,24 @@ class SpelDocumentationTests extends AbstractExpressionTests {
 			String name = parser.parseExpression("#root['name']")
 					.getValue(context, tesla, String.class);
 			assertThat(name).isEqualTo("Nikola Tesla");
+		}
+
+		@Test
+		void indexingIntoCustomStructure() {
+			// Create a ReflectiveIndexAccessor for FruitMap
+			IndexAccessor fruitMapAccessor = new ReflectiveIndexAccessor(
+					FruitMap.class, Color.class, "getFruit", "setFruit");
+
+			// Register the IndexAccessor for FruitMap
+			context.addIndexAccessor(fruitMapAccessor);
+
+			// Register the fruitMap variable
+			context.setVariable("fruitMap", new FruitMap());
+
+			// evaluates to "cherry"
+			String fruit = parser.parseExpression("#fruitMap[T(example.Color).RED]")
+					.getValue(context, String.class);
+			assertThat(fruit).isEqualTo("cherry");
 		}
 
 	}
@@ -686,6 +708,24 @@ class SpelDocumentationTests extends AbstractExpressionTests {
 			city = parser.parseExpression("placeOfBirth?.city") // <2>
 					.getValue(context, tesla, String.class);
 			assertThat(city).isNull();
+		}
+
+		@Test
+		void nullSafeIndexing() {
+			IEEE society = new IEEE();
+			EvaluationContext context = new StandardEvaluationContext(society);
+
+			// evaluates to Inventor("Nikola Tesla")
+			Inventor inventor = parser.parseExpression("members?.[0]") // <1>
+					.getValue(context, Inventor.class);
+			assertThat(inventor).extracting(Inventor::getName).isEqualTo("Nikola Tesla");
+
+			society.members = null;
+
+			// evaluates to null - does not throw an Exception
+			inventor = parser.parseExpression("members?.[0]") // <2>
+					.getValue(context, Inventor.class);
+			assertThat(inventor).isNull();
 		}
 
 		@Test

@@ -28,7 +28,6 @@ import java.util.Set;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlinx.coroutines.Job;
-import org.reactivestreams.Publisher;
 
 import org.springframework.aop.Advisor;
 import org.springframework.aop.AopInvocationException;
@@ -43,6 +42,7 @@ import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.CoroutinesUtils;
 import org.springframework.core.KotlinDetector;
 import org.springframework.core.MethodIntrospector;
+import org.springframework.lang.Contract;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -65,6 +65,10 @@ import org.springframework.util.ReflectionUtils;
  */
 public abstract class AopUtils {
 
+	private static final boolean coroutinesReactorPresent = ClassUtils.isPresent(
+			"kotlinx.coroutines.reactor.MonoKt", AopUtils.class.getClassLoader());
+
+
 	/**
 	 * Check whether the given object is a JDK dynamic proxy or a CGLIB proxy.
 	 * <p>This method additionally checks if the given object is an instance
@@ -73,6 +77,7 @@ public abstract class AopUtils {
 	 * @see #isJdkDynamicProxy
 	 * @see #isCglibProxy
 	 */
+	@Contract("null -> false")
 	public static boolean isAopProxy(@Nullable Object object) {
 		return (object instanceof SpringProxy && (Proxy.isProxyClass(object.getClass()) ||
 				object.getClass().getName().contains(ClassUtils.CGLIB_CLASS_SEPARATOR)));
@@ -86,6 +91,7 @@ public abstract class AopUtils {
 	 * @param object the object to check
 	 * @see java.lang.reflect.Proxy#isProxyClass
 	 */
+	@Contract("null -> false")
 	public static boolean isJdkDynamicProxy(@Nullable Object object) {
 		return (object instanceof SpringProxy && Proxy.isProxyClass(object.getClass()));
 	}
@@ -98,6 +104,7 @@ public abstract class AopUtils {
 	 * @param object the object to check
 	 * @see ClassUtils#isCglibProxy(Object)
 	 */
+	@Contract("null -> false")
 	public static boolean isCglibProxy(@Nullable Object object) {
 		return (object instanceof SpringProxy &&
 				object.getClass().getName().contains(ClassUtils.CGLIB_CLASS_SEPARATOR));
@@ -347,8 +354,8 @@ public abstract class AopUtils {
 		// Use reflection to invoke the method.
 		try {
 			ReflectionUtils.makeAccessible(method);
-			return KotlinDetector.isSuspendingFunction(method) ?
-					KotlinDelegate.invokeSuspendingFunction(method, target, args) : method.invoke(target, args);
+			return (coroutinesReactorPresent && KotlinDetector.isSuspendingFunction(method) ?
+					KotlinDelegate.invokeSuspendingFunction(method, target, args) : method.invoke(target, args));
 		}
 		catch (InvocationTargetException ex) {
 			// Invoked method threw a checked exception.
@@ -364,18 +371,18 @@ public abstract class AopUtils {
 		}
 	}
 
+
 	/**
 	 * Inner class to avoid a hard dependency on Kotlin at runtime.
 	 */
 	private static class KotlinDelegate {
 
-		public static Publisher<?> invokeSuspendingFunction(Method method, Object target, Object... args) {
+		public static Object invokeSuspendingFunction(Method method, @Nullable Object target, Object... args) {
 			Continuation<?> continuation = (Continuation<?>) args[args.length -1];
 			Assert.state(continuation != null, "No Continuation available");
 			CoroutineContext context = continuation.getContext().minusKey(Job.Key);
 			return CoroutinesUtils.invokeSuspendingFunction(context, method, target, args);
 		}
-
 	}
 
 }

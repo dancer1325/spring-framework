@@ -200,6 +200,7 @@
 		<module name="com.puppycrawl.tools.checkstyle.checks.UpperEllCheck"/>
 		<module name="com.puppycrawl.tools.checkstyle.checks.ArrayTypeStyleCheck"/>
 		<module name="com.puppycrawl.tools.checkstyle.checks.OuterTypeFilenameCheck"/>
+		<module name="UnnecessarySemicolonInEnumeration"/>
 
 		<!-- Regexp -->
 		<module name="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck">
@@ -212,6 +213,14 @@
 			<property name="format" value="[ \t]+$"/>
 			<property name="illegalPattern" value="true"/>
 			<property name="message" value="Trailing whitespace"/>
+		</module>
+		<module name="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck">
+			<property name="id" value="atSinceVersionConvention"/>
+			<property name="format" value="\@since \d+\.\d+\.0"/>
+			<property name="maximum" value="0"/>
+			<property name="message"
+					  value="@since should use Major.Minor version convention instead of Major.Minor.0"/>
+			<property name="ignoreComments" value="false"/>
 		</module>
 		<module name="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck">
 			<property name="id" value="primitiveClassLiterals"/>

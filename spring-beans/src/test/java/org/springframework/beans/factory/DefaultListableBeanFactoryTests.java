@@ -840,6 +840,7 @@ class DefaultListableBeanFactoryTests {
 
 	@Test
 	void aliasCircle() {
+		lbf.setAllowBeanDefinitionOverriding(true);
 		lbf.registerAlias("test", "test2");
 		lbf.registerAlias("test2", "test3");
 
@@ -867,6 +868,7 @@ class DefaultListableBeanFactoryTests {
 
 	@Test
 	void beanDefinitionOverriding() {
+		lbf.setAllowBeanDefinitionOverriding(true);
 		lbf.registerBeanDefinition("test", new RootBeanDefinition(TestBean.class));
 		lbf.registerBeanDefinition("test", new RootBeanDefinition(NestedTestBean.class));
 		lbf.registerAlias("otherTest", "test2");
@@ -906,6 +908,7 @@ class DefaultListableBeanFactoryTests {
 
 	@Test
 	void beanDefinitionOverridingWithAlias() {
+		lbf.setAllowBeanDefinitionOverriding(true);
 		lbf.registerBeanDefinition("test", new RootBeanDefinition(TestBean.class));
 		lbf.registerAlias("test", "testAlias");
 		lbf.registerBeanDefinition("test", new RootBeanDefinition(NestedTestBean.class));
@@ -917,6 +920,7 @@ class DefaultListableBeanFactoryTests {
 
 	@Test
 	void beanDefinitionOverridingWithConstructorArgumentMismatch() {
+		lbf.setAllowBeanDefinitionOverriding(true);
 		RootBeanDefinition bd1 = new RootBeanDefinition(NestedTestBean.class);
 		bd1.getConstructorArgumentValues().addIndexedArgumentValue(1, "value1");
 		lbf.registerBeanDefinition("test", bd1);
@@ -1196,6 +1200,7 @@ class DefaultListableBeanFactoryTests {
 
 	@Test
 	void reregisterBeanDefinition() {
+		lbf.setAllowBeanDefinitionOverriding(true);
 		RootBeanDefinition bd1 = new RootBeanDefinition(TestBean.class);
 		bd1.setScope(BeanDefinition.SCOPE_PROTOTYPE);
 		lbf.registerBeanDefinition("testBean", bd1);
@@ -1306,6 +1311,7 @@ class DefaultListableBeanFactoryTests {
 
 	@Test
 	void withOverloadedSetters() {
+		lbf.setAllowBeanDefinitionOverriding(true);
 		RootBeanDefinition rbd = new RootBeanDefinition(SetterOverload.class);
 		rbd.getPropertyValues().add("object", "a String");
 		lbf.registerBeanDefinition("overloaded", rbd);
@@ -1948,6 +1954,42 @@ class DefaultListableBeanFactoryTests {
 		lbf.registerBeanDefinition("bd2", bd2);
 		assertThatExceptionOfType(NoSuchBeanDefinitionException.class).isThrownBy(() ->
 				lbf.getBean(TestBean.class, 67));
+	}
+
+	@Test
+	void getBeanByTypeInstanceWithConstructorIgnoresInstanceSupplier() {
+		RootBeanDefinition bd1 = createConstructorDependencyBeanDefinition(99);
+		bd1.setInstanceSupplier(() -> new ConstructorDependency(new TestBean("test")));
+		lbf.registerBeanDefinition("bd1", bd1);
+
+		ConstructorDependency defaultInstance = lbf.getBean(ConstructorDependency.class);
+		assertThat(defaultInstance.beanName).isEqualTo("bd1");
+		assertThat(defaultInstance.spouseAge).isEqualTo(0);
+
+		ConstructorDependency argsInstance = lbf.getBean(ConstructorDependency.class, 42);
+		assertThat(argsInstance.beanName).isEqualTo("bd1");
+		assertThat(argsInstance.spouseAge).isEqualTo(42);
+	}
+
+	@Test
+	void getBeanByTypeInstanceWithFactoryMethodIgnoresInstanceSupplier() {
+		RootBeanDefinition bd1 = new RootBeanDefinition(TestBean.class);
+		bd1.setScope(BeanDefinition.SCOPE_PROTOTYPE);
+		bd1.setFactoryBeanName("config");
+		bd1.setFactoryMethodName("create");
+		bd1.setInstanceSupplier(() -> new TestBean("test"));
+		lbf.registerBeanDefinition("config", new RootBeanDefinition(BeanWithFactoryMethod.class));
+		lbf.registerBeanDefinition("bd1", bd1);
+
+		TestBean defaultInstance = lbf.getBean(TestBean.class);
+		assertThat(defaultInstance.getBeanName()).isEqualTo("bd1");
+		assertThat(defaultInstance.getName()).isEqualTo("test");
+		assertThat(defaultInstance.getAge()).isEqualTo(0);
+
+		TestBean argsInstance = lbf.getBean(TestBean.class, "another", 42);
+		assertThat(argsInstance.getBeanName()).isEqualTo("bd1");
+		assertThat(argsInstance.getName()).isEqualTo("another");
+		assertThat(argsInstance.getAge()).isEqualTo(42);
 	}
 
 	@Test
@@ -3184,6 +3226,10 @@ class DefaultListableBeanFactoryTests {
 			TestBean tb = new TestBean();
 			tb.setName(this.name);
 			return tb;
+		}
+
+		public TestBean create(String name, int age) {
+			return new TestBean(name, age);
 		}
 
 		public TestBean createWithArgs(String arg) {

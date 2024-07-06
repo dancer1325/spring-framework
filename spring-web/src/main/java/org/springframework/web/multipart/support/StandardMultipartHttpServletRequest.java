@@ -119,7 +119,8 @@ public class StandardMultipartHttpServletRequest extends AbstractMultipartHttpSe
 			String msg = cause.getMessage();
 			if (msg != null) {
 				msg = msg.toLowerCase();
-				if (msg.contains("exceed") && (msg.contains("size") || msg.contains("length"))) {
+				if ((msg.contains("exceed") && (msg.contains("size") || msg.contains("length"))) ||
+						(msg.contains("request") && (msg.contains("big") || msg.contains("large")))) {
 					throw new MaxUploadSizeExceededException(-1, ex);
 				}
 			}
@@ -137,6 +138,7 @@ public class StandardMultipartHttpServletRequest extends AbstractMultipartHttpSe
 	}
 
 	@Override
+	@SuppressWarnings("NullAway")
 	public Enumeration<String> getParameterNames() {
 		if (this.multipartParameterNames == null) {
 			initializeMultipart();
@@ -157,6 +159,7 @@ public class StandardMultipartHttpServletRequest extends AbstractMultipartHttpSe
 	}
 
 	@Override
+	@SuppressWarnings("NullAway")
 	public Map<String, String[]> getParameterMap() {
 		if (this.multipartParameterNames == null) {
 			initializeMultipart();
@@ -177,6 +180,7 @@ public class StandardMultipartHttpServletRequest extends AbstractMultipartHttpSe
 	}
 
 	@Override
+	@Nullable
 	public String getMultipartContentType(String paramOrFileName) {
 		try {
 			Part part = getPart(paramOrFileName);
@@ -188,6 +192,7 @@ public class StandardMultipartHttpServletRequest extends AbstractMultipartHttpSe
 	}
 
 	@Override
+	@Nullable
 	public HttpHeaders getMultipartHeaders(String paramOrFileName) {
 		try {
 			Part part = getPart(paramOrFileName);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2023 the original author or authors.
+ * Copyright 2002-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -196,9 +196,10 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	}
 
 	/**
-	 * Set the content type for all views.
+	 * Set the content type for all views &mdash; for example,
+	 * {@code "text/html;charset=UTF-8"}.
 	 * <p>May be ignored by view classes if the view itself is assumed
-	 * to set the content type, e.g. in case of JSPs.
+	 * to set the content type &mdash; for example, in case of JSPs.
 	 */
 	public void setContentType(@Nullable String contentType) {
 		this.contentType = contentType;
@@ -461,6 +462,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	 * @see #requiredViewClass
 	 */
 	@Override
+	@Nullable
 	protected View createView(String viewName, Locale locale) throws Exception {
 		// If this resolver is not supposed to handle the given view,
 		// return null to pass on to the next resolver in the chain.
@@ -545,6 +547,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet
 	 */
 	@Override
+	@Nullable
 	protected View loadView(String viewName, Locale locale) throws Exception {
 		AbstractUrlBasedView view = buildView(viewName);
 		View result = applyLifecycleMethods(viewName, view);
