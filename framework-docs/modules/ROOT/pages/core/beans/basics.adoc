@@ -58,131 +58,111 @@ image::container-magic.png[]
 [[beans-factory-xml]]
 === XML as an External Configuration DSL
 
-* TODO:
+* How to configure?
 
-XML-based configuration metadata configures these beans as `<bean/>` elements inside
-a top-level `<beans/>` element. The following example shows the basic structure of
-XML-based configuration metadata:
+    ...
+    <beans>
+      <bean></bean>
+    </beans>
+    ...
 
-[source,xml,indent=0,subs="verbatim,quotes"]
-----
-	<?xml version="1.0" encoding="UTF-8"?>
-	<beans xmlns="http://www.springframework.org/schema/beans"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://www.springframework.org/schema/beans
-			https://www.springframework.org/schema/beans/spring-beans.xsd">
+    ** _Example:_
 
-		<bean id="..." class="..."> <1> <2>
-			<!-- collaborators and configuration for this bean go here -->
-		</bean>
+    [source,xml,indent=0,subs="verbatim,quotes"]
+    ----
+        <?xml version="1.0" encoding="UTF-8"?>
+        <beans xmlns="http://www.springframework.org/schema/beans"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.springframework.org/schema/beans
+                https://www.springframework.org/schema/beans/spring-beans.xsd">
+            <bean id="..." class="..."> <1> <2>
+                <!-- collaborators and configuration for this bean go here -->
+            </bean>
+            <bean id="..." class="...">
+                <!-- collaborators and configuration for this bean go here -->
+            </bean>
+            <!-- more bean definitions go here -->
+        </beans>
+    ----
 
-		<bean id="..." class="...">
-			<!-- collaborators and configuration for this bean go here -->
-		</bean>
+        *** <1>
+            **** `attributeId`
+                ***** := string / -- identifies -- individual bean definition
+                ***** Check xref:core/beans/dependencies.adoc[Dependencies]
+        *** <2>
+            **** `class` attribute := fully qualified class name / -- define the -- type of the bean
+* How to instantiate the container with this metadata?
+    ** `ClassPathXmlApplicationContext(locationPathsToXMLResources)`
+        *** `locationPathsToXMLResources` can be
+            **** local file system
+            **** Java `CLASSPATH`
+        *** Example:
 
-		<!-- more bean definitions go here -->
+        [tabs]
+        ======
+        Java::
+        +
+        [source,java,indent=0,subs="verbatim,quotes",role="primary"]
+        ----
+            ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");
+        ----
+        Kotlin::
+        +
+        [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
+        ----
+            val context = ClassPathXmlApplicationContext("services.xml", "daos.xml")
+        ----
+        ======
 
-	</beans>
-----
+* Check Spring's `Resource` abstraction -- xref:core/resources.adoc[Resources] --
+* _Example:_ dependency between collaborating objects -- via -- the elements `id` and `ref`
+    ** Check xref:core/beans/dependencies.adoc[Dependencies]
+    ** service layer objects `(services.xml)`
 
-<1> The `id` attribute is a string that identifies the individual bean definition.
-<2> The `class` attribute defines the type of the bean and uses the fully qualified
-class name.
+    [source,xml,indent=0,subs="verbatim,quotes"]
+    ----
+        <?xml version="1.0" encoding="UTF-8"?>
+        <beans xmlns="http://www.springframework.org/schema/beans"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.springframework.org/schema/beans
+                https://www.springframework.org/schema/beans/spring-beans.xsd">
+            <!-- services -->
+            <bean id="petStore" class="org.springframework.samples.jpetstore.services.PetStoreServiceImpl">
+                <!-- ref          -- refer to -- another bean  -->
+                <property name="accountDao" ref="accountDao"/>
+                <property name="itemDao" ref="itemDao"/>
+                <!-- additional collaborators and configuration for this bean go here -->
+            </bean>
+            <!-- more bean definitions for services go here -->
+        </beans>
+    ----
 
-The value of the `id` attribute can be used to refer to collaborating objects. The XML
-for referring to collaborating objects is not shown in this example. See
-xref:core/beans/dependencies.adoc[Dependencies] for more information.
+    **  DAO (`daos.xml`)
 
-For instantiating a container, the location path or paths to the XML resource files
-need to be supplied to a `ClassPathXmlApplicationContext` constructor that let the
-container load configuration metadata from a variety of external resources, such
-as the local file system, the Java `CLASSPATH`, and so on.
-
-[tabs]
-======
-Java::
-+
-[source,java,indent=0,subs="verbatim,quotes",role="primary"]
-----
-	ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");
-----
-
-Kotlin::
-+
-[source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
-----
-    val context = ClassPathXmlApplicationContext("services.xml", "daos.xml")
-----
-======
-
-[NOTE]
-====
-After you learn about Spring's IoC container, you may want to know more about Spring's
-`Resource` abstraction (as described in
-xref:core/resources.adoc[Resources])
-which provides a convenient mechanism for reading an InputStream from locations defined
-in a URI syntax. In particular, `Resource` paths are used to construct applications contexts,
-as described in xref:core/resources.adoc#resources-app-ctx[Application Contexts and Resource Paths].
-====
-
-The following example shows the service layer objects `(services.xml)` configuration file:
-
-[source,xml,indent=0,subs="verbatim,quotes"]
-----
-	<?xml version="1.0" encoding="UTF-8"?>
-	<beans xmlns="http://www.springframework.org/schema/beans"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://www.springframework.org/schema/beans
-			https://www.springframework.org/schema/beans/spring-beans.xsd">
-
-		<!-- services -->
-
-		<bean id="petStore" class="org.springframework.samples.jpetstore.services.PetStoreServiceImpl">
-			<property name="accountDao" ref="accountDao"/>
-			<property name="itemDao" ref="itemDao"/>
-			<!-- additional collaborators and configuration for this bean go here -->
-		</bean>
-
-		<!-- more bean definitions for services go here -->
-
-	</beans>
-----
-
-The following example shows the data access objects `daos.xml` file:
-
-[source,xml,indent=0,subs="verbatim,quotes"]
-----
-	<?xml version="1.0" encoding="UTF-8"?>
-	<beans xmlns="http://www.springframework.org/schema/beans"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://www.springframework.org/schema/beans
-			https://www.springframework.org/schema/beans/spring-beans.xsd">
-
-		<bean id="accountDao"
-			class="org.springframework.samples.jpetstore.dao.jpa.JpaAccountDao">
-			<!-- additional collaborators and configuration for this bean go here -->
-		</bean>
-
-		<bean id="itemDao" class="org.springframework.samples.jpetstore.dao.jpa.JpaItemDao">
-			<!-- additional collaborators and configuration for this bean go here -->
-		</bean>
-
-		<!-- more bean definitions for data access objects go here -->
-
-	</beans>
-----
-
-In the preceding example, the service layer consists of the `PetStoreServiceImpl` class
-and two data access objects of the types `JpaAccountDao` and `JpaItemDao` (based
-on the JPA Object-Relational Mapping standard). The `property name` element refers to the
-name of the JavaBean property, and the `ref` element refers to the name of another bean
-definition. This linkage between `id` and `ref` elements expresses the dependency between
-collaborating objects. For details of configuring an object's dependencies, see
-xref:core/beans/dependencies.adoc[Dependencies].
+    [source,xml,indent=0,subs="verbatim,quotes"]
+    ----
+        <?xml version="1.0" encoding="UTF-8"?>
+        <beans xmlns="http://www.springframework.org/schema/beans"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.springframework.org/schema/beans
+                https://www.springframework.org/schema/beans/spring-beans.xsd">
+            <!-- class          attribute / marks the types of DAOs-->
+            <bean id="accountDao"
+                class="org.springframework.samples.jpetstore.dao.jpa.JpaAccountDao">
+                <!-- additional collaborators and configuration for this bean go here -->
+            </bean>
+            <bean id="itemDao" class="org.springframework.samples.jpetstore.dao.jpa.JpaItemDao">
+                <!-- additional collaborators and configuration for this bean go here -->
+            </bean>
+            <!-- more bean definitions for data access objects go here -->
+        </beans>
+    ----
 
 
 [[beans-factory-xml-import]]
 === Composing XML-based Configuration Metadata
+
+* TODO:
 
 It can be useful to have bean definitions span multiple XML files. Often, each individual
 XML configuration file represents a logical layer or module in your architecture.
