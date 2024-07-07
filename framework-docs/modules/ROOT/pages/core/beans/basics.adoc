@@ -158,68 +158,62 @@ image::container-magic.png[]
         </beans>
     ----
 
+* each .xml
+    ** == logical layer or module | your architecture
 
 [[beans-factory-xml-import]]
 === Composing XML-based Configuration Metadata
 
-* TODO:
+* := bean definitions / span in >1 .xml
+    ** == import a bean inside another bean
+* syntax
 
-It can be useful to have bean definitions span multiple XML files. Often, each individual
-XML configuration file represents a logical layer or module in your architecture.
+    ...
+    <beans>
+      <import resource="relativePathToAnotherXMLFileOrFullyQualifiedResourceLocationsOrPlaceHolders">
+    </beans>
+    ...
 
-You can use the `ClassPathXmlApplicationContext` constructor to load bean definitions from
-XML fragments. This constructor takes multiple `Resource` locations, as was shown in the
-xref:core/beans/basics.adoc#beans-factory-xml[previous section]. Alternatively,
-use one or more occurrences of the `<import/>` element to load bean definitions from
-another file or files. The following example shows how to do so:
+    ** `relativePathToAnotherXMLFile` rules
+        *** leading `/` are ignored
+        *** "../" NOT recommended
+            **** specially for `classpath` URLs -- _Example:_ `classpath:../services.xml` --
+                ***** Reason: 🧠 runtime resolution chooses always by the nearest 🧠
+            **** Reason: 🧠creates a dependency on a file / outside the current application 🧠
+    ** `FullyQualifiedResourceLocations`
+        *** _Example:_ "file:C:/config/services.xml" or "classpath:/config/services.xml"
+        *** your application's configuration -- is coupled to -- specific absolution location
+    ** `PlaceHolders`
+        *** _Example:_ "${...}"
+        *** -- are resolved against -- JVM  system properties at runtime
+    ** imported files' content -- must be -- valid XML bean definitions
+    ** _Example:_
 
-[source,xml,indent=0,subs="verbatim,quotes"]
-----
-	<beans>
-		<import resource="services.xml"/>
-		<import resource="resources/messageSource.xml"/>
-		<import resource="/resources/themeSource.xml"/>
+        [source,xml,indent=0,subs="verbatim,quotes"]
+        ----
+            <beans>
+                <import resource="services.xml"/>
+                <import resource="resources/messageSource.xml"/>
+                <import resource="/resources/themeSource.xml"/>
+                <bean id="bean1" class="..."/>
+                <bean id="bean2" class="..."/>
+            </beans>
+        ----
 
-		<bean id="bean1" class="..."/>
-		<bean id="bean2" class="..."/>
-	</beans>
-----
-
-In the preceding example, external bean definitions are loaded from three files:
-`services.xml`, `messageSource.xml`, and `themeSource.xml`. All location paths are
-relative to the definition file doing the importing, so `services.xml` must be in the
-same directory or classpath location as the file doing the importing, while
-`messageSource.xml` and `themeSource.xml` must be in a `resources` location below the
-location of the importing file. As you can see, a leading slash is ignored. However, given
-that these paths are relative, it is better form not to use the slash at all. The
-contents of the files being imported, including the top level `<beans/>` element, must
-be valid XML bean definitions, according to the Spring Schema.
-
-[NOTE]
-====
-It is possible, but not recommended, to reference files in parent directories using a
-relative "../" path. Doing so creates a dependency on a file that is outside the current
-application. In particular, this reference is not recommended for `classpath:` URLs (for
-example, `classpath:../services.xml`), where the runtime resolution process chooses the
-"`nearest`" classpath root and then looks into its parent directory. Classpath
-configuration changes may lead to the choice of a different, incorrect directory.
-
-You can always use fully qualified resource locations instead of relative paths: for
-example, `file:C:/config/services.xml` or `classpath:/config/services.xml`. However, be
-aware that you are coupling your application's configuration to specific absolute
-locations. It is generally preferable to keep an indirection for such absolute
-locations -- for example, through "${...}" placeholders that are resolved against JVM
-system properties at runtime.
-====
-
-The namespace itself provides the import directive feature. Further
-configuration features beyond plain bean definitions are available in a selection
-of XML namespaces provided by Spring -- for example, the `context` and `util` namespaces.
+* namespace
+    ** TODO: What's it?
+    ** provide
+        *** the import directive
+    ** available ones
+        *** bean
+        *** `context`
+        *** `util`
 
 
 [[beans-factory-groovy]]
 === The Groovy Bean Definition DSL
 
+* TODO:
 As a further example for externalized configuration metadata, bean definitions can also
 be expressed in Spring's Groovy Bean Definition DSL, as known from the Grails framework.
 Typically, such configuration live in a ".groovy" file with the structure shown in the
