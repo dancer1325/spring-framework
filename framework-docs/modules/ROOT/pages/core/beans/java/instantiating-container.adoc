@@ -1,88 +1,82 @@
 [[beans-java-instantiating-container]]
 = Instantiating the Spring Container by Using `AnnotationConfigApplicationContext`
 
-The following sections document Spring's `AnnotationConfigApplicationContext`, introduced in Spring
-3.0. This versatile `ApplicationContext` implementation is capable of accepting not only
-`@Configuration` classes as input but also plain `@Component` classes and classes
-annotated with JSR-330 metadata.
-
-When `@Configuration` classes are provided as input, the `@Configuration` class itself
-is registered as a bean definition and all declared `@Bean` methods within the class
-are also registered as bean definitions.
-
-When `@Component` and JSR-330 classes are provided, they are registered as bean
-definitions, and it is assumed that DI metadata such as `@Autowired` or `@Inject` are
-used within those classes where necessary.
-
+* introduced in Spring 3.0
+* := implementation of `ApplicationContext` /
+    ** allowed inputs
+        *** `@Configuration` classes
+            **** -> register automatically, the bean definitions
+                ***** `@Configuration` class
+                ***** ALL declared `@Bean` methods within the class
+        *** plain `@Component` classes
+            **** -> register as bean
+            **** DI metadata (-- Example: `@Autowired` or `@Inject` --) is used within the class
+        *** classes / annotated with JSR-330 metadata
+            **** -> register as bean
+            **** DI metadata (-- Example: `@Autowired` or `@Inject` --) is used within the class
 
 [[beans-java-instantiating-container-constructor]]
 == Simple Construction
 
-In much the same way that Spring XML files are used as input when instantiating a
-`ClassPathXmlApplicationContext`, you can use `@Configuration` classes as input when
-instantiating an `AnnotationConfigApplicationContext`. This allows for completely
-XML-free usage of the Spring container, as the following example shows:
+* vs `ClassPathXmlApplicationContext` -- Check 'basics' --
+    ** XML-free usage
+        *** _Example1:_ with `@Configuration` classes
 
-[tabs]
-======
-Java::
-+
-[source,java,indent=0,subs="verbatim,quotes",role="primary"]
-----
-	public static void main(String[] args) {
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-		MyService myService = ctx.getBean(MyService.class);
-		myService.doStuff();
-	}
-----
+            [tabs]
+            ======
+            Java::
+            +
+            [source,java,indent=0,subs="verbatim,quotes",role="primary"]
+            ----
+                public static void main(String[] args) {
+                    ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+                    MyService myService = ctx.getBean(MyService.class);
+                    myService.doStuff();
+                }
+            ----
+            Kotlin::
+            +
+            [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
+            ----
+                import org.springframework.beans.factory.getBean
 
-Kotlin::
-+
-[source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
-----
-	import org.springframework.beans.factory.getBean
+                fun main() {
+                    val ctx = AnnotationConfigApplicationContext(AppConfig::class.java)
+                    val myService = ctx.getBean<MyService>()
+                    myService.doStuff()
+                }
+            ----
+            ======
 
-	fun main() {
-		val ctx = AnnotationConfigApplicationContext(AppConfig::class.java)
-		val myService = ctx.getBean<MyService>()
-		myService.doStuff()
-	}
-----
-======
+        *** _Example2:_ with `@Component` or JSR-330 annotated class / dependency injections are used
 
-As mentioned earlier, `AnnotationConfigApplicationContext` is not limited to working only
-with `@Configuration` classes. Any `@Component` or JSR-330 annotated class may be supplied
-as input to the constructor, as the following example shows:
+            [tabs]
+            ======
+            Java::
+            +
+            [source,java,indent=0,subs="verbatim,quotes",role="primary"]
+            ----
+                public static void main(String[] args) {
+                    ApplicationContext ctx = new AnnotationConfigApplicationContext(MyServiceImpl.class, Dependency1.class, Dependency2.class);
+                    // MyServiceImpl, Dependency1, and Dependency2          assume to use Spring DI
+                    MyService myService = ctx.getBean(MyService.class);
+                    myService.doStuff();
+                }
+            ----
 
-[tabs]
-======
-Java::
-+
-[source,java,indent=0,subs="verbatim,quotes",role="primary"]
-----
-	public static void main(String[] args) {
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(MyServiceImpl.class, Dependency1.class, Dependency2.class);
-		MyService myService = ctx.getBean(MyService.class);
-		myService.doStuff();
-	}
-----
+            Kotlin::
+            +
+            [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
+            ----
+                import org.springframework.beans.factory.getBean
 
-Kotlin::
-+
-[source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
-----
-	import org.springframework.beans.factory.getBean
-
-	fun main() {
-		val ctx = AnnotationConfigApplicationContext(MyServiceImpl::class.java, Dependency1::class.java, Dependency2::class.java)
-		val myService = ctx.getBean<MyService>()
-		myService.doStuff()
-	}
-----
-======
-
-The preceding example assumes that `MyServiceImpl`, `Dependency1`, and `Dependency2` use Spring
-dependency injection annotations such as `@Autowired`.
+                fun main() {
+                    val ctx = AnnotationConfigApplicationContext(MyServiceImpl::class.java, Dependency1::class.java, Dependency2::class.java)
+                    val myService = ctx.getBean<MyService>()
+                    myService.doStuff()
+                }
+            ----
+            ======
 
 
 [[beans-java-instantiating-container-register]]
