@@ -1,16 +1,17 @@
 [[beans-java-bean-annotation]]
 = Using the `@Bean` Annotation
 
-`@Bean` is a method-level annotation and a direct analog of the XML `<bean/>` element.
-The annotation supports some of the attributes offered by `<bean/>`, such as:
-
-* xref:core/beans/factory-nature.adoc#beans-factory-lifecycle-initializingbean[init-method]
-* xref:core/beans/factory-nature.adoc#beans-factory-lifecycle-disposablebean[destroy-method]
-* xref:core/beans/dependencies/factory-autowire.adoc[autowiring]
-* `name`.
-
-You can use the `@Bean` annotation in a `@Configuration`-annotated or in a
-`@Component`-annotated class.
+* `@Bean`
+    ** := method-level annotation
+    ** == `<bean/>` XML element
+    ** vs `<bean/>`, attributes 👁️ ALSO 👁️ supported
+        *** xref:core/beans/factory-nature.adoc#beans-factory-lifecycle-initializingbean[init-method]
+        *** xref:core/beans/factory-nature.adoc#beans-factory-lifecycle-disposablebean[destroy-method]
+        *** xref:core/beans/dependencies/factory-autowire.adoc[autowiring]
+        *** `name`
+    ** where can it be used?
+        *** `@Configuration`-annotated class OR
+        *** `@Component`-annotated class
 
 
 [[beans-java-declaring-a-bean]]
