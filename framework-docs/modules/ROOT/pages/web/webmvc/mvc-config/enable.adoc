@@ -13,7 +13,10 @@
     ** `<mvc:annotation-driven>` == XML configuration
 
 
-* if you are using Spring Boot & ⚠️️ keep ⚠️  Spring Boot MVC customizations -> use  `@Configuration` 👁️ BUT NOT `@EnableWebMvc` | classes of type `WebMvcConfigurer` 👁️
+* if you are using Spring Boot & ⚠️️ want to keep ⚠️ Spring Boot MVC customizations -> | classes of type `WebMvcConfigurer`,
+    ** use
+        *** `@Configuration`
+        *** 👁️ BUT NOT `@EnableWebMvc`  👁️
     ** Check
         *** xref:web/webmvc/mvc-config/customize.adoc[MVC Config API section]
         *** {spring-boot-docs}/web.html#web.servlet.spring-mvc.auto-configuration[dedicated Spring Boot documentation]
