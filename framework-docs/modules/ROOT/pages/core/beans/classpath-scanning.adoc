@@ -430,9 +430,8 @@ annotated or meta-annotated with `@Component`, `@Repository`, `@Service`, `@Cont
 [[beans-factorybeans-annotations]]
 == Defining Bean Metadata within Components
 
-Spring components can also contribute bean definition metadata to the container. You can do
-this with the same `@Bean` annotation used to define bean metadata within `@Configuration`
-annotated classes. The following example shows how to do so:
+* Spring components -- can contribute via `@Bean` annotation to -- bean definition metadata to the container
+    ** _Example:_
 
 [tabs]
 ======
@@ -473,19 +472,18 @@ Kotlin::
 ----
 ======
 
-The preceding class is a Spring component that has application-specific code in its
-`doWork()` method. However, it also contributes a bean definition that has a factory
-method referring to the method `publicInstance()`. The `@Bean` annotation identifies the
-factory method and other bean definition properties, such as a qualifier value through
-the `@Qualifier` annotation. Other method-level annotations that can be specified are
-`@Scope`, `@Lazy`, and custom qualifier annotations.
+* Other method-level annotations
+    ** `@Scope`
+    ** `@Lazy`
+        *** allows
+                **** lazy component initialization -- Check '../factory-lazy-init' --
+                **** lazy resolution proxy | injection points / has `@Autowired` or `@Inject`
+                        ***** uses are limited
+                        ***** + optional dependencies -> use `ObjectProvider<MyTargetBean>`
+    ** custom qualifier annotations
 
-TIP: In addition to its role for component initialization, you can also place the `@Lazy`
-annotation on injection points marked with `@Autowired` or `@Inject`. In this context,
-it leads to the injection of a lazy-resolution proxy. However, such a proxy approach
-is rather limited. For sophisticated lazy interactions, in particular in combination
-with optional dependencies, we recommend `ObjectProvider<MyTargetBean>` instead.
 
+* TODO:
 Autowired fields and methods are supported, as previously discussed, with additional
 support for autowiring of `@Bean` methods. The following example shows how to do so:
 
@@ -612,17 +610,10 @@ Kotlin::
 ----
 ======
 
-The `@Bean` methods in a regular Spring component are processed differently than their
-counterparts inside a Spring `@Configuration` class. The difference is that `@Component`
-classes are not enhanced with CGLIB to intercept the invocation of methods and fields.
-CGLIB proxying is the means by which invoking methods or fields within `@Bean` methods
-in `@Configuration` classes creates bean metadata references to collaborating objects.
-Such methods are not invoked with normal Java semantics but rather go through the
-container in order to provide the usual lifecycle management and proxying of Spring
-beans, even when referring to other beans through programmatic calls to `@Bean` methods.
-In contrast, invoking a method or field in a `@Bean` method within a plain `@Component`
-class has standard Java semantics, with no special CGLIB processing or other
-constraints applying.
+* 👁️Processing of `@Bean` methods | regular Spring component != Processing of `@Bean` methods | Spring `@Configuration` class 👁️
+  ** Reason: 🧠 `@Component` classes are NOT enhanced with CGLIB (-- Check '../basic-concepts' --) 🧠
+
+* TODO:
 
 [NOTE]
 ====
