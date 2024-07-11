@@ -29,9 +29,12 @@ public class WebConfiguration implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/resources/**")
-				.addResourceLocations("/public", "classpath:/static/")
-				.setCacheControl(CacheControl.maxAge(Duration.ofDays(365)));
+		registry.addResourceHandler("/resources/**")						// request / starts with `/resources`
+				.addResourceLocations("/public", "classpath:/static/")		// relative path to find and serve static resources -- `/public` | web application & `classpath:/static/`
+				.setCacheControl(CacheControl.maxAge(Duration.ofDays(365)));		// resources are served with 1 year future / NO HTTP requests are made
 	}
+
+	// TODO: Comprehend
+	// `Resource#lastModified` -> HTTP conditional requests -- are supported with -- `"Last-Modified"` headers
 }
 // end::snippet[]
