@@ -1,45 +1,43 @@
 [[resources]]
 = Resources
 
-This chapter covers how Spring handles resources and how you can work with resources in
-Spring. It includes the following topics:
-
-* xref:core/resources.adoc#resources-introduction[Introduction]
-* xref:core/resources.adoc#resources-resource[The `Resource` Interface]
-* xref:core/resources.adoc#resources-implementations[Built-in `Resource` Implementations]
-* xref:core/resources.adoc#resources-resourceloader[The `ResourceLoader` Interface]
-* xref:core/resources.adoc#resources-resourcepatternresolver[The `ResourcePatternResolver` Interface]
-* xref:core/resources.adoc#resources-resourceloaderaware[The `ResourceLoaderAware` Interface]
-* xref:core/resources.adoc#resources-as-dependencies[Resources as Dependencies]
-* xref:core/resources.adoc#resources-app-ctx[Application Contexts and Resource Paths]
-
-
-
+* Goal
+  ** how Spring handles resources
+  ** how to work with resources in Spring
+* Topics
+  ** xref:core/resources.adoc#resources-introduction[Introduction]
+  ** xref:core/resources.adoc#resources-resource[The `Resource` Interface]
+  ** xref:core/resources.adoc#resources-implementations[Built-in `Resource` Implementations]
+  ** xref:core/resources.adoc#resources-resourceloader[The `ResourceLoader` Interface]
+  ** xref:core/resources.adoc#resources-resourcepatternresolver[The `ResourcePatternResolver` Interface]
+  ** xref:core/resources.adoc#resources-resourceloaderaware[The `ResourceLoaderAware` Interface]
+  ** xref:core/resources.adoc#resources-as-dependencies[Resources as Dependencies]
+  ** xref:core/resources.adoc#resources-app-ctx[Application Contexts and Resource Paths]
 
 [[resources-introduction]]
 == Introduction
 
-Java's standard `java.net.URL` class and standard handlers for various URL prefixes,
-unfortunately, are not quite adequate enough for all access to low-level resources. For
-example, there is no standardized `URL` implementation that may be used to access a
-resource that needs to be obtained from the classpath or relative to a
-`ServletContext`. While it is possible to register new handlers for specialized `URL`
-prefixes (similar to existing handlers for prefixes such as `http:`), this is generally
-quite complicated, and the `URL` interface still lacks some desirable functionality,
-such as a method to check for the existence of the resource being pointed to.
-
-
-
+* `java.net.URL` class
+  ** == Java's standard
+  ** 👁️NOT adequate for access to low-level resources👁️
+    *** _Example:_ NO standardized `URL` implementation / access a resource from the classpath OR relative to a `ServletContext`
+  ** allows register new handlers / specialized `URL` prefixes
+    *** quite complicated
+    *** lacks some desirable functionality -- _Example:_ method / check for the existence of the resource being pointed to --
 
 [[resources-resource]]
 == The `Resource` Interface
 
-Spring's `Resource` interface located in the `org.springframework.core.io.` package is
-meant to be a more capable interface for abstracting access to low-level resources. The
-following listing provides an overview of the `Resource` interface. See the
-{spring-framework-api}/core/io/Resource.html[`Resource`] javadoc for further details.
-
-* TODO:
+* allows
+  ** from locations defined in a URI syntax -- reading an -- InputStream
+  ** 👁️wrapping possible / NOT replace functionality 👁️
+    *** _Example:_  `UrlResource` wraps a URL and uses the wrapped `URL` to do its work
+* uses
+  ** construct applications contexts -- Check xref:core/resources.adoc#resources-app-ctx[Application Contexts and Resource Paths] --
+  ** abstracting access to low-level resources
+  ** argument type in many method signatures of Spring
+  ** general utility class / access to resources
+* Check {spring-framework-api}/core/io/Resource.html[`Resource`]
 
 [source,java,indent=0,subs="verbatim,quotes"]
 ----
@@ -73,9 +71,6 @@ following listing provides an overview of the `Resource` interface. See the
 	}
 ----
 
-As the definition of the `Resource` interface shows, it extends the `InputStreamSource`
-interface. The following listing shows the definition of the `InputStreamSource`
-interface:
 
 [source,java,indent=0,subs="verbatim,quotes"]
 ----
@@ -85,52 +80,28 @@ interface:
 	}
 ----
 
-Some of the most important methods from the `Resource` interface are:
-
-* `getInputStream()`: Locates and opens the resource, returning an `InputStream` for
-  reading from the resource. It is expected that each invocation returns a fresh
-  `InputStream`. It is the responsibility of the caller to close the stream.
-* `exists()`: Returns a `boolean` indicating whether this resource actually exists in
-  physical form.
-* `isOpen()`: Returns a `boolean` indicating whether this resource represents a handle
-  with an open stream. If `true`, the `InputStream` cannot be read multiple times and
-  must be read once only and then closed to avoid resource leaks. Returns `false` for
-  all usual resource implementations, with the exception of `InputStreamResource`.
-* `getDescription()`: Returns a description for this resource, to be used for error
-  output when working with the resource. This is often the fully qualified file name or
-  the actual URL of the resource.
-
-Other methods let you obtain an actual `URL` or `File` object representing the
-resource (if the underlying implementation is compatible and supports that
-functionality).
-
-Some implementations of the `Resource` interface also implement the extended
-{spring-framework-api}/core/io/WritableResource.html[`WritableResource`] interface
-for a resource that supports writing to it.
-
-Spring itself uses the `Resource` abstraction extensively, as an argument type in
-many method signatures when a resource is needed. Other methods in some Spring APIs
-(such as the constructors to various `ApplicationContext` implementations) take a
-`String` which in unadorned or simple form is used to create a `Resource` appropriate to
-that context implementation or, via special prefixes on the `String` path, let the
-caller specify that a specific `Resource` implementation must be created and used.
-
-While the `Resource` interface is used a lot with Spring and by Spring, it is actually
-very convenient to use as a general utility class by itself in your own code, for access
-to resources, even when your code does not know or care about any other parts of Spring.
-While this couples your code to Spring, it really only couples it to this small set of
-utility classes, which serves as a more capable replacement for `URL` and can be
-considered equivalent to any other library you would use for this purpose.
-
-NOTE: The `Resource` abstraction does not replace functionality. It wraps it where
-possible. For example, a `UrlResource` wraps a URL and uses the wrapped `URL` to do its
-work.
-
-
-
+* most important methods from the `Resource` interface
+  ** `getInputStream()`
+    *** what does it do?
+      **** locate and open the resource
+      **** return an `InputStream` -- for reading from -- the resource
+    *** new fresh `InputStream` / each invocation
+    *** each caller must close the stream
+  ** `exists()`
+    *** returns a `boolean` / indicate whether this resource actually exists in physical form
+  ** `isOpen()`
+    *** returns a `boolean` / indicate whether this resource -- represents -- a handler / open stream
+      **** if `true` -> `InputStream` can NOT be read multiple times == must be read 1!
+        ***** -> it must be closed to avoid resource leaks
+      **** `false` for all usual resource implementations, except to `InputStreamResource`
+  ** `getDescription()`
+    *** returns a description
+      **** Note: (normally) == fully qualified file name or the actual URL of the resource
 
 [[resources-implementations]]
 == Built-in `Resource` Implementations
+
+* TODO:
 
 Spring includes several built-in `Resource` implementations:
 
