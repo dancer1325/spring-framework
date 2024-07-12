@@ -39,6 +39,7 @@ meant to be a more capable interface for abstracting access to low-level resourc
 following listing provides an overview of the `Resource` interface. See the
 {spring-framework-api}/core/io/Resource.html[`Resource`] javadoc for further details.
 
+* TODO:
 
 [source,java,indent=0,subs="verbatim,quotes"]
 ----
@@ -636,89 +637,54 @@ Kotlin::
 [[resources-app-ctx]]
 == Application Contexts and Resource Paths
 
-This section covers how to create application contexts with resources, including shortcuts
-that work with XML, how to use wildcards, and other details.
-
-
+* Goal
+  ** how to create application contexts with resources
+  ** how to use wildcards
+  ** ...
 
 [[resources-app-ctx-construction]]
 === Constructing Application Contexts
 
-An application context constructor (for a specific application context type) generally
-takes a string or array of strings as the location paths of the resources, such as
-XML files that make up the definition of the context.
+* Application context constructor | specific application context type
+  ** location paths of the resources
+    *** -- generally are -- String or []Strings
+      **** _Example:_ .xml / make up the definition of the context
+    *** if the location path does NOT have a prefix -> the specific `Resource` type / built from
+that path (and used to load the bean definitions) -- depends on and is appropriate to -- the
+specific application context
+      **** _Example1:_ `ClassPathXmlApplicationContext` is created
+        ***** bean definitions -- are loaded from the -- classpath
+          ****** *Reason:* 🧠`ClassPathResource` is used (TODO:?) 🧠
 
-When such a location path does not have a prefix, the specific `Resource` type built from
-that path and used to load the bean definitions depends on and is appropriate to the
-specific application context. For example, consider the following example, which creates a
-`ClassPathXmlApplicationContext`:
+  =
+  Java::
+      ApplicationContext ctx = new ClassPathXmlApplicationContext("conf/appContext.xml");
+  ----
+  Kotlin::
+      val ctx = ClassPathXmlApplicationContext("conf/appContext.xml")
 
-[tabs]
-======
-Java::
-+
-[source,java,indent=0,subs="verbatim,quotes",role="primary"]
-----
-	ApplicationContext ctx = new ClassPathXmlApplicationContext("conf/appContext.xml");
-----
+      **** _Example2:_ `FileSystemXmlApplicationContext` is created
+        ***** bean definitions -- are loaded from a -- filesystem location (in this case, relative to the current working directory)
 
-Kotlin::
-+
-[source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
-----
-	val ctx = ClassPathXmlApplicationContext("conf/appContext.xml")
-----
-======
+  =
+  Java::
+      ApplicationContext ctx =
+          new FileSystemXmlApplicationContext("conf/appContext.xml");
+  ----
+  Kotlin::
+      val ctx = FileSystemXmlApplicationContext("conf/appContext.xml")
 
-The bean definitions are loaded from the classpath, because a `ClassPathResource` is
-used. However, consider the following example, which creates a `FileSystemXmlApplicationContext`:
-
-[tabs]
-======
-Java::
-+
-[source,java,indent=0,subs="verbatim,quotes",role="primary"]
-----
-	ApplicationContext ctx =
-		new FileSystemXmlApplicationContext("conf/appContext.xml");
-----
-
-Kotlin::
-+
-[source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
-----
-	val ctx = FileSystemXmlApplicationContext("conf/appContext.xml")
-----
-======
-
-Now the bean definitions are loaded from a filesystem location (in this case, relative to
-the current working directory).
-
-Note that the use of the special `classpath` prefix or a standard URL prefix on the
-location path overrides the default type of `Resource` created to load the bean
-definitions. Consider the following example:
-
-[tabs]
-======
-Java::
-+
-[source,java,indent=0,subs="verbatim,quotes",role="primary"]
-----
-	ApplicationContext ctx =
-		new FileSystemXmlApplicationContext("classpath:conf/appContext.xml");
-----
-
-Kotlin::
-+
-[source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
-----
-	val ctx = FileSystemXmlApplicationContext("classpath:conf/appContext.xml")
-----
-======
-
-Using `FileSystemXmlApplicationContext` loads the bean definitions from the classpath.
-However, it is still a `FileSystemXmlApplicationContext`. If it is subsequently used as a
-`ResourceLoader`, any unprefixed paths are still treated as filesystem paths.
+      **** _Example3:_ if you use `classpath` prefix or a standard URL prefix on the location path ->
+        ***** 👁️ default type of `Resource` / created to load the bean definitions is override 👁️ &
+        ***** it's still a `FileSystemXmlApplicationContext`
+          ****** *Note:* ⚠️ Although `FileSystemXmlApplicationContext` loads the bean definitions -- from the -- classpath ⚠️
+  =
+  Java::
+      ApplicationContext ctx =
+          new FileSystemXmlApplicationContext("classpath:conf/appContext.xml");
+  ----
+  Kotlin::
+      val ctx = FileSystemXmlApplicationContext("classpath:conf/appContext.xml")
 
 
 [[resources-app-ctx-classpathxml]]
