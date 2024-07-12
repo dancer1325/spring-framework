@@ -62,7 +62,7 @@ The preceding `AppConfig` class is equivalent to the following Spring `<beans/>`
     ** allows
         *** full configuration class
         *** cross-method references -- get redirected to -- container's lifecycle management
-                **** cross-method references == bean1Method -- reference to -- bean1Method
+                **** cross-method references == bean1Method -- reference to -- bean2Method
                 **** -> the same `@Bean` method -- is prevented from accidentally being invoked through a -- regular Java method call
                 **** reduce subtle bugs / hard to track down
 
