@@ -1,22 +1,28 @@
 [[mvc-servlet]]
 = DispatcherServlet
 
-[.small]#xref:web/webflux/dispatcher-handler.adoc[See equivalent in the Reactive stack]#
+* [.small]#xref:web/webflux/dispatcher-handler.adoc[== in the Reactive stack]#
 
-Spring MVC, as many other web frameworks, is designed around the front controller
-pattern where a central `Servlet`, the `DispatcherServlet`, provides a shared algorithm
-for request processing, while actual work is performed by configurable delegate components.
-This model is flexible and supports diverse workflows.
-
-The `DispatcherServlet`, as any `Servlet`, needs to be declared and mapped according
-to the Servlet specification by using Java configuration or in `web.xml`.
-In turn, the `DispatcherServlet` uses Spring configuration to discover
-the delegate components it needs for request mapping, view resolution, exception
-handling, xref:web/webmvc/mvc-servlet/special-bean-types.adoc[and more].
-
-The following example of the Java configuration registers and initializes
-the `DispatcherServlet`, which is auto-detected by the Servlet container
-(see xref:web/webmvc/mvc-servlet/container-config.adoc[Servlet Config]):
+* Spring MVC (as many other web frameworks) -- is designed around the -- front controller pattern /
+    ** central `Servlet` -- `DispatcherServlet` --
+        *** provides a shared algorithm -- for -- request processing
+        *** requirements
+            **** declare it
+            **** ways to map -- according to the -- Servlet specification
+                ***** Java configuration
+                ***** in `web.xml`
+        *** discover -- via Spring configuration the -- delegate components
+    ** configurable delegate components -- perform the -- actual work
+        *** request mapping
+        *** view resolution
+        *** exception handling
+        *** xref:web/webmvc/mvc-servlet/special-bean-types.adoc[and more]
+    ** characteristics
+        *** flexible
+        *** supports diverse workflows
+* `DispatcherServlet`
+    ** auto-detected by the Servlet container -- xref:web/webmvc/mvc-servlet/container-config.adoc[Servlet Config] --
+* Example: Check 'first/'
 
 [tabs]
 ======
@@ -63,6 +69,8 @@ Kotlin::
 	}
 ----
 ======
+
+* TODO:
 
 NOTE: In addition to using the ServletContext API directly, you can also extend
 `AbstractAnnotationConfigDispatcherServletInitializer` and override specific methods
