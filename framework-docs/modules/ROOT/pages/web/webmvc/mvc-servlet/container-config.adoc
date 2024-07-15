@@ -1,9 +1,11 @@
 [[mvc-container-config]]
 = Servlet Config
 
-In a Servlet environment, you have the option of configuring the Servlet container
-programmatically as an alternative or in combination with a `web.xml` file.
-The following example registers a `DispatcherServlet`:
+* In a Servlet environment
+    ** ways to configure the Servlet container
+        *** programmatically
+        *** programmatically + `web.xml` file
+            *** _Example:_ Check 'second/'
 
 [tabs]
 ======
@@ -47,16 +49,23 @@ Kotlin::
 ----
 ======
 
+* `WebApplicationInitializer`
+    ** := interface /
+        *** ensures that implementation is
+            **** detected
+            **** -- automatically used to -- initialize any Servlet container
+* `AbstractDispatcherServletInitializer`
+    ** := abstract base class /
+        *** implements `WebApplicationInitializer`
+        *** easier to register the `DispatcherServlet` -- via -- overriding methods to specify
+            **** servlet mapping &
+            **** location of the `DispatcherServlet` configuration
+    ** uses
+        *** applications / use Java-based Spring configuration
+    ** _Example:_
 
-`WebApplicationInitializer` is an interface provided by Spring MVC that ensures your
-implementation is detected and automatically used to initialize any Servlet 3 container.
-An abstract base class implementation of `WebApplicationInitializer` named
-`AbstractDispatcherServletInitializer` makes it even easier to register the
-`DispatcherServlet` by overriding methods to specify the servlet mapping and the
-location of the `DispatcherServlet` configuration.
+* TODO:
 
-This is recommended for applications that use Java-based Spring configuration, as the
-following example shows:
 
 [tabs]
 ======
