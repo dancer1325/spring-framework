@@ -24,10 +24,7 @@
 - Check xref:web/webmvc/mvc-servlet/handlermapping-interceptor.adoc[interceptors]
 
 | `HandlerAdapter`
-| Help the `DispatcherServlet` to invoke a handler mapped to a request, regardless of
-  how the handler is actually invoked. For example, invoking an annotated controller
-  requires resolving annotations. The main purpose of a `HandlerAdapter` is
-  to shield the `DispatcherServlet` from such details.
+| - Check `HandlerAdapter`
 
 | xref:web/webmvc/mvc-servlet/exceptionhandlers.adoc[`HandlerExceptionResolver`]
 | Strategy to resolve exceptions, possibly mapping them to handlers, to HTML error
