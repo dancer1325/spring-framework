@@ -1,14 +1,18 @@
 [[mvc-servlet-special-bean-types]]
 = Special Bean Types
 
-[.small]#xref:web/webflux/dispatcher-handler.adoc#webflux-special-bean-types[See equivalent in the Reactive stack]#
+* [.small]#xref:web/webflux/dispatcher-handler.adoc#webflux-special-bean-types[See equivalent in the Reactive stack]#
 
-The `DispatcherServlet` delegates to special beans to process requests and render the
-appropriate responses. By "`special beans`" we mean Spring-managed `Object` instances that
-implement framework contracts. Those usually come with built-in contracts, but
-you can customize their properties and extend or replace them.
+* := Spring-managed `Object` instances / implement framework contracts
+  ** Spring, built-in contract
+  ** contracts -- can be customized via -- properties
+* uses
+  ** `DispatcherServlet` -- delegates to these special beans to --
+    *** process requests and
+    *** render the appropriate responses
+* cases detected by `DispatchServlet`
 
-The following table lists the special beans detected by the `DispatcherServlet`:
+// TODO:
 
 [[mvc-webappctx-special-beans-tbl]]
 [cols="1,2", options="header"]
@@ -16,14 +20,8 @@ The following table lists the special beans detected by the `DispatcherServlet`:
 | Bean type| Explanation
 
 | `HandlerMapping`
-| Map a request to a handler along with a list of
-  xref:web/webmvc/mvc-servlet/handlermapping-interceptor.adoc[interceptors] for pre- and post-processing.
-  The mapping is based on some criteria, the details of which vary by `HandlerMapping`
-  implementation.
-
-  The two main `HandlerMapping` implementations are `RequestMappingHandlerMapping`
-  (which supports `@RequestMapping` annotated methods) and `SimpleUrlHandlerMapping`
-  (which maintains explicit registrations of URI path patterns to handlers).
+| - Check `HandlerMapping` +
+- Check xref:web/webmvc/mvc-servlet/handlermapping-interceptor.adoc[interceptors]
 
 | `HandlerAdapter`
 | Help the `DispatcherServlet` to invoke a handler mapped to a request, regardless of
