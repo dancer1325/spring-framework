@@ -1,32 +1,39 @@
 [[mvc-ann-rest-exceptions]]
 = Error Responses
 
-[.small]#xref:web/webflux/ann-rest-exceptions.adoc[See equivalent in the Reactive stack]#
-
-A common requirement for REST services is to include details in the body of error
-responses. The Spring Framework supports the "Problem Details for HTTP APIs"
-specification, {rfc-site}/rfc9457[RFC 9457].
-
-The following are the main abstractions for this support:
-
-- `ProblemDetail` -- representation for an RFC 9457 problem detail; a simple container
-for both standard fields defined in the spec, and for non-standard ones.
-- `ErrorResponse` -- contract to expose HTTP error response details including HTTP
-status, response headers, and a body in the format of RFC 9457; this allows exceptions to
-encapsulate and expose the details of how they map to an HTTP response. All Spring MVC
-exceptions implement this.
-- `ErrorResponseException` -- basic `ErrorResponse` implementation that others
-can use as a convenient base class.
-- `ResponseEntityExceptionHandler` -- convenient base class for an
-xref:web/webmvc/mvc-controller/ann-advice.adoc[@ControllerAdvice] that handles all Spring MVC exceptions,
-and any `ErrorResponseException`, and renders an error response with a body.
-
+* [.small]#xref:web/webflux/ann-rest-exceptions.adoc[== in the Reactive stack]#
+* common requirement for REST services / errors
+  ** include details in the errorResponseBody
+  ** Spring Framework supports the "Problem Details for HTTP APIs" specification, {rfc-site}/rfc9457[RFC 9457]
+  ** main abstractions
+    *** `ProblemDetail`
+      **** -- representation for -- an RFC 9457 problem detail
+      **** == simple container for
+        ***** standard fields | spec
+        ***** non-standard fields | spec
+    *** `ErrorResponse`
+      **** := interface / expose HTTP error response details
+        ***** HTTP status
+        ***** response headers
+        ***** body in the format of RFC 9457
+      **** allows
+        ***** exceptions -- can map to -- an HTTP response
+      **** -- implemented by -- ALL Spring MVC exceptions
+    *** `ErrorResponseException`
+      **** == basic `ErrorResponse` implementation
+    *** `ResponseEntityExceptionHandler`
+      **** uses
+        ***** annotated with xref:web/webmvc/mvc-controller/ann-advice.adoc[@ControllerAdvice] /
+          ****** handles ALL Spring MVC exceptions & ANY `ErrorResponseException`
+          ****** -- renders an -- error response with a body
 
 
 [[mvc-ann-rest-exceptions-render]]
 == Render
-[.small]#xref:web/webflux/ann-rest-exceptions.adoc#webflux-ann-rest-exceptions-render[See equivalent in the Reactive stack]#
 
+* [.small]#xref:web/webflux/ann-rest-exceptions.adoc#webflux-ann-rest-exceptions-render[== in the Reactive stack]#
+
+* TODO:
 You can return `ProblemDetail` or `ErrorResponse` from any `@ExceptionHandler` or from
 any `@RequestMapping` method to render an RFC 9457 response. This is processed as follows:
 
