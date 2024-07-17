@@ -1,0 +1,1 @@
+* == generic filter base classes / 👁️ -- follows -- bean-style configuration 👁️
