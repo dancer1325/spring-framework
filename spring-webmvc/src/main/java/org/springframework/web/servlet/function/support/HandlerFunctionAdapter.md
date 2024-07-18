@@ -1,0 +1,1 @@
+* == `HandlerAdapter` implementation / -- supports -- `HandlerFunction`
