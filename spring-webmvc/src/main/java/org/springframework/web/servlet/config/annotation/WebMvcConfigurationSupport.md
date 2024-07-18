@@ -52,3 +52,6 @@
       * `HandlerMapping` -- for -- serving resources
   * `RequestMappingHandlerAdapter` & `ExceptionHandlerExceptionResolver` -- are configured by default with -- default instances of
     * `ContentNegotiationManager`
+    * `DefaultFormattingConversionService`
+    * `OptionalValidatorFactoryBean`
+    * if JSR-303 implementation available | classpath -> range of `HttpMessageConverter` -- depending on -- TP libraries | classpath

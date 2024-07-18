@@ -1,0 +1,2 @@
+* == support classes -- for integrating a -- JSR-303 Bean Validation provider | ApplicationContext / data binding API + validation APIs
+  * _Example of JSR-303 Bean Validation provider:_ Hibernate Validator
