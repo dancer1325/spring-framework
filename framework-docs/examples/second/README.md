@@ -1,5 +1,6 @@
 # Goals
 * Configure the Servlet container
+* Log sensitive data
 
 ## How to run locally?
 * `mvn clean package`
@@ -9,6 +10,7 @@
   * "http://localhost:8080/second_war/hello"
     * "second_war"
       * ⚠️ -- depends on -- where you configure your web server / hosted on your local computer ⚠️
+    * TODO: Check the details of the requests, even sensitive data logged
 
 ## How has it been created?
 * via Spring Initialzr

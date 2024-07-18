@@ -17,13 +17,14 @@ not meet the stated goals, please let us know.
 
 [[mvc-logging-sensitive-data]]
 == Sensitive Data
-[.small]#xref:web/webflux/reactive-spring.adoc#webflux-logging-sensitive-data[See equivalent in the Reactive stack]#
 
-DEBUG and TRACE logging may log sensitive information. This is why request parameters and
-headers are masked by default and their logging in full must be enabled explicitly
-through the `enableLoggingRequestDetails` property on `DispatcherServlet`.
-
-The following example shows how to do so by using Java configuration:
+* [.small]#xref:web/webflux/reactive-spring.adoc#webflux-logging-sensitive-data[== in the Reactive stack]#
+* DEBUG and TRACE logging
+    ** by default, 👁️ request parameters & headers are masked 👁️
+        *** Reason: 🧠 may log -- sensitive information 🧠
+    ** can be enabled explicitly -- through -- `DispatcherServlet```'s  ``enableLoggingRequestDetails` property
+        *** if you are using Spring Boot -- via properties -- `spring.mvc.log-request-details=true`
+        *** -- via -- Java configuration
 
 [tabs]
 ======
