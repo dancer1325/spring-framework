@@ -517,18 +517,16 @@ direct dependencies imply.
 [[beans-java-startup-background]]
 === Background Initialization
 
-As of 6.2, there is a background initialization option: `@Bean(bootstrap=BACKGROUND)`
-allows for singling out specific beans for background initialization, covering the
-entire bean creation step for each such bean on context startup.
+* `@Bean(bootstrap=BACKGROUND)`
+    ** Spring v6.2
+    ** background initialization | 1! specific bean / ⚠️ -- must be completed at -- the end of context startup ⚠️
+        *** 👁️ -> dependent beans / NON-lazy injection points -- automatically wait for the -- bean instance to be completed 👁️
+        *** 👁️ if you additionally mark as `@Lazy` -> allowed to be completed later ( -- up until the first actual access) 👁️
+    ** used with
+        *** `@Lazy` (or `ObjectProvider`) | dependent beans
+            **** Reason: 🧠 if background-initialized bean instance needs to be injected early ->  main bootstrap thread -- is going to -- block 🧠
 
-Dependent beans with non-lazy injection points automatically wait for the bean instance
-to be completed. All regular background initializations are forced to complete at the end
-of context startup. Only beans additionally marked as `@Lazy` are allowed to be completed
-later (up until the first actual access).
-
-Background initialization typically goes together with `@Lazy` (or `ObjectProvider`)
-injection points in dependent beans. Otherwise, the main bootstrap thread is going to
-block when an actual background-initialized bean instance needs to be injected early.
+* TODO:
 
 This form of concurrent startup applies to individual beans: if such a bean depends on
 other beans, they need to have been initialized already, either simply through being
