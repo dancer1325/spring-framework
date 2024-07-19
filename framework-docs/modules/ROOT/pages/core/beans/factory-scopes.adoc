@@ -385,37 +385,31 @@ xref:web/websocket/stomp/scope.adoc[WebSocket scope] for more details.
 [[beans-factory-scopes-other-injection]]
 === Scoped Beans as Dependencies
 
-The Spring IoC container manages not only the instantiation of your objects (beans),
-but also the wiring up of collaborators (or dependencies). If you want to inject (for
-example) an HTTP request-scoped bean into another bean of a longer-lived scope, you may
-choose to inject an AOP proxy in place of the scoped bean. That is, you need to inject
-a proxy object that exposes the same public interface as the scoped object but that can
-also retrieve the real target object from the relevant scope (such as an HTTP request)
-and delegate method calls onto the real object.
+* Spring IoC container manages
+  ** instantiation of your objects (beans)
+  ** wiring up of collaborators (or dependencies)
+    *** 👁️ alternatives to inject a bean 👁️
+      **** inject an AOP proxy
+        ***** Example:
+          ****** inject an HTTP request-scoped bean -- into -- another bean of a longer-lived scope vs
+          ****** inject an AOP proxy /
+            ******* public interface exposed == scoped object exposed
+            ******* -- from the relevant scope, retrieve -- real target object -- _Example:_ HTTP request --
+            ******* -- delegate method calls -- onto the real object
+      **** if beans are `singleton` scoped -> use `<aop:scoped-proxy/>`
+        ***** == intermediate proxy / is serializable
+          ****** -- able to re-obtain -- target singleton bean | deserialization
+      **** if beans are `prototype` scoped -> use `<aop:scoped-proxy/>`
+        ***** -> ALL call | shared proxy -- leads to create -- new target instance | call is forwarded
+      **** declare the injection point (_Example:_ constructor, setter, ...) -- as -- `ObjectFactory<MyTargetBean>`
+        ***** -> `getObject()` retrieves the current instance | demand every time it is needed / NO holding on the instance or storing separately
+        ***** extended variant, declaring
+          ****** `getIfAvailable`
+          ****** `getIfUnique`
+      **** JSR-330 variant == `Provider<MyTargetBean>` + `get()` call | every retrieval attempt
+        ***** Check xref:core/beans/standard-annotations.adoc[here]
 
-[NOTE]
-====
-You may also use `<aop:scoped-proxy/>` between beans that are scoped as `singleton`,
-with the reference then going through an intermediate proxy that is serializable
-and therefore able to re-obtain the target singleton bean on deserialization.
-
-When declaring `<aop:scoped-proxy/>` against a bean of scope `prototype`, every method
-call on the shared proxy leads to the creation of a new target instance to which the
-call is then being forwarded.
-
-Also, scoped proxies are not the only way to access beans from shorter scopes in a
-lifecycle-safe fashion. You may also declare your injection point (that is, the
-constructor or setter argument or autowired field) as `ObjectFactory<MyTargetBean>`,
-allowing for a `getObject()` call to retrieve the current instance on demand every
-time it is needed -- without holding on to the instance or storing it separately.
-
-As an extended variant, you may declare `ObjectProvider<MyTargetBean>` which delivers
-several additional access variants, including `getIfAvailable` and `getIfUnique`.
-
-The JSR-330 variant of this is called `Provider` and is used with a `Provider<MyTargetBean>`
-declaration and a corresponding `get()` call for every retrieval attempt.
-See xref:core/beans/standard-annotations.adoc[here] for more details on JSR-330 overall.
-====
+* TODO:
 
 The configuration in the following example is only one line, but it is important to
 understand the "`why`" as well as the "`how`" behind it:
