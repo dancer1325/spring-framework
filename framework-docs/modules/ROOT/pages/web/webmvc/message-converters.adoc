@@ -1,16 +1,27 @@
 [[message-converters]]
 = HTTP Message Conversion
 
-[.small]#xref:web/webflux/reactive-spring.adoc#webflux-codecs[See equivalent in the Reactive stack]#
+* [.small]#xref:web/webflux/reactive-spring.adoc#webflux-codecs[== in the Reactive stack]#
 
-The `spring-web` module contains the `HttpMessageConverter` interface for reading and writing the body of HTTP requests and responses through `InputStream` and `OutputStream`.
-`HttpMessageConverter` instances are used on the client side (for example, in the `RestClient`) and on the server side (for example, in Spring MVC REST controllers).
-
-Concrete implementations for the main media (MIME) types are provided in the framework and are, by default, registered with the `RestClient` and `RestTemplate` on the client side and with `RequestMappingHandlerAdapter` on the server side (see xref:web/webmvc/mvc-config/message-converters.adoc[Configuring Message Converters]).
-
-Several implementations of `HttpMessageConverter` are described below.
-Refer to the {spring-framework-api}/http/converter/HttpMessageConverter.html[`HttpMessageConverter` Javadoc] for the complete list.
-For all converters, a default media type is used, but you can override it by setting the `supportedMediaTypes`  property.
+* `HttpMessageConverter`
+    ** uses
+        *** | `spring-web`, for
+            **** reading -- through `InputStream` -- the body of HTTP requests
+            **** writing -- through `OutputStream` -- the body of HTTP responses
+        *** | client side
+            **** _Example:_ `RestClient`
+        *** | server side
+            **** _Example:_ Spring MVC REST controllers
+* Implementations for the main media (MIME) types
+    ** xref:web/webmvc/mvc-config/message-converters.adoc[Configuring Message Converters]
+    ** are provided in the framework, by default, registered
+        *** | client side, with the
+            **** `RestClient`
+            **** `RestTemplate`
+        *** | server side, with the
+            **** `RequestMappingHandlerAdapter`
+    ** 👁️default media type / converter 👁️
+        *** `.supportedMediaTypes` overrides the media type
 
 [[rest-message-converters-tbl]]
 .HttpMessageConverter Implementations
@@ -19,8 +30,10 @@ For all converters, a default media type is used, but you can override it by set
 | MessageConverter | Description
 
 | `StringHttpMessageConverter`
-| An `HttpMessageConverter` implementation that can read and write `String` instances from the HTTP request and response.
-By default, this converter supports all text media types(`text/{asterisk}`) and writes with a `Content-Type` of `text/plain`.
+| - `HttpMessageConverter` implementation / can +
+&nbsp; &nbsp; - read `String` instances -- from the -- HTTP request +
+&nbsp; &nbsp; - write `String` instances -- to the -- HTTP response / `Content-Type:text/plain` +
+- ALL text media types(`text/{asterisk}`) are supported
 
 | `FormHttpMessageConverter`
 | An `HttpMessageConverter` implementation that can read and write form data from the HTTP request and response.
@@ -32,9 +45,11 @@ Additional multipart subtypes can be supported for writing form data.
 Consult the javadoc for `FormHttpMessageConverter` for further details.
 
 | `ByteArrayHttpMessageConverter`
-| An `HttpMessageConverter` implementation that can read and write byte arrays from the HTTP request and response.
-By default, this converter supports all media types (`{asterisk}/{asterisk}`) and writes with a `Content-Type` of `application/octet-stream`.
-You can override this by setting the `supportedMediaTypes` property and overriding `getContentType(byte[])`.
+| - `HttpMessageConverter` implementation / can +
+&nbsp; &nbsp; - read `[]byte` -- from the -- HTTP request +
+&nbsp; &nbsp; - write `[]byte` -- to the -- HTTP response / `Content-Type:application/octet-stream` +
+- ALL text media types(`text/{asterisk}`) are supported +
+- if you want to override the media types -> override `getContentType(byte[])`
 
 | `MarshallingHttpMessageConverter`
 | An `HttpMessageConverter` implementation that can read and write XML by using Spring's `Marshaller` and `Unmarshaller` abstractions from the `org.springframework.oxm` package.
