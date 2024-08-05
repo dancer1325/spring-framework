@@ -1,25 +1,25 @@
 [[integration-testing-annotations-standard]]
 = Standard Annotation Support
 
-The following annotations are supported with standard semantics for all configurations of
-the Spring TestContext Framework. Note that these annotations are not specific to tests
-and can be used anywhere in the Spring Framework.
-
+* == annotations / supported for 👁️ ALL configurations of the Spring TestContext Framework 👁️
+    ** == 👁️ NOT specific to tests 👁️
+    ** == can be used ANYWHERE | Spring Framework
 * `@Autowired`
 * `@Qualifier`
 * `@Value`
-* `@Resource` (jakarta.annotation) if JSR-250 is present
-* `@ManagedBean` (jakarta.annotation) if JSR-250 is present
-* `@Inject` (jakarta.inject) if JSR-330 is present
-* `@Named` (jakarta.inject) if JSR-330 is present
-* `@PersistenceContext` (jakarta.persistence) if JPA is present
-* `@PersistenceUnit` (jakarta.persistence) if JPA is present
-* `@Transactional` (org.springframework.transaction.annotation)
-  _with xref:testing/testcontext-framework/tx.adoc#testcontext-tx-attribute-support[limited attribute support]_
+* `@Resource` (jakarta.annotation) -- if https://jcp.org/aboutJava/communityprocess/mrel/jsr250/index3.html[JSR-250] is present
+* `@ManagedBean` (jakarta.annotation) -- if https://jcp.org/aboutJava/communityprocess/mrel/jsr250/index3.html[JSR-250] is present
+* `@Inject` (jakarta.inject) -- if https://jcp.org/aboutJava/communityprocess/final/jsr330/index.html[JSR-330] is present
+* `@Named` (jakarta.inject) -- if https://jcp.org/aboutJava/communityprocess/final/jsr330/index.html is present
+* `@PersistenceContext` (jakarta.persistence) -- if JPA is present
+* `@PersistenceUnit` (jakarta.persistence) -- if JPA is present
+* `@Transactional` (org.springframework.transaction.annotation) /
+  _xref:testing/testcontext-framework/tx.adoc#testcontext-tx-attribute-support[limited attribute support]_
 
 .JSR-250 Lifecycle Annotations
 [NOTE]
 ====
+* TODO:
 In the Spring TestContext Framework, you can use `@PostConstruct` and `@PreDestroy` with
 standard semantics on any application components configured in the `ApplicationContext`.
 However, these lifecycle annotations have limited usage within an actual test class.
