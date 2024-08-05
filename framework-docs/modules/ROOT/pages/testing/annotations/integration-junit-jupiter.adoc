@@ -1,30 +1,29 @@
 [[integration-testing-annotations-junit-jupiter]]
 = Spring JUnit Jupiter Testing Annotations
 
-The following annotations are supported when used in conjunction with the
-xref:testing/testcontext-framework/support-classes.adoc#testcontext-junit-jupiter-extension[`SpringExtension`] and JUnit Jupiter
-(that is, the programming model in JUnit 5):
+* if you use xref:testing/testcontext-framework/support-classes.adoc#testcontext-junit-jupiter-extension[`SpringExtension`] + JUnit Jupiter -> supported annotations
 
-* xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-junit-jupiter-springjunitconfig[`@SpringJUnitConfig`]
-* xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-junit-jupiter-springjunitwebconfig[`@SpringJUnitWebConfig`]
-* xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-testconstructor[`@TestConstructor`]
-* xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-nestedtestconfiguration[`@NestedTestConfiguration`]
-* xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-junit-jupiter-enabledif[`@EnabledIf`]
-* xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-junit-jupiter-disabledif[`@DisabledIf`]
-* xref:testing/annotations/integration-spring/annotation-disabledinaotmode.adoc[`@DisabledInAotMode`]
+  ** xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-junit-jupiter-springjunitconfig[`@SpringJUnitConfig`]
+  ** xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-junit-jupiter-springjunitwebconfig[`@SpringJUnitWebConfig`]
+  ** xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-testconstructor[`@TestConstructor`]
+  ** xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-nestedtestconfiguration[`@NestedTestConfiguration`]
+  ** xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-junit-jupiter-enabledif[`@EnabledIf`]
+  ** xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-junit-jupiter-disabledif[`@DisabledIf`]
+  ** xref:testing/annotations/integration-spring/annotation-disabledinaotmode.adoc[`@DisabledInAotMode`]
 
 [[integration-testing-annotations-junit-jupiter-springjunitconfig]]
 == `@SpringJUnitConfig`
 
-`@SpringJUnitConfig` is a composed annotation that combines
-`@ExtendWith(SpringExtension.class)` from JUnit Jupiter with `@ContextConfiguration` from
-the Spring TestContext Framework. It can be used at the class level as a drop-in
-replacement for `@ContextConfiguration`. With regard to configuration options, the only
-difference between `@ContextConfiguration` and `@SpringJUnitConfig` is that component
-classes may be declared with the `value` attribute in `@SpringJUnitConfig`.
-
-The following example shows how to use the `@SpringJUnitConfig` annotation to specify a
-configuration class:
+* := composed annotation /
+  ** == `@ExtendWith(SpringExtension.class)` + `@ContextConfiguration`
+    *** `@ExtendWith(SpringExtension.class)` -- from -- JUnit Jupiter
+    *** `@ContextConfiguration` -- from -- Spring TestContext Framework
+  ** uses
+    *** | class level
+      **** -- replacement for -- `@ContextConfiguration`
+  ** 's configuration options vs `@ContextConfiguration` & `@SpringJUnitConfig` 's configuration options
+    *** `value` attribute / allows declaring component classes
+* _Example1:_ to specify a configuration class
 
 [tabs]
 ======
@@ -52,8 +51,7 @@ Kotlin::
 ======
 
 
-The following example shows how to use the `@SpringJUnitConfig` annotation to specify the
-location of a configuration file:
+* _Example2:_ to specify the location of a configuration file
 
 [tabs]
 ======
@@ -80,14 +78,16 @@ Kotlin::
 <1> Specify the location of a configuration file.
 ======
 
+* Check
+  ** xref:testing/testcontext-framework/ctx-management.adoc[Context Management]
+  ** {spring-framework-api}/test/context/junit/jupiter/SpringJUnitConfig.html[`@SpringJUnitConfig`]
+  ** {spring-framework-api}/test/context/ContextConfiguration.html[`@ContextConfiguration`]
 
-See xref:testing/testcontext-framework/ctx-management.adoc[Context Management] as well as the javadoc for
-{spring-framework-api}/test/context/junit/jupiter/SpringJUnitConfig.html[`@SpringJUnitConfig`]
-and `@ContextConfiguration` for further details.
 
 [[integration-testing-annotations-junit-jupiter-springjunitwebconfig]]
 == `@SpringJUnitWebConfig`
 
+* TODO:
 `@SpringJUnitWebConfig` is a composed annotation that combines
 `@ExtendWith(SpringExtension.class)` from JUnit Jupiter with `@ContextConfiguration` and
 `@WebAppConfiguration` from the Spring TestContext Framework. You can use it at the class
