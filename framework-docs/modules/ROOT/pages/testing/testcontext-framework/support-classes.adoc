@@ -169,7 +169,16 @@ classes by using `@RunWith(SpringRunner.class)` or xref:testing/testcontext-fram
   ** == you can -- using Spring TestContext framework's features -- implement
     *** standard JUnit Jupiter-based unit test
     *** integration tests
-  ** `@ExtendWith(SpringExtension.class)` | classes
+  ** 👁️ ways to use it 👁️
+    *** `@ExtendWith(SpringExtension.class)` | classes OR
+    *** `@SpringJUnitConfig(ConfigurationClass)` | classes OR
+        **** == composed annotation / simplify the configuration of the `ApplicationContext` & JUnit Jupiter
+            ***** Reason: annotations | JUnit 5 -- cam be used as -- meta-annotations
+        **** Check xref:testing/annotations/integration-junit-jupiter.adoc[Spring JUnit Jupiter Testing Annotations]
+    *** `@SpringJUnitWebConfig(ConfigurationClass)` | classes
+        **** similar as previous one
+        **** create a `WebApplicationContext` / used with JUnit Jupiter
+        **** Check xref:testing/annotations/integration-junit-jupiter.adoc[Spring JUnit Jupiter Testing Annotations]
 * features
   ** shared Spring TestContext framework's features
     *** loading application contexts
@@ -192,7 +201,7 @@ classes by using `@RunWith(SpringRunner.class)` or xref:testing/testcontext-fram
       **** Check `@EnabledIf` and `@DisabledIf` in xref:testing/annotations/integration-junit-jupiter.adoc[Spring JUnit Jupiter Testing Annotations]
     *** Custom composed annotations / annotations from Spring + annotations from JUnit Jupiter
       **** Check `@TransactionalDevTestConfig` and `@TransactionalIntegrationTest` in xref:testing/annotations/integration-meta.adoc[Meta-Annotation Support for Testing]
-* _Example:_ `SpringExtension` + `@ContextConfiguration`
+* _Example1:_ `SpringExtension` + `@ContextConfiguration`
 
 [tabs]
 ======
@@ -231,12 +240,7 @@ Kotlin::
 ----
 ======
 
-Since you can also use annotations in JUnit 5 as meta-annotations, Spring provides the
-`@SpringJUnitConfig` and `@SpringJUnitWebConfig` composed annotations to simplify the
-configuration of the test `ApplicationContext` and JUnit Jupiter.
-
-The following example uses `@SpringJUnitConfig` to reduce the amount of configuration
-used in the previous example:
+* _Example2:_ `@SpringJUnitConfig`
 
 [tabs]
 ======
@@ -273,9 +277,7 @@ Kotlin::
 ----
 ======
 
-Similarly, the following example uses `@SpringJUnitWebConfig` to create a
-`WebApplicationContext` for use with JUnit Jupiter:
-
+* _Example3:_ `@SpringJUnitWebConfig`
 [tabs]
 ======
 Java::
@@ -311,12 +313,11 @@ Kotlin::
 ----
 ======
 
-See the documentation for `@SpringJUnitConfig` and `@SpringJUnitWebConfig` in
-xref:testing/annotations/integration-junit-jupiter.adoc[Spring JUnit Jupiter Testing Annotations] for further details.
 
 [[testcontext-junit-jupiter-di]]
 === Dependency Injection with the `SpringExtension`
 
+* TODO:
 The `SpringExtension` implements the
 link:https://junit.org/junit5/docs/current/user-guide/#extensions-parameter-resolution[`ParameterResolver`]
 extension API from JUnit Jupiter, which lets Spring provide dependency injection for test
