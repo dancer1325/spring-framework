@@ -17,4 +17,8 @@
   * Check
     * `loader()` -- to check the -- `AbstractContextLoader` / be used
     * `AnnotationConfigContextLoader.detectDefaultConfigurationClasses`
+* `ApplicationContextInitializer<?>>[] initializers`
+  * TODO:
+* `ContextLoader> loader()`
+  * TODO:
 * TODO:
