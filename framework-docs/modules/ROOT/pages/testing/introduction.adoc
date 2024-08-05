@@ -5,3 +5,9 @@
 * goal of the section
     ** value added by the IoC principle | xref:testing/unit.adoc[unit testing]
     ** Spring Framework's support | xref:testing/integration.adoc[integration testing]
+    ** xref:testing/support-jdbc.adoc[JDBC Testing Support]
+    ** xref:testing/testcontext-framework.adoc[Spring TestContext Framework]
+    ** xref:testing/webtestclient.adoc[WebTestClient]
+    ** xref:testing/mockmvc.adoc[MockMvc]
+    ** xref:testing/spring-mvc-test-client.adoc[Testing Client Applications]
+    ** xref:testing/annotations.adoc[Annotations]
