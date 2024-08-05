@@ -1,11 +1,10 @@
 [[spring-testing-annotation-activeprofiles]]
 = `@ActiveProfiles`
 
-`@ActiveProfiles` is an annotation that can be applied to a test class to declare which
-bean definition profiles should be active when loading an `ApplicationContext` for an
-integration test.
-
-The following example indicates that the `dev` profile should be active:
+* uses
+    ** | integration test
+        *** -- allows declaring -- active bean definition profiles | loading an `ApplicationContext`
+* _Example1:_  `dev` profile should be active
 
 [tabs]
 ======
@@ -34,9 +33,7 @@ Kotlin::
 <1> Indicate that the `dev` profile should be active.
 ======
 
-
-The following example indicates that both the `dev` and the `integration` profiles should
-be active:
+* _Example2:_ `dev` and the `integration` profiles should be active
 
 [tabs]
 ======
@@ -65,15 +62,12 @@ Kotlin::
 <1> Indicate that the `dev` and `integration` profiles should be active.
 ======
 
-
-NOTE: `@ActiveProfiles` provides support for inheriting active bean definition profiles
-declared by superclasses and enclosing classes by default. You can also resolve active
-bean definition profiles programmatically by implementing a custom
-xref:testing/testcontext-framework/ctx-management/env-profiles.adoc#testcontext-ctx-management-env-profiles-ActiveProfilesResolver[`ActiveProfilesResolver`]
-and registering it by using the `resolver` attribute of `@ActiveProfiles`.
-
-See xref:testing/testcontext-framework/ctx-management/env-profiles.adoc[Context Configuration with Environment Profiles],
-xref:testing/testcontext-framework/support-classes.adoc#testcontext-junit-jupiter-nested-test-configuration[`@Nested` test class configuration], and the
-{spring-framework-api}/test/context/ActiveProfiles.html[`@ActiveProfiles`] javadoc for
-examples and further details.
+* attributes
+    ** `inheritProfiles()`
+        *** Check API
+    ** `resolver()`
+        *** Check
+            **** API
+            **** xref:testing/testcontext-framework/ctx-management/env-profiles.adoc#testcontext-ctx-management-env-profiles-ActiveProfilesResolver[Context Configuration with Environment Profiles]
+* Check xref:testing/testcontext-framework/support-classes.adoc#testcontext-junit-jupiter-nested-test-configuration[`@Nested` test class configuration]
 
