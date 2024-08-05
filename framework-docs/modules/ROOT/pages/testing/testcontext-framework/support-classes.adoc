@@ -165,29 +165,34 @@ classes by using `@RunWith(SpringRunner.class)` or xref:testing/testcontext-fram
 [[testcontext-junit-jupiter-extension]]
 == SpringExtension for JUnit Jupiter
 
-The Spring TestContext Framework offers full integration with the JUnit Jupiter testing
-framework, introduced in JUnit 5. By annotating test classes with
-`@ExtendWith(SpringExtension.class)`, you can implement standard JUnit Jupiter-based unit
-and integration tests and simultaneously reap the benefits of the TestContext framework,
-such as support for loading application contexts, dependency injection of test instances,
-transactional test method execution, and so on.
-
-Furthermore, thanks to the rich extension API in JUnit Jupiter, Spring provides the
-following features above and beyond the feature set that Spring supports for JUnit 4 and
-TestNG:
-
-* Dependency injection for test constructors, test methods, and test lifecycle callback
-  methods. See xref:testing/testcontext-framework/support-classes.adoc#testcontext-junit-jupiter-di[Dependency Injection with the `SpringExtension`] for further details.
-* Powerful support for link:https://junit.org/junit5/docs/current/user-guide/#extensions-conditions[conditional
-  test execution] based on SpEL expressions, environment variables, system properties,
-  and so on. See the documentation for `@EnabledIf` and `@DisabledIf` in
-  xref:testing/annotations/integration-junit-jupiter.adoc[Spring JUnit Jupiter Testing Annotations] for further details and examples.
-* Custom composed annotations that combine annotations from Spring and JUnit Jupiter. See
-  the `@TransactionalDevTestConfig` and `@TransactionalIntegrationTest` examples in
-  xref:testing/annotations/integration-meta.adoc[Meta-Annotation Support for Testing] for further details.
-
-The following code listing shows how to configure a test class to use the
-`SpringExtension` in conjunction with `@ContextConfiguration`:
+* 👁️ Spring TestContext Framework -- offers full integration with -- JUnit Jupiter testing framework (==JUnit 5) 👁️
+  ** == you can -- using Spring TestContext framework's features -- implement
+    *** standard JUnit Jupiter-based unit test
+    *** integration tests
+  ** `@ExtendWith(SpringExtension.class)` | classes
+* features
+  ** shared Spring TestContext framework's features
+    *** loading application contexts
+    *** dependency injection of test instances
+    *** transactional test method execution
+  ** -- thanks to the -- rich extension API | JUnit Jupiter ( NOT valid for JUnit 4 and TestNG)
+    *** Dependency injection
+      **** for
+        ***** test constructors,
+        ***** test methods,
+        ***** test lifecycle callback methods
+      **** Check xref:testing/testcontext-framework/support-classes.adoc#testcontext-junit-jupiter-di[Dependency Injection with the `SpringExtension`]
+    *** Powerful support for link:https://junit.org/junit5/docs/current/user-guide/#extensions-conditions[conditional
+  test execution]
+      **** -- based on --
+        ***** SpEL expressions,
+        ***** environment variables,
+        ***** system properties,
+        ***** ...
+      **** Check `@EnabledIf` and `@DisabledIf` in xref:testing/annotations/integration-junit-jupiter.adoc[Spring JUnit Jupiter Testing Annotations]
+    *** Custom composed annotations / annotations from Spring + annotations from JUnit Jupiter
+      **** Check `@TransactionalDevTestConfig` and `@TransactionalIntegrationTest` in xref:testing/annotations/integration-meta.adoc[Meta-Annotation Support for Testing]
+* _Example:_ `SpringExtension` + `@ContextConfiguration`
 
 [tabs]
 ======
