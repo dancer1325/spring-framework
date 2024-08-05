@@ -1,13 +1,9 @@
 [[integration-testing-annotations-spring]]
-= Spring Testing Annotations
+= Spring-specific Testing Annotations
 
-The Spring Framework provides the following set of Spring-specific annotations that you
-can use in your unit and integration tests in conjunction with the TestContext framework.
-See the corresponding javadoc for further information, including default attribute
-values, attribute aliases, and other details.
-
-Spring's testing annotations include the following:
-
+* uses
+    ** | unit tests + TestContext Framework
+    ** | integration tests + TestContext Framework
 * xref:testing/annotations/integration-spring/annotation-bootstrapwith.adoc[`@BootstrapWith`]
 * xref:testing/annotations/integration-spring/annotation-contextconfiguration.adoc[`@ContextConfiguration`]
 * xref:testing/annotations/integration-spring/annotation-webappconfiguration.adoc[`@WebAppConfiguration`]
@@ -30,4 +26,3 @@ Spring's testing annotations include the following:
 * xref:testing/annotations/integration-spring/annotation-sqlmergemode.adoc[`@SqlMergeMode`]
 * xref:testing/annotations/integration-spring/annotation-sqlgroup.adoc[`@SqlGroup`]
 * xref:testing/annotations/integration-spring/annotation-disabledinaotmode.adoc[`@DisabledInAotMode`]
-
