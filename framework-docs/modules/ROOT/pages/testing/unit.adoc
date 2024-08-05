@@ -1,38 +1,39 @@
 [[unit-testing]]
 = Unit Testing
 
-Dependency injection should make your code less dependent on the container than it would
-be with traditional J2EE / Java EE development. The POJOs that make up your application
-should be testable in JUnit or TestNG tests, with objects instantiated by using the `new`
-operator, without Spring or any other container. You can use xref:testing/unit.adoc#mock-objects[mock objects]
-(in conjunction with other valuable testing techniques) to test your code in isolation.
-If you follow the architecture recommendations for Spring, the resulting clean layering
-and componentization of your codebase facilitate easier unit testing. For example,
-you can test service layer objects by stubbing or mocking DAO or repository interfaces,
-without needing to access persistent data while running unit tests.
-
-True unit tests typically run extremely quickly, as there is no runtime infrastructure to
-set up. Emphasizing true unit tests as part of your development methodology can boost
-your productivity. You may not need this section of the testing chapter to help you write
-effective unit tests for your IoC-based applications. For certain unit testing scenarios,
-however, the Spring Framework provides mock objects and testing support classes, which
-are described in this chapter.
-
+* Dependency injection vs traditional J2EE / Java EE development
+  ** code -- less dependent on the -- container
+* POJOs / are part of your application should be testable
+  ** |
+    *** JUnit tests OR
+    *** TestNG tests
+  ** / objects instantiated -- via -- `new` without
+    *** Spring nor
+    *** any other container
+* xref:testing/unit.adoc#mock-objects[mock objects] + other valuable testing techniques
+  ** allows testing your code in isolation
+* if you follow the architecture recommendations for Spring -> clean layering and componentization of your codebase -> make easier unit testing
+  ** __Example:__ service layer objects can be unit tested -- via --
+    *** stubbing or mocking DAO or repository interfaces
+    *** -- WITHOUT needing to access -- persistent data
+* main characteristics of unit tests
+  ** typically run extremely quickly
+    *** Reason: 🧠 there is NO runtime infrastructure / set up 🧠
+  ** -> can boost your productivity
 
 
 [[mock-objects]]
 == Mock Objects
 
-Spring includes a number of packages dedicated to mocking:
-
-* xref:testing/unit.adoc#mock-objects-env[Environment]
-* xref:testing/unit.adoc#mock-objects-servlet[Servlet API]
-* xref:testing/unit.adoc#mock-objects-web-reactive[Spring Web Reactive]
+* packages dedicated to mocking
+  ** xref:testing/unit.adoc#mock-objects-env[Environment]
+  ** xref:testing/unit.adoc#mock-objects-servlet[Servlet API]
+  ** xref:testing/unit.adoc#mock-objects-web-reactive[Spring Web Reactive]
 
 
 [[mock-objects-env]]
 === Environment
-
+* TODO:
 The `org.springframework.mock.env` package contains mock implementations of the
 `Environment` and `PropertySource` abstractions (see
 xref:core/beans/environment.adoc#beans-definition-profiles[Bean Definition Profiles]
