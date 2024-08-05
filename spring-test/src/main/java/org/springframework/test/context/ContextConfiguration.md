@@ -8,4 +8,9 @@
   * vs `value()`
     * can NOT be used together
     * one as replacement of the other
+* `Class<?>[] classes()`
+  * := component classes -- for loading an -- `ApplicationContext`
+  * Check
+    * `loader()` -- to check the -- `AbstractContextLoader` / be used
+    * `AnnotationConfigContextLoader.detectDefaultConfigurationClasses`
 * TODO:
