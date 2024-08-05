@@ -1,21 +1,27 @@
 [[testcontext-key-abstractions]]
 = Key Abstractions
 
-The core of the framework consists of the `TestContextManager` class and the
-`TestContext`, `TestExecutionListener`, and `SmartContextLoader` interfaces. A
-`TestContextManager` is created for each test class (for example, for the execution of
-all test methods within a single test class in JUnit Jupiter). The `TestContextManager`,
-in turn, manages a `TestContext` that holds the context of the current test. The
-`TestContextManager` also updates the state of the `TestContext` as the test progresses
-and delegates to `TestExecutionListener` implementations, which instrument the actual
-test execution by providing dependency injection, managing transactions, and so on. A
-`SmartContextLoader` is responsible for loading an `ApplicationContext` for a given test
-class. See the {spring-framework-api}/test/context/package-summary.html[javadoc] and the
-Spring test suite for further information and examples of various implementations.
+* Spring TestContext Framework == `TestContextManager` + `TestContext` + `TestExecutionListener` + `SmartContextLoader`
+  ** `TestContextManager`
+    *** created / test class
+      **** _Example:_ / execution of ALL test methods | 1! test class in JUnit Jupiter
+    *** manages a `TestContext`
+      **** as the test progresses -> update the `TestContext`
+    *** delegates to `TestExecutionListener` implementations
+  ** `TestContext`
+    *** holds the context of the current test
+  ** `TestExecutionListener`
+    *** instrument the actual test execution -- by --
+      **** providing dependency injection,
+      **** managing transactions
+      **** ...
+  ** `SmartContextLoader`
+    *** loads an `ApplicationContext` / given test class
+    *** Check {spring-framework-api}/test/context/package-summary.html[javadoc] + Spring test suite
 
 [[testcontext]]
 == `TestContext`
-
+* TODO:
 `TestContext` encapsulates the context in which a test is run (agnostic of the
 actual testing framework in use) and provides context management and caching support for
 the test instance for which it is responsible. The `TestContext` also delegates to a
