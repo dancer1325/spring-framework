@@ -10,7 +10,7 @@
 * `@Resource` (jakarta.annotation) -- if https://jcp.org/aboutJava/communityprocess/mrel/jsr250/index3.html[JSR-250] is present
 * `@ManagedBean` (jakarta.annotation) -- if https://jcp.org/aboutJava/communityprocess/mrel/jsr250/index3.html[JSR-250] is present
 * `@Inject` (jakarta.inject) -- if https://jcp.org/aboutJava/communityprocess/final/jsr330/index.html[JSR-330] is present
-* `@Named` (jakarta.inject) -- if https://jcp.org/aboutJava/communityprocess/final/jsr330/index.html is present
+* `@Named` (jakarta.inject) -- if https://jcp.org/aboutJava/communityprocess/final/jsr330/index.html[JSR-330] is present
 * `@PersistenceContext` (jakarta.persistence) -- if JPA is present
 * `@PersistenceUnit` (jakarta.persistence) -- if JPA is present
 * `@Transactional` (org.springframework.transaction.annotation) /
@@ -19,19 +19,10 @@
 .JSR-250 Lifecycle Annotations
 [NOTE]
 ====
-* TODO:
-In the Spring TestContext Framework, you can use `@PostConstruct` and `@PreDestroy` with
-standard semantics on any application components configured in the `ApplicationContext`.
-However, these lifecycle annotations have limited usage within an actual test class.
-
-If a method within a test class is annotated with `@PostConstruct`, that method runs
-before any before methods of the underlying test framework (for example, methods
-annotated with JUnit Jupiter's `@BeforeEach`), and that applies for every test method in
-the test class. On the other hand, if a method within a test class is annotated with
-`@PreDestroy`, that method never runs. Therefore, within a test class, we recommend that
-you use test lifecycle callbacks from the underlying test framework instead of
-`@PostConstruct` and `@PreDestroy`.
+* `@PostConstruct` and `@PreDestroy`
+    ** limited usage | test class
+        *** 👁️if a method | test class / annotated with `@PostConstruct` ->  runs BEFORE ANY before methods | underlying test framework 👁️
+            **** _Example:_ before method / annotated with JUnit Jupiter's `@BeforeEach`
+        *** 👁 if a method | test class / annotated with `@PreDestroy` -> that method NEVER runs 👁
+        *** -> Recommendation: 👁 use underlying test framework's test lifecycle callbacks 👁-- instead of -- `@PostConstruct` and `@PreDestroy`
 ====
-
-
-
