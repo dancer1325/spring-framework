@@ -50,10 +50,15 @@ supported as a marker for automatic exception translation in your persistence la
 [[beans-meta-annotations]]
 == Using Meta-annotations and Composed Annotations
 
-Many of the annotations provided by Spring can be used as meta-annotations in your
-own code. A meta-annotation is an annotation that can be applied to another annotation.
-For example, the `@Service` annotation mentioned xref:core/beans/classpath-scanning.adoc#beans-stereotype-annotations[earlier]
-is meta-annotated with `@Component`, as the following example shows:
+* := annotation / -- can be applied to -- another annotation
+    ** allows
+        *** creating "`composed annotations`" == combined meta-annotations
+            **** _Example:_  `@RestController` == `@Controller` + `@ResponseBody`
+        *** redeclaring attributes == customization
+            **** uses
+                ***** expose ONLY a subset of the meta-annotation's attributes
+* 👁️ Many of the annotations / provided by Spring -- can be used as -- meta-annotations | your own code 👁️
+* _Example1:_ `@Service` annotation is meta-annotated with `@Component`
 
 [tabs]
 ======
@@ -88,16 +93,7 @@ Kotlin::
 <1> The `@Component` causes `@Service` to be treated in the same way as `@Component`.
 ======
 
-You can also combine meta-annotations to create "`composed annotations`". For example,
-the `@RestController` annotation from Spring MVC is composed of `@Controller` and
-`@ResponseBody`.
-
-In addition, composed annotations can optionally redeclare attributes from
-meta-annotations to allow customization. This can be particularly useful when you
-want to only expose a subset of the meta-annotation's attributes. For example, Spring's
-`@SessionScope` annotation hard codes the scope name to `session` but still allows
-customization of the `proxyMode`. The following listing shows the definition of the
-`SessionScope` annotation:
+* _Example2:_ Check Spring's `@SessionScope` annotation definition (Check API)
 
 [tabs]
 ======
@@ -136,7 +132,7 @@ Kotlin::
 ----
 ======
 
-You can then use `@SessionScope` without declaring the `proxyMode` as follows:
+* use it / WITHOUT declaring the `proxyMode`
 
 [tabs]
 ======
@@ -163,7 +159,7 @@ Kotlin::
 ----
 ======
 
-You can also override the value for the `proxyMode`, as the following example shows:
+* use it / override the `proxyMode`
 
 [tabs]
 ======
@@ -190,15 +186,13 @@ Kotlin::
 ----
 ======
 
-For further details, see the
-{spring-framework-wiki}/Spring-Annotation-Programming-Model[Spring Annotation Programming Model]
-wiki page.
-
+* Check {spring-framework-wiki}/Spring-Annotation-Programming-Model[Spring Annotation Programming Model] wiki page
 
 
 [[beans-scanning-autodetection]]
 == Automatically Detecting Classes and Registering Bean Definitions
 
+* TODO:
 Spring can automatically detect stereotyped classes and register corresponding
 `BeanDefinition` instances with the `ApplicationContext`. For example, the following two classes
 are eligible for such autodetection:
