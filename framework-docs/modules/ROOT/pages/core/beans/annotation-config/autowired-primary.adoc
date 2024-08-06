@@ -1,15 +1,14 @@
 [[beans-autowired-annotation-primary]]
 = Fine-tuning Annotation-based Autowiring with `@Primary` or `@Fallback`
 
-Because autowiring by type may lead to multiple candidates, it is often necessary to have
-more control over the selection process. One way to accomplish this is with Spring's
-`@Primary` annotation. `@Primary` indicates that a particular bean should be given
-preference when multiple beans are candidates to be autowired to a single-valued
-dependency. If exactly one primary bean exists among the candidates, it becomes the
-autowired value.
-
-Consider the following configuration that defines `firstMovieCatalog` as the
-primary `MovieCatalog`:
+* 👁️ autowiring by type -- may lead to -- multiple candidates -> required to have more control | selection process 👁️
+    ** ways to determine specific bean
+        *** `@Primary`
+        *** `@Fallback`
+        *** `@Qualifier`
+* `@Primary`
+    ** == if there are multiple beans / candidates to be autowired to a single-valued dependency -> primary bean is the chosen one / to be autowired
+    ** _Example1:_
 
 [tabs]
 ======
@@ -21,7 +20,7 @@ Java::
 	public class MovieConfiguration {
 
 		@Bean
-		@Primary
+		@Primary // == primary MovieCatalog
 		public MovieCatalog firstMovieCatalog() { ... }
 
 		@Bean
@@ -39,7 +38,7 @@ Kotlin::
 	class MovieConfiguration {
 
 		@Bean
-		@Primary
+		@Primary // == primary MovieCatalog
 		fun firstMovieCatalog(): MovieCatalog { ... }
 
 		@Bean
@@ -50,10 +49,10 @@ Kotlin::
 ----
 ======
 
-Alternatively, as of 6.2, there is a `@Fallback` annotation for demarcating
-any beans other than the regular ones to be injected. If only one regular
-bean is left, it is effectively primary as well:
-
+* `@Fallback`
+    ** Spring 6.2+
+    ** 👁️ == if there are regular (NO annotation) and `@Fallback` annotated beans -> regular beans are effectively primary 👁️
+    ** _Example:_
 [tabs]
 ======
 Java::
@@ -92,9 +91,6 @@ Kotlin::
 	}
 ----
 ======
-
-With both variants of the preceding configuration, the following
-`MovieRecommender` is autowired with the `firstMovieCatalog`:
 
 [tabs]
 ======
@@ -104,7 +100,7 @@ Java::
 ----
 	public class MovieRecommender {
 
-		@Autowired
+		@Autowired // autowired with the firstMovieCatalog == regular
 		private MovieCatalog movieCatalog;
 
 		// ...
@@ -117,7 +113,7 @@ Kotlin::
 ----
 class MovieRecommender {
 
-	@Autowired
+	@Autowired // autowired with the firstMovieCatalog == regular
 	private lateinit var movieCatalog: MovieCatalog
 
 	// ...
@@ -125,7 +121,7 @@ class MovieRecommender {
 ----
 ======
 
-The corresponding bean definitions follow:
+* _Example:_ == bean definitions
 
 [source,xml,indent=0,subs="verbatim,quotes"]
 ----
@@ -152,6 +148,3 @@ The corresponding bean definitions follow:
 
 	</beans>
 ----
-
-
-
