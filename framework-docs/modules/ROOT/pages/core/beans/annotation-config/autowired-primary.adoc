@@ -52,6 +52,7 @@ Kotlin::
 * `@Fallback`
     ** Spring 6.2+
     ** 👁️ == if there are regular (NO annotation) and `@Fallback` annotated beans -> regular beans are effectively primary 👁️
+    ** bean name == default qualifier value
     ** _Example:_
 [tabs]
 ======
