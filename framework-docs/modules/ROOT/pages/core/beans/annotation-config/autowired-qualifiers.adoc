@@ -1,13 +1,16 @@
 [[beans-autowired-annotation-qualifiers]]
 = Fine-tuning Annotation-based Autowiring with Qualifiers
 
-`@Primary` and `@Fallback` are effective ways to use autowiring by type with several
-instances when one primary (or non-fallback) candidate can be determined.
-
-When you need more control over the selection process, you can use Spring's `@Qualifier`
-annotation. You can associate qualifier values with specific arguments, narrowing the set
-of type matches so that a specific bean is chosen for each argument. In the simplest case,
-this can be a plain descriptive value, as shown in the following example:
+* if there are several autowired beans -> ways to determine specific bean
+    ** `@Primary`
+    ** `@Fallback`
+    ** `@Qualifier`
+* `@Qualifier("valueToPass")`
+    ** uses
+        *** 👁️ need more control | selection process 👁️
+    ** `valueToPass`
+        *** allows specifying it
+* _Example1:_ plain descriptive value
 
 --
 [tabs]
@@ -42,8 +45,7 @@ Kotlin::
 ======
 --
 
-You can also specify the `@Qualifier` annotation on individual constructor arguments or
-method parameters, as shown in the following example:
+* _Example2:_ | individual constructor arguments OR method parameters
 
 --
 [tabs]
@@ -92,7 +94,7 @@ Kotlin::
 ======
 --
 
-The following example shows corresponding bean definitions.
+* _Example3:_ bean definitions
 
 --
 [source,xml,indent=0,subs="verbatim,quotes"]
@@ -124,17 +126,16 @@ The following example shows corresponding bean definitions.
 
 	</beans>
 ----
-<1> The bean with the `main` qualifier value is wired with the constructor argument that
-is qualified with the same value.
-<2> The bean with the `action` qualifier value is wired with the constructor argument that
-is qualified with the same value.
+<1> bean / `main` qualifier value -- is wired with the -- constructor argument / qualified with `main`
+<2> bean / `action` qualifier value -- is wired with the -- constructor argument / qualified with `action`
 --
 
-For a fallback match, the bean name is considered a default qualifier value. Thus, you
-can define the bean with an `id` of `main` instead of the nested qualifier element, leading
-to the same matching result. However, although you can use this convention to refer to
-specific beans by name, `@Autowired` is fundamentally about type-driven injection with
-optional semantic qualifiers. This means that qualifier values, even with the bean name
+* `@Autowired`
+    ** TODO:
+However, although you can use this convention to refer to
+specific beans by name,
+    ** == type-driven injection / optional semantic qualifiers
+    ** This means that qualifier values, even with the bean name
 fallback, always have narrowing semantics within the set of type matches. They do not
 semantically express a reference to a unique bean `id`. Good qualifier values are `main`
 or `EMEA` or `persistent`, expressing characteristics of a specific component that are
