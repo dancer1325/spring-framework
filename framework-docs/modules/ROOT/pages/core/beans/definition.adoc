@@ -1,25 +1,25 @@
 [[beans-definition]]
 = Bean Overview
 
-A Spring IoC container manages one or more beans. These beans are created with the
-configuration metadata that you supply to the container (for example, in the form of XML
-`<bean/>` definitions).
-
-Within the container itself, these bean definitions are represented as `BeanDefinition`
-objects, which contain (among other information) the following metadata:
-
-* A package-qualified class name: typically, the actual implementation class of the
-  bean being defined.
-* Bean behavioral configuration elements, which state how the bean should behave in the
-  container (scope, lifecycle callbacks, and so forth).
-* References to other beans that are needed for the bean to do its work. These
-  references are also called collaborators or dependencies.
-* Other configuration settings to set in the newly created object -- for example, the size
-  limit of the pool or the number of connections to use in a bean that manages a
-  connection pool.
-
-This metadata translates to a set of properties that make up each bean definition.
-The following table describes these properties:
+* := actual objects / make up your application
+  ** how to define them?
+    *** service layer objects, persistence layer objects -- are defined as -- repositories or data access objects (DAOs)
+    *** presentation objects -- are defined as -- Web controllers
+    *** infrastructure objects -- are defined as -- JPA `EntityManagerFactory`, JMS queues, and so forth.
+    *** fine-grained 👁️ domain objects are NOT defined in the container 👁️
+      **** Reason: 🧠 domain objects are responsibility of repositories and business logic 🧠
+  ** -- via configuring metadata / supplied to the container -> are created
+  ** `BeanDefinition` object
+    *** == representation of the bean | container / contains the metadata
+      **** package-qualified class name
+        ***** implementation class of the bean / being defined
+      **** behavioral configuration elements / states how the bean should behave in the container
+        ***** _Example:_ scope, lifecycle callbacks
+      **** collaborators or dependencies
+        ***** == -- references to -- other beans
+      **** other configuration settings
+        ***** _Example:_ size limit of the pool or number of connections to use in a bean / manages a connection pool
+    *** metadata -- related to -- properties
 
 [[beans-factory-bean-definition-tbl]]
 .The bean definition
@@ -54,6 +54,7 @@ The following table describes these properties:
 | xref:core/beans/factory-nature.adoc#beans-factory-lifecycle-disposablebean[Destruction Callbacks]
 |===
 
+* TODO:
 In addition to bean definitions that contain information on how to create a specific
 bean, the `ApplicationContext` implementations also permit the registration of existing
 objects that are created outside the container (by users). This is done by accessing the
@@ -201,6 +202,8 @@ See xref:core/beans/java/bean-annotation.adoc[Using the `@Bean` Annotation] for 
 [[beans-factory-class]]
 == Instantiating Beans
 
+* bean definition
+  ** ==
 A bean definition is essentially a recipe for creating one or more objects. The
 container looks at the recipe for a named bean when asked and uses the configuration
 metadata encapsulated by that bean definition to create (or acquire) an actual object.
