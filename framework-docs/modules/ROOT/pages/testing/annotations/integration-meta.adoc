@@ -1,43 +1,42 @@
 [[integration-testing-annotations-meta]]
 = Meta-Annotation Support for Testing
 
-You can use most test-related annotations as
-xref:core/beans/classpath-scanning.adoc#beans-meta-annotations[meta-annotations] to create custom composed
-annotations and reduce configuration duplication across a test suite.
+* 👁️ most test-related annotations -- can be used as -- xref:core/beans/classpath-scanning.adoc#beans-meta-annotations[meta-annotations] 👁️
+    ** -> allows
+        *** creating custom composed annotations &
+        *** reducing configuration duplication -- across a -- test suite
 
-You can use each of the following as a meta-annotation in conjunction with the
-xref:testing/testcontext-framework.adoc[TestContext framework].
+* allowed meta-annotation / can be used | xref:testing/testcontext-framework.adoc[TestContext framework]
+    ** `@BootstrapWith`
+    ** `@ContextConfiguration`
+    ** `@ContextHierarchy`
+    ** `@ContextCustomizerFactories`
+    ** `@ActiveProfiles`
+    ** `@TestPropertySource`
+    ** `@DirtiesContext`
+    ** `@WebAppConfiguration`
+    ** `@TestExecutionListeners`
+    ** `@Transactional`
+    ** `@BeforeTransaction`
+    ** `@AfterTransaction`
+    ** `@Commit`
+    ** `@Rollback`
+    ** `@Sql`
+    ** `@SqlConfig`
+    ** `@SqlMergeMode`
+    ** `@SqlGroup`
+    ** `@Repeat` _(ONLY | JUnit 4)_
+    ** `@Timed` _(ONLY | JUnit 4)_
+    ** `@IfProfileValue` _(ONLY | JUnit 4)_
+    ** `@ProfileValueSourceConfiguration` _(ONLY | JUnit 4)_
+    ** `@SpringJUnitConfig` _(ONLY | JUnit Jupiter)_
+    ** `@SpringJUnitWebConfig` _(ONLY | JUnit Jupiter)_
+    ** `@TestConstructor` _(ONLY | JUnit Jupiter)_
+    ** `@NestedTestConfiguration` _(ONLY | JUnit Jupiter)_
+    ** `@EnabledIf` _(ONLY | JUnit Jupiter)_
+    ** `@DisabledIf` _(ONLY | JUnit Jupiter)_
 
-* `@BootstrapWith`
-* `@ContextConfiguration`
-* `@ContextHierarchy`
-* `@ContextCustomizerFactories`
-* `@ActiveProfiles`
-* `@TestPropertySource`
-* `@DirtiesContext`
-* `@WebAppConfiguration`
-* `@TestExecutionListeners`
-* `@Transactional`
-* `@BeforeTransaction`
-* `@AfterTransaction`
-* `@Commit`
-* `@Rollback`
-* `@Sql`
-* `@SqlConfig`
-* `@SqlMergeMode`
-* `@SqlGroup`
-* `@Repeat` _(only supported on JUnit 4)_
-* `@Timed` _(only supported on JUnit 4)_
-* `@IfProfileValue` _(only supported on JUnit 4)_
-* `@ProfileValueSourceConfiguration` _(only supported on JUnit 4)_
-* `@SpringJUnitConfig` _(only supported on JUnit Jupiter)_
-* `@SpringJUnitWebConfig` _(only supported on JUnit Jupiter)_
-* `@TestConstructor` _(only supported on JUnit Jupiter)_
-* `@NestedTestConfiguration` _(only supported on JUnit Jupiter)_
-* `@EnabledIf` _(only supported on JUnit Jupiter)_
-* `@DisabledIf` _(only supported on JUnit Jupiter)_
-
-Consider the following example:
+* _Example:_ let's have
 
 [tabs]
 ======
@@ -76,9 +75,7 @@ Kotlin::
 ----
 ======
 
-If we discover that we are repeating the preceding configuration across our JUnit 4-based
-test suite, we can reduce the duplication by introducing a custom composed annotation
-that centralizes the common test configuration for Spring, as follows:
+If we are repeating the preceding configuration | our JUnit 4-based test suite -- via introducing a custom composed annotation / centralizes the common test configuration -> we can reduce the duplication
 
 [tabs]
 ======
@@ -107,8 +104,7 @@ Kotlin::
 ----
 ======
 
-Then we can use our custom `@TransactionalDevTestConfig` annotation to simplify the
-configuration of individual JUnit 4 based test classes, as follows:
+-> we can use our `@TransactionalDevTestConfig` annotation | individual JUnit 4 based test classes
 
 [tabs]
 ======
@@ -139,9 +135,7 @@ Kotlin::
 ----
 ======
 
-If we write tests that use JUnit Jupiter, we can reduce code duplication even further,
-since annotations in JUnit 5 can also be used as meta-annotations. Consider the following
-example:
+* _Example2:_ if we use JUnit Jupiter -> we can reduce code duplication even further
 
 [tabs]
 ======
@@ -180,10 +174,7 @@ Kotlin::
 ----
 ======
 
-If we discover that we are repeating the preceding configuration across our JUnit
-Jupiter-based test suite, we can reduce the duplication by introducing a custom composed
-annotation that centralizes the common test configuration for Spring and JUnit Jupiter,
-as follows:
+If we are repeating the preceding configuration | our JUnit Jupiter-based test suite -- via introducing a custom composed annotation / centralizes the common test configuration -> we can reduce the duplication
 
 [tabs]
 ======
@@ -214,8 +205,8 @@ Kotlin::
 ----
 ======
 
-Then we can use our custom `@TransactionalDevTestConfig` annotation to simplify the
-configuration of individual JUnit Jupiter based test classes, as follows:
+-> we can use our `@TransactionalDevTestConfig` annotation | individual JUnit Jupiter based test classes
+
 
 [tabs]
 ======
@@ -242,12 +233,7 @@ Kotlin::
 ----
 ======
 
-Since JUnit Jupiter supports the use of `@Test`, `@RepeatedTest`, `ParameterizedTest`,
-and others as meta-annotations, you can also create custom composed annotations at the
-test method level. For example, if we wish to create a composed annotation that combines
-the `@Test` and `@Tag` annotations from JUnit Jupiter with the `@Transactional`
-annotation from Spring, we could create an `@TransactionalIntegrationTest` annotation, as
-follows:
+* _Example3:_ composed annotation / combines `@Test` + `@Tag` + `@Transactional` | 👁️test method level 👁️
 
 [tabs]
 ======
@@ -276,8 +262,7 @@ Kotlin::
 ----
 ======
 
-Then we can use our custom `@TransactionalIntegrationTest` annotation to simplify the
-configuration of individual JUnit Jupiter based test methods, as follows:
+use our custom `@TransactionalIntegrationTest`
 
 [tabs]
 ======
@@ -304,6 +289,4 @@ Kotlin::
 ----
 ======
 
-For further details, see the
-{spring-framework-wiki}/Spring-Annotation-Programming-Model[Spring Annotation Programming Model]
-wiki page.
+* Check {spring-framework-wiki}/Spring-Annotation-Programming-Model[Spring Annotation Programming Model] wiki page.
