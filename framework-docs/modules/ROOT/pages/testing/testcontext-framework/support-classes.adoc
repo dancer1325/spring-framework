@@ -1,7 +1,8 @@
 [[testcontext-support-classes]]
 = TestContext Framework Support Classes
 
-This section describes the various classes that support the Spring TestContext Framework.
+* goal
+    ** classes / -- supported by the -- Spring TestContext Framework
 
 [[testcontext-junit4-runner]]
 == Spring JUnit 4 Runner
@@ -173,7 +174,7 @@ classes by using `@RunWith(SpringRunner.class)` or xref:testing/testcontext-fram
     *** `@ExtendWith(SpringExtension.class)` | classes OR
     *** `@SpringJUnitConfig(ConfigurationClass)` | classes OR
         **** == composed annotation / simplify the configuration of the `ApplicationContext` & JUnit Jupiter
-            ***** Reason: annotations | JUnit 5 -- cam be used as -- meta-annotations
+            ***** Reason: annotations | JUnit 5 -- can be used as -- meta-annotations
         **** Check xref:testing/annotations/integration-junit-jupiter.adoc[Spring JUnit Jupiter Testing Annotations]
     *** `@SpringJUnitWebConfig(ConfigurationClass)` | classes
         **** similar as previous one
