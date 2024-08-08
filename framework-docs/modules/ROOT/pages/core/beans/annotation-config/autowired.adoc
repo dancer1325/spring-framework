@@ -8,8 +8,11 @@
         *** Check xref:core/beans/standard-annotations.adoc[here]
 ====
 
-* TODO:
-You can apply the `@Autowired` annotation to constructors, as the following example shows:
+* uses
+    ** | constructors
+        *** From Spring Framework v4.3+, if the target bean defines ONLY 1! constructor -> NO longer necessary
+        *** if several constructors and there is NO primary/default constructor -> >=1 constructor / annotated with `@Autowired`
+            **** Check xref:core/beans/annotation-config/autowired.adoc#beans-autowired-annotation-constructor-resolution[constructor resolution]
 
 [tabs]
 ======
@@ -39,18 +42,7 @@ Kotlin::
 ----
 ======
 
-[NOTE]
-====
-As of Spring Framework 4.3, an `@Autowired` annotation on such a constructor is no longer
-necessary if the target bean defines only one constructor to begin with. However, if
-several constructors are available and there is no primary/default constructor, at least
-one of the constructors must be annotated with `@Autowired` in order to instruct the
-container which one to use. See the discussion on
-xref:core/beans/annotation-config/autowired.adoc#beans-autowired-annotation-constructor-resolution[constructor resolution] for details.
-====
-
-You can also apply the `@Autowired` annotation to _traditional_ setter methods,
-as the following example shows:
+    ** | _traditional_ setter methods
 
 [tabs]
 ======
@@ -86,8 +78,7 @@ Kotlin::
 ----
 ======
 
-You can also apply the annotation to methods with arbitrary names and multiple
-arguments, as the following example shows:
+    ** | methods / arbitrary names and multiple arguments
 
 [tabs]
 ======
@@ -134,8 +125,10 @@ Kotlin::
 ----
 ======
 
-You can apply `@Autowired` to fields as well and even mix it with constructors, as the
-following example shows:
+    ** | fields + | constructors
+        *** target components' type == `@Autowired`-annotated injection points
+            **** _Example:_ `MovieCatalog` or `CustomerPreferenceDao` in next
+            **** else -> injection may fail
 
 [tabs]
 ======
@@ -176,30 +169,28 @@ Kotlin::
 
 [TIP]
 ====
-Make sure that your target components (for example, `MovieCatalog` or `CustomerPreferenceDao`)
-are consistently declared by the type that you use for your `@Autowired`-annotated
-injection points. Otherwise, injection may fail due to a "no type match found" error at runtime.
-
-For XML-defined beans or component classes found via classpath scanning, the container
-usually knows the concrete type up front. However, for `@Bean` factory methods, you need
-to make sure that the declared return type is sufficiently expressive. For components
-that implement several interfaces or for components potentially referred to by their
-implementation type, consider declaring the most specific return type on your factory
-method (at least as specific as required by the injection points referring to your bean).
+* TODO: Check where to place
+* For XML-defined beans OR component classes / found via classpath scanning -> container usually knows BEFORE the concrete type
+* For `@Bean` factory methods -- make sure that -> the declared return type is sufficiently expressive
+* For components / implement several interfaces OR potentially referred to by their implementation type -> declare the most specific return type | your factory method
+  ** specific >= required by the injection points / referring to your bean
 ====
 
 [NOTE]
 ====
-As of 4.3, `@Autowired` also considers self references for injection (that is, references
-back to the bean that is currently injected). Note that self injection is a fallback.
-In practice, you should use self references as a last resort only (for example, for
-calling other methods on the same instance through the bean's transactional proxy).
-Consider factoring out the affected methods to a separate delegate bean in such a scenario.
+* TODO: Check where to place
+* self injection
+  ** == reference back to the bean / is currently injected
+  ** From Spring Framework v4.3+
+  ** is a fallback
+    *** == ONLY as a last resort
+    *** uses
+      **** calling other methods -- through the -- bean's transactional proxy | same instance
+        ***** recommendation: affected methods -- should be factored out to a -- separate delegate bean
 ====
 
-You can also instruct Spring to provide all beans of a particular type from the
-`ApplicationContext` by adding the `@Autowired` annotation to a field or method that
-expects an array of that type, as the following example shows:
+    ** | field or method / `[SomeType]`  -- an array --
+      *** -> ALL beans `SomeType` -- are provided from the -- `ApplicationContext`
 
 [tabs]
 ======
@@ -230,7 +221,8 @@ Kotlin::
 ----
 ======
 
-The same applies for typed collections, as the following example shows:
+    ** | field or method / `CollectionOfSomeType`
+      *** -> ALL beans `SomeType` -- are provided from the -- `ApplicationContext`
 
 [tabs]
 ======
@@ -240,6 +232,7 @@ Java::
 ----
 	public class MovieRecommender {
 
+        // Set<SomeType>    typedCollection
 		private Set<MovieCatalog> movieCatalogs;
 
 		@Autowired
@@ -256,7 +249,7 @@ Kotlin::
 [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
 ----
 	class MovieRecommender {
-
+        // Set<SomeType>    typedCollection
 		@Autowired
 		lateinit var movieCatalogs: Set<MovieCatalog>
 
@@ -268,14 +261,19 @@ Kotlin::
 [[beans-factory-ordered]]
 [TIP]
 ====
-Your target beans can implement the `org.springframework.core.Ordered` interface or use
-the `@Order` or standard `@Priority` annotation if you want items in the array or list
-to be sorted in a specific order. Otherwise, their order follows the registration
-order of the corresponding target bean definitions in the container.
-
-You can declare the `@Order` annotation at the target class level and on `@Bean` methods,
-potentially for individual bean definitions (in case of multiple definitions that
-use the same bean class). `@Order` values may influence priorities at injection points,
+* TODO: Check where to place
+* if you do NOT declare an order -- follows the -> registration order of the corresponding target bean definitions | container
+* ways to order target beans
+  ** implement the `org.springframework.core.Ordered` interface OR
+  ** `@Order` OR
+    *** uses
+      **** | target class
+      **** | `@Bean` methods
+      **** | individual bean definitions
+        ***** == multiple definitions / use == bean class
+  ** `@Priority`
+// TODO:
+`@Order` values may influence priorities at injection points,
 but be aware that they do not influence singleton startup order, which is an
 orthogonal concern determined by dependency relationships and `@DependsOn` declarations.
 
@@ -290,9 +288,9 @@ Note that the standard `jakarta.annotation.Priority` annotation is not available
 through `@Order` values in combination with `@Primary` on a single bean for each type.
 ====
 
-Even typed `Map` instances can be autowired as long as the expected key type is `String`.
-The map values contain all beans of the expected type, and the keys contain the
-corresponding bean names, as the following example shows:
+    ** | field or method / `Map<keyMustBeString, valueIsDesiredBeanType>`
+      *** `keyMustBeString` == bean names
+      *** -> ALL beans `SomeType` -- are provided from the -- `ApplicationContext`
 
 [tabs]
 ======
