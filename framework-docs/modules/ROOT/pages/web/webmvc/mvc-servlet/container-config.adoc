@@ -53,7 +53,7 @@ Kotlin::
     ** := interface /
         *** ensures that implementation is
             **** detected
-            **** -- automatically used to -- initialize any Servlet container
+            **** -- automatically used to -- initialize any Servlet container 3
 * `AbstractDispatcherServletInitializer`
     ** := abstract base class /
         *** implements `WebApplicationInitializer`
