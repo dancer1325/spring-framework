@@ -1,6 +1,12 @@
 [[mvc-flash-attributes]]
 = Flash Attributes
 
+* := redirect attributes /
+    ** data -- are passed to the -- redirect target
+    ** 👁️ are saved in the HTTP session -> do NOT appear in the URL 👁️
+
+* TODO:
+
 Flash attributes provide a way for one request to store attributes that are intended for use in
 another. This is most commonly needed when redirecting -- for example, the
 Post-Redirect-Get pattern. Flash attributes are saved temporarily before the
