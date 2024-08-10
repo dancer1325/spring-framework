@@ -1,7 +1,14 @@
 [[beans-java-configuration-annotation]]
 = Using the `@Configuration` annotation
 
-`@Configuration` is a class-level annotation indicating that an object is a source of
+* `@Configuration`
+    ** use cases
+        *** 👁️source of bean definitions 👁️
+    ** allows
+        *** dependencies between beans / bean1's class = bean2's class
+
+* TODO:
+ is a class-level annotation indicating that an object is a source of
 bean definitions. `@Configuration` classes declare beans through `@Bean`-annotated
 methods. Calls to `@Bean` methods on `@Configuration` classes can also be used to define
 inter-bean dependencies. See xref:core/beans/java/basic-concepts.adoc[Basic Concepts: `@Bean` and `@Configuration`] for a general introduction.
