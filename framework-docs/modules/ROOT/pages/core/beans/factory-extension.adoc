@@ -223,12 +223,12 @@ org.springframework.scripting.groovy.GroovyMessenger@272961
 [[beans-factory-extension-bpp-examples-aabpp]]
 === Example: The `AutowiredAnnotationBeanPostProcessor`
 
-Using callback interfaces or annotations in conjunction with a custom `BeanPostProcessor`
-implementation is a common means of extending the Spring IoC container. An example is
-Spring's `AutowiredAnnotationBeanPostProcessor` -- a `BeanPostProcessor` implementation
-that ships with the Spring distribution and autowires annotated fields, setter methods,
-and arbitrary config methods.
-
+* := `BeanPostProcessor` implementation /
+  ** built-in by Spring
+  ** autowires annotated
+    *** fields,
+    *** setter methods,
+    *** arbitrary config methods
 
 
 [[beans-factory-extension-factory-postprocessors]]
