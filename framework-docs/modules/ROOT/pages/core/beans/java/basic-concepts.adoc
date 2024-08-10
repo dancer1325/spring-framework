@@ -1,19 +1,19 @@
 [[beans-java-basic-concepts]]
 = Basic Concepts: `@Bean` and `@Configuration`
 
-The central artifacts in Spring's Java configuration support are
-`@Configuration`-annotated classes and `@Bean`-annotated methods.
-
-The `@Bean` annotation is used to indicate that a method instantiates, configures, and
-initializes a new object to be managed by the Spring IoC container. For those familiar
-with Spring's `<beans/>` XML configuration, the `@Bean` annotation plays the same role as
-the `<bean/>` element. You can use `@Bean`-annotated methods with any Spring
-`@Component`. However, they are most often used with `@Configuration` beans.
-
-Annotating a class with `@Configuration` indicates that its primary purpose is as a
-source of bean definitions. Furthermore, `@Configuration` classes let inter-bean
-dependencies be defined by calling other `@Bean` methods in the same class.
-The simplest possible `@Configuration` class reads as follows:
+* key artifacts | Spring's Java configuration
+    ** `@Configuration`-annotated classes
+    ** `@Bean`-annotated methods
+* `@Bean`
+    ** allows
+        *** method instantiates, configures, and initializes a new object / managed by the Spring IoC container
+    ** == `<bean/>` element | Spring's `<beans/>` XML configuration
+    ** uses
+        *** 👁️ + ANY Spring `@Component` 👁️
+        *** + `@Configuration` beans
+* `@Configuration`
+    ** Check xref:./configuration-annotation.adoc[`@Configuration`]
+    ** _Example1:_
 
 [tabs]
 ======
@@ -46,7 +46,7 @@ Kotlin::
 ----
 ======
 
-The preceding `AppConfig` class is equivalent to the following Spring `<beans/>` XML:
+* == | Spring `<beans/>` XML
 
 [source,xml,indent=0,subs="verbatim,quotes"]
 ----
@@ -66,7 +66,7 @@ The preceding `AppConfig` class is equivalent to the following Spring `<beans/>`
                 **** -> the same `@Bean` method -- is prevented from accidentally being invoked through a -- regular Java method call
                 **** reduce subtle bugs / hard to track down
 
-* If `@Bean` methods | classes NOT annotated with `@Configuration` OR `@Configuration(proxyBeanMethods=false)` ->  beans are processed as a "lite" mode
+* 👁️If `@Bean` methods | classes NOT annotated with `@Configuration` OR `@Configuration(proxyBeanMethods=false)` ->  beans are processed as a "lite" mode 👁️
     ** == `@Bean` methods == general-purpose factory method / NO special runtime processing ( == NO CGLIB subclass generated for it)
     ** -> a Java call to such method, ⚠️ NOT get intercepted by the container ⚠️
         *** == regular method call
