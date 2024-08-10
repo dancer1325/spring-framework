@@ -90,11 +90,8 @@ in an `ApplicationContext`.
 [[beans-factory-extension-bpp-examples-hw]]
 === Example: Hello World, `BeanPostProcessor`-style
 
-This first example illustrates basic usage. The example shows a custom
-`BeanPostProcessor` implementation that invokes the `toString()` method of each bean as
-it is created by the container and prints the resulting string to the system console.
-
-The following listing shows the custom `BeanPostProcessor` implementation class definition:
+* custom `BeanPostProcessor` implementation /
+  ** once the bean is created by the container -> invokes `toString()` & prints the resulting string | system console
 
 [tabs]
 ======
@@ -143,7 +140,7 @@ Kotlin::
 ----
 ======
 
-The following `beans` element uses the `InstantiationTracingBeanPostProcessor`:
+* define a `beans` / uses the `InstantiationTracingBeanPostProcessor`
 
 [source,xml,indent=0,subs="verbatim,quotes"]
 ----
@@ -170,6 +167,7 @@ The following `beans` element uses the `InstantiationTracingBeanPostProcessor`:
 	</beans>
 ----
 
+* TODO:
 Notice how the `InstantiationTracingBeanPostProcessor` is merely defined. It does not
 even have a name, and, because it is a bean, it can be dependency-injected as you would any
 other bean. (The preceding configuration also defines a bean that is backed by a Groovy
