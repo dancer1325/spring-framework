@@ -98,19 +98,12 @@ Kotlin::
 [[beans-java-injecting-imported-beans]]
 === Injecting Dependencies on Imported `@Bean` Definitions
 
-* TODO:
-The preceding example works but is simplistic. In most practical scenarios, beans have
-dependencies on one another across configuration classes. When using XML, this is not an
-issue, because no compiler is involved, and you can declare
-`ref="someBean"` and trust Spring to work it out during container initialization.
-When using `@Configuration` classes, the Java compiler places constraints on
-the configuration model, in that references to other beans must be valid Java syntax.
-
-Fortunately, solving this problem is simple. As
-xref:core/beans/java/bean-annotation.adoc#beans-java-dependencies[we already discussed],
-a `@Bean` method can have an arbitrary number of parameters that describe the bean
-dependencies. Consider the following more real-world scenario with several `@Configuration`
-classes, each depending on beans declared in the others:
+* typical scenario: bean1 have dependency -- across configuration classes, with -- bean2
+    ** NOT an issue | XML
+        *** Reason: 🧠 NO compiler is involved -> you can declare `ref="someBean"` & it works | container initialization 🧠
+    ** Java compiler constraint Java syntax of references to other beans | `@Configuration` classes
+        *** Check xref:core/beans/java/bean-annotation.adoc#beans-java-dependencies[`@Bean` dependencies]
+        *** _Example:_
 
 [tabs]
 ======
@@ -123,6 +116,7 @@ Java::
 
 		@Bean
 		public TransferService transferService(AccountRepository accountRepository) {
+            // AccountRepository        bean dependency
 			return new TransferServiceImpl(accountRepository);
 		}
 	}
@@ -132,12 +126,14 @@ Java::
 
 		@Bean
 		public AccountRepository accountRepository(DataSource dataSource) {
+            // DataSource        bean dependency
 			return new JdbcAccountRepository(dataSource);
 		}
 	}
 
 	@Configuration
 	@Import({ServiceConfig.class, RepositoryConfig.class})
+    // loading `@Bean` definitions -- from -- another `@Configuration` classes
 	public class SystemTestConfig {
 
 		@Bean
@@ -165,6 +161,7 @@ Kotlin::
 
 		@Bean
 		fun transferService(accountRepository: AccountRepository): TransferService {
+            // AccountRepository        bean dependency
 			return TransferServiceImpl(accountRepository)
 		}
 	}
@@ -174,12 +171,14 @@ Kotlin::
 
 		@Bean
 		fun accountRepository(dataSource: DataSource): AccountRepository {
+            // DataSource        bean dependency
 			return JdbcAccountRepository(dataSource)
 		}
 	}
 
 	@Configuration
 	@Import(ServiceConfig::class, RepositoryConfig::class)
+    // loading `@Bean` definitions -- from -- another `@Configuration` classes
 	class SystemTestConfig {
 
 		@Bean
@@ -198,12 +197,16 @@ Kotlin::
 ----
 ======
 
-There is another way to achieve the same result. Remember that `@Configuration` classes are
-ultimately only another bean in the container: This means that they can take advantage of
-`@Autowired` and `@Value` injection and other features the same as any other bean.
+* alternative
+    ** `@Configuration` classes are another bean | container
+        *** -> they can use
+                **** `@Autowired`
+                **** `@Value`
+                **** ANY other features of bean
 
 [WARNING]
 ====
+* TODO:
 Make sure that the dependencies you inject that way are of the simplest kind only. `@Configuration`
 classes are processed quite early during the initialization of the context, and forcing a dependency
 to be injected this way may lead to unexpected early initialization. Whenever possible, resort to
