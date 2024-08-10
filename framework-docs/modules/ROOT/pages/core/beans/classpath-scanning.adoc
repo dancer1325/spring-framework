@@ -1,31 +1,22 @@
 [[beans-classpath-scanning]]
 = Classpath Scanning and Managed Components
 
-Most examples in this chapter use XML to specify the configuration metadata that produces
-each `BeanDefinition` within the Spring container. The previous section
-(xref:core/beans/annotation-config.adoc[Annotation-based Container Configuration]) demonstrates how to provide a lot of the configuration
-metadata through source-level annotations. Even in those examples, however, the "base"
-bean definitions are explicitly defined in the XML file, while the annotations drive only
-the dependency injection. This section describes an option for implicitly detecting the
-candidate components by scanning the classpath. Candidate components are classes that
-match against a filter criteria and have a corresponding bean definition registered with
-the container. This removes the need to use XML to perform bean registration. Instead, you
-can use annotations (for example, `@Component`), AspectJ type expressions, or your own
-custom filter criteria to select which classes have bean definitions registered with
-the container.
-
-[NOTE]
-====
-You can define beans using Java rather than using XML files. Take a look at the
-`@Configuration`, `@Bean`, `@Import`, and `@DependsOn` annotations for examples of how to
-use these features.
-====
-
-
+* goal
+    ** detect implicitly the candidate components -- by -- scanning the classpath
+        *** candidate components
+            **** := classes / match against a filter criteria & have a bean registered | container
+                ***** -> bean registration -- via --
+                    ****** NOT XML
+                    ****** annotations (_Example:_ `@Component`, `@Configuration`, `@Bean`, `@Import`, and `@DependsOn`)
+                    ****** AspectJ type expressions
+                    ****** your own customer filter criteria
+        *** alternative to (xref:core/beans/annotation-config.adoc[Annotation-based Container Configuration])
+        *** Most examples specify the configuration metadata -- via -- XML
 
 [[beans-stereotype-annotations]]
 == `@Component` and Further Stereotype Annotations
 
+* TODO:
 The `@Repository` annotation is a marker for any class that fulfills the role or
 _stereotype_ of a repository (also known as Data Access Object or DAO). Among the uses
 of this marker is the automatic translation of exceptions, as described in
