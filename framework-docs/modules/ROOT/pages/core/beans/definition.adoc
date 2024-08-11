@@ -2,13 +2,7 @@
 = Bean Overview
 
 * := actual objects / make up your application
-  ** how to define them?
-    *** service layer objects, persistence layer objects -- are defined as -- repositories or data access objects (DAOs)
-    *** presentation objects -- are defined as -- Web controllers
-    *** infrastructure objects -- are defined as -- JPA `EntityManagerFactory`, JMS queues, and so forth.
-    *** fine-grained 👁️ domain objects are NOT defined in the container 👁️
-      **** Reason: 🧠 domain objects are responsibility of repositories and business logic 🧠
-  ** -- via configuring metadata / supplied to the container -> are created
+  ** -- managed by -- Spring IoC container
   ** `BeanDefinition` object
     *** == representation of the bean | container / contains the metadata
       **** package-qualified class name
@@ -20,6 +14,17 @@
       **** other configuration settings
         ***** _Example:_ size limit of the pool or number of connections to use in a bean / manages a connection pool
     *** metadata -- related to -- properties
+* ways to create a bean
+  ** configuration metadata / supplied to the container
+    *** ways
+      **** XML `<bean/>` definitions
+      **** `@Bean`
+  ** create objects / outside the container & register them | `ApplicationContext` implementations
+    *** steps
+      **** `ApplicationContext.getBeanFactory()` returns `DefaultListableBeanFactory` implementation
+      **** `DefaultListableBeanFactory.registerSingleton(..)` or `DefaultListableBeanFactory.registerBeanDefinition(..)`
+    *** NOT common
+  ** bean definition metadata
 
 [[beans-factory-bean-definition-tbl]]
 .The bean definition
@@ -54,31 +59,21 @@
 | xref:core/beans/factory-nature.adoc#beans-factory-lifecycle-disposablebean[Destruction Callbacks]
 |===
 
-* TODO:
-In addition to bean definitions that contain information on how to create a specific
-bean, the `ApplicationContext` implementations also permit the registration of existing
-objects that are created outside the container (by users). This is done by accessing the
-ApplicationContext's `BeanFactory` through the `getBeanFactory()` method, which returns
-the `DefaultListableBeanFactory` implementation. `DefaultListableBeanFactory` supports
-this registration through the `registerSingleton(..)` and `registerBeanDefinition(..)`
-methods. However, typical applications work solely with beans defined through regular
-bean definition metadata.
-
-[NOTE]
-====
-Bean metadata and manually supplied singleton instances need to be registered as early
-as possible, in order for the container to properly reason about them during autowiring
-and other introspection steps. While overriding existing metadata and existing
-singleton instances is supported to some degree, the registration of new beans at
-runtime (concurrently with live access to the factory) is not officially supported and may
-lead to concurrent access exceptions, inconsistent state in the bean container, or both.
-====
+* Bean metadata and manually supplied singleton instances -- need to be registered -- as early as possible
+  ** Reason: 🧠 container can properly reason about them | autowiring and other introspection steps 🧠
+* overriding existing metadata and existing singleton instances -- is supported to -- some degree
+* registration of new beans | runtime ( / -- concurrently with -- live access to the factory)
+  ** NOT officially supported
+  ** -- may lead to --
+    *** concurrent access exceptions,
+    *** inconsistent state in the bean container
 
 
 
 [[beans-definition-overriding]]
 == Overriding Beans
 
+* TODO:
 Bean overriding occurs when a bean is registered using an identifier that is already
 allocated. While bean overriding is possible, it makes the configuration harder to read.
 
