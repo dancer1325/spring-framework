@@ -101,10 +101,6 @@
 [[resources-implementations]]
 == Built-in `Resource` Implementations
 
-* TODO:
-
-Spring includes several built-in `Resource` implementations:
-
 * xref:core/resources.adoc#resources-implementations-urlresource[`UrlResource`]
 * xref:core/resources.adoc#resources-implementations-classpathresource[`ClassPathResource`]
 * xref:core/resources.adoc#resources-implementations-filesystemresource[`FileSystemResource`]
@@ -112,36 +108,31 @@ Spring includes several built-in `Resource` implementations:
 * xref:core/resources.adoc#resources-implementations-servletcontextresource[`ServletContextResource`]
 * xref:core/resources.adoc#resources-implementations-inputstreamresource[`InputStreamResource`]
 * xref:core/resources.adoc#resources-implementations-bytearrayresource[`ByteArrayResource`]
+* Check the rest | {spring-framework-api}/core/io/Resource.html[`Resource`]
 
-For a complete list of `Resource` implementations available in Spring, consult the
-"All Known Implementing Classes" section of the
-{spring-framework-api}/core/io/Resource.html[`Resource`] javadoc.
-
-
+* JavaBeans `PropertyEditor`
+    ** decide the type of `Resource` to create
+        *** If the path string contains a well-known prefix -> creates the specialized `Resource`
+        *** If it's NOT recognized -> 👁️ assumes it's a standard URL string and creates a `UrlResource` 👁️
 
 [[resources-implementations-urlresource]]
 === `UrlResource`
 
-`UrlResource` wraps a `java.net.URL` and can be used to access any object that is
-normally accessible with a URL, such as files, an HTTPS target, an FTP target, and
-others. All URLs have a standardized `String` representation, such that appropriate
-standardized prefixes are used to indicate one URL type from another. This includes
-`file:` for accessing filesystem paths, `https:` for accessing resources through the
-HTTPS protocol, `ftp:` for accessing resources through FTP, and others.
-
-A `UrlResource` is created by Java code by explicitly using the `UrlResource` constructor
-but is often created implicitly when you call an API method that takes a `String`
-argument meant to represent a path. For the latter case, a JavaBeans `PropertyEditor`
-ultimately decides which type of `Resource` to create. If the path string contains a
-well-known (to property editor, that is) prefix (such as `classpath:`), it creates an
-appropriate specialized `Resource` for that prefix. However, if it does not recognize the
-prefix, it assumes the string is a standard URL string and creates a `UrlResource`.
-
-
+* wraps a `java.net.URL`
+    ** -> standardized `String` representation / prefixes associated
+        *** `file:` -- for accessing -- filesystem paths
+        *** `https:`  -- for accessing -- resources / through HTTPS protocol
+        *** `ftp:` -- for accessing -- resources / through FTP
+* uses
+    ** access to ANY objects / -- accessible via -- URL
+        *** _Example:_ files, HTTPS target, FTP target
+* way to create it
+    ** Java code, via `UrlResource()`
 
 [[resources-implementations-classpathresource]]
 === `ClassPathResource`
 
+* TODO:
 This class represents a resource that should be obtained from the classpath. It uses
 either the thread context class loader, a given class loader, or a given class for
 loading resources.
@@ -219,9 +210,6 @@ This is a `Resource` implementation for a given byte array. It creates a
 
 It is useful for loading content from any given byte array without having to resort to a
 single-use `InputStreamResource`.
-
-
-
 
 [[resources-resourceloader]]
 == The `ResourceLoader` Interface
