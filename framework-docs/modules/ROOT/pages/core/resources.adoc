@@ -111,9 +111,10 @@
 * Check the rest | {spring-framework-api}/core/io/Resource.html[`Resource`]
 
 * JavaBeans `PropertyEditor`
-    ** decide the type of `Resource` to create
+    ** based on a String -- decide the -- type of `Resource` to create
         *** If the path string contains a well-known prefix -> creates the specialized `Resource`
         *** If it's NOT recognized -> 👁️ assumes it's a standard URL string and creates a `UrlResource` 👁️
+* 👁️ ALL -- allow resolution as -- `java.net.URL` 👁️
 
 [[resources-implementations-urlresource]]
 === `UrlResource`
@@ -132,39 +133,34 @@
 [[resources-implementations-classpathresource]]
 === `ClassPathResource`
 
-* TODO:
-This class represents a resource that should be obtained from the classpath. It uses
-either the thread context class loader, a given class loader, or a given class for
-loading resources.
-
-This `Resource` implementation supports resolution as a `java.io.File` if the class path
-resource resides in the file system but not for classpath resources that reside in a
-jar and have not been expanded (by the servlet engine or whatever the environment is)
-to the filesystem. To address this, the various `Resource` implementations always support
-resolution as a `java.net.URL`.
-
-A `ClassPathResource` is created by Java code by explicitly using the `ClassPathResource`
-constructor but is often created implicitly when you call an API method that takes a
-`String` argument meant to represent a path. For the latter case, a JavaBeans
-`PropertyEditor` recognizes the special prefix, `classpath:`, on the string path and
-creates a `ClassPathResource` in that case.
-
-
+* := resource / -- should be obtained from the -- classpath
+    ** -- passing a --
+        *** `ClassLoader`
+        *** `Class` -- for loading -- resources
+        *** simple String / -- represent a -- path
+    ** resolve the resources -- via -- `java.io.File` / valid for
+        *** class path | file system
+        *** NOT for class path | .jar & NOT expanded -- to the -- file system
 
 [[resources-implementations-filesystemresource]]
 === `FileSystemResource`
 
-This is a `Resource` implementation for `java.io.File` handles. It also supports
-`java.nio.file.Path` handles, applying Spring's standard String-based path
-transformations but performing all operations via the `java.nio.file.Files` API. For pure
-`java.nio.path.Path` based support use a `PathResource` instead. `FileSystemResource`
-supports resolution as a `File` and as a `URL`.
 
-
+* := resource /
+    ** support resolution as
+        *** `File`
+        *** `URL`
+    ** handle
+        *** `java.io.File`
+        *** `java.nio.file.Path` /
+            **** apply Spring's standard String-based path transformations
+            **** perform ALL operations -- via -- `java.nio.file.Files` API
+            **** if you want pure `java.nio.path.Path` based support -> use `PathResource`
 
 [[resources-implementations-pathresource]]
 === `PathResource`
 
+* TODO:
 This is a `Resource` implementation for `java.nio.file.Path` handles, performing all
 operations and transformations via the `Path` API. It supports resolution as a `File` and
 as a `URL` and also implements the extended `WritableResource` interface. `PathResource`
