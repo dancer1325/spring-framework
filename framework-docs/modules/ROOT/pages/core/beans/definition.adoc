@@ -73,19 +73,17 @@
 [[beans-definition-overriding]]
 == Overriding Beans
 
+* == register a bean / used identifier ALREADY allocated
+  ** -> configuration harder to read
+  ** container logs (by default) every attempt to override a bean at `INFO` level
+    *** if you set `allowBeanDefinitionOverriding=true` -> those logs are silenced
+* ⚠️will be deprecated in a future release ⚠️
+* `allowBeanDefinitionOverriding=false` | `ApplicationContext`
+  ** disable bean overriding
+    *** if you try to override bean | this situation -> exception is thrown
+
 * TODO:
-Bean overriding occurs when a bean is registered using an identifier that is already
-allocated. While bean overriding is possible, it makes the configuration harder to read.
 
-WARNING: Bean overriding will be deprecated in a future release.
-
-To disable bean overriding altogether, you can set the `allowBeanDefinitionOverriding`
-flag to `false` on the `ApplicationContext` before it is refreshed. In such a setup, an
-exception is thrown if bean overriding is used.
-
-By default, the container logs every attempt to override a bean at `INFO` level so that
-you can adapt your configuration accordingly. While not recommended, you can silence
-those logs by setting the `allowBeanDefinitionOverriding` flag to `true`.
 
 .Java Configuration
 ****
