@@ -1,13 +1,13 @@
 [[aot]]
 = Ahead of Time Optimizations
 
-This chapter covers Spring's Ahead of Time (AOT) optimizations.
-
-For AOT support specific to integration tests, see xref:testing/testcontext-framework/aot.adoc[Ahead of Time Support for Tests].
+* goal
+    ** Spring's Ahead of Time (AOT) optimizations
+* For AOT | integration tests -> Check xref:testing/testcontext-framework/aot.adoc[Ahead of Time Support for Tests]
 
 [[aot.introduction]]
 == Introduction to Ahead of Time Optimizations
-
+* TODO:
 Spring's support for AOT optimizations is meant to inspect an `ApplicationContext` at build time and apply decisions and discovery logic that usually happens at runtime.
 Doing so allows building an application startup arrangement that is more straightforward and focused on a fixed set of features based mainly on the classpath and the `Environment`.
 
