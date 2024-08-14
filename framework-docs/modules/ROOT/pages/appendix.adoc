@@ -1,22 +1,21 @@
 [[appendix]]
 = Appendix
 
-This part of the reference documentation covers topics that apply to multiple modules
-within the core Spring Framework.
-
+* goal
+    ** topics / -- apply to -- multiple core Spring Framework's modules
 
 [[appendix-spring-properties]]
 == Spring Properties
 
-{spring-framework-api}/core/SpringProperties.html[`SpringProperties`] is a static holder
-for properties that control certain low-level aspects of the Spring Framework. Users can
-configure these properties via JVM system properties or programmatically via the
-`SpringProperties.setProperty(String key, String value)` method. The latter may be
-necessary if the deployment environment disallows custom JVM system properties. As an
-alternative, these properties may be configured in a `spring.properties` file in the root
-of the classpath -- for example, deployed within the application's JAR file.
-
-The following table lists all currently supported Spring properties.
+* {spring-framework-api}/core/SpringProperties.html[`SpringProperties`]
+    ** := static holder for properties /
+        *** control low-level aspects of the Spring Framework
+        *** ways to be configured by users
+            **** via JVM system properties or
+            **** programmatically via the `SpringProperties.setProperty(String key, String value)`
+                ***** if the deployment environment disallows custom JVM system properties -> it's the 1! way
+            **** `spring.properties` | root of the classpath
+                ***** _Example:_ deployed | application's JAR file
 
 .Supported Spring Properties
 [cols="1,1"]
@@ -24,13 +23,16 @@ The following table lists all currently supported Spring properties.
 | Name | Description
 
 | `spring.aot.enabled`
-| Indicates the application should run with AOT generated artifacts. See
-xref:core/aot.adoc[Ahead of Time Optimizations] and 
-{spring-framework-api}++/aot/AotDetector.html#AOT_ENABLED++[`AotDetector`]
-for details.
+| == application -- should run with -- AOT generated artifacts
+
+Check
+
+&#160; &#160; - xref:core/aot.adoc[Ahead of Time Optimizations] and
+
+&#160; &#160; - {spring-framework-api}++/aot/AotDetector.html#AOT_ENABLED++[`AotDetector`]
 
 | `spring.beaninfo.ignore`
-| Instructs Spring to use the `Introspector.IGNORE_ALL_BEANINFO` mode when calling the
+| TODO: Instructs Spring to use the `Introspector.IGNORE_ALL_BEANINFO` mode when calling the
 JavaBeans `Introspector`. See
 {spring-framework-api}++/beans/StandardBeanInfoFactory.html#IGNORE_BEANINFO_PROPERTY_NAME++[`CachedIntrospectionResults`]
 for details.
