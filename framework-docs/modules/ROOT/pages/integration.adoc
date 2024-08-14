@@ -2,13 +2,5 @@
 = Integration
 :page-section-summary-toc: 1
 
-This part of the reference documentation covers Spring Framework's integration with
-a number of technologies.
-
-
-
-
-
-
-
-
+* goal
+    ** Spring Framework's integration -- with -- technologies
