@@ -33,64 +33,63 @@
         *** web -- "spring-web" --
                 **** "spring-webmvc"
                 **** "spring-webflux"
-   ** Spring's framework jars -- allow for -- deployment | JDK 9's module path (=="Jigsaw")
-For use in Jigsaw-enabled applications, the Spring Framework 5 jars come with
-"Automatic-Module-Name" manifest entries which define stable language-level module names
-("spring.core", "spring.context", etc.) independent from jar artifact names (the jars follow
-the same naming pattern with "-" instead of ".", e.g. "spring-core" and "spring-context").
-Of course, Spring's framework jars keep working fine on the classpath on both JDK 8 and 9+.
+    ** Spring's framework jars 
+       *** allow
+         **** deployment | JDK 9's module path (== link:https://openjdk.org/projects/jigsaw/[Jigsaw])
+         **** + JDK 8 or 9+ -- keep on -- working fine | classpath 
+       *** v5 -- come with -- "Automatic-Module-Name" manifest entries / 
+         **** stable language-level module names ("spring.core", "spring.context", etc.) -- independent from -- jar artifact names ( "spring-core" and "spring-context")
 
 [[overview-history]]
 == History of Spring and the Spring Framework
 
-Spring came into being in 2003 as a response to the complexity of the early
-https://en.wikipedia.org/wiki/Java_Platform,_Enterprise_Edition[J2EE] specifications.
-While some consider Java EE and its modern-day successor Jakarta EE to be in
-competition with Spring, they are in fact complementary. The Spring programming
-model does not embrace the Jakarta EE platform specification; rather, it integrates
-with carefully selected individual specifications from the traditional EE umbrella:
-
-* Servlet API ({JSR}340[JSR 340])
-* WebSocket API ({JSR}356[JSR 356])
-* Concurrency Utilities ({JSR}236[JSR 236])
-* JSON Binding API ({JSR}367[JSR 367])
-* Bean Validation ({JSR}303[JSR 303])
-* JPA ({JSR}338[JSR 338])
-* JMS ({JSR}914[JSR 914])
-* as well as JTA/JCA setups for transaction coordination, if necessary.
-
-The Spring Framework also supports the Dependency Injection
-({JSR}330[JSR 330]) and Common Annotations
-({JSR}250[JSR 250]) specifications, which application
-developers may choose to use instead of the Spring-specific mechanisms provided
-by the Spring Framework. Originally, those were based on common `javax` packages.
-
-As of Spring Framework 6.0, Spring has been upgraded to the Jakarta EE 9 level
-(e.g. Servlet 5.0+, JPA 3.0+), based on the `jakarta` namespace instead of the
-traditional `javax` packages. With EE 9 as the minimum and EE 10 supported already,
-Spring is prepared to provide out-of-the-box support for the further evolution of
-the Jakarta EE APIs. Spring Framework 6.0 is fully compatible with Tomcat 10.1,
-Jetty 11 and Undertow 2.3 as web servers, and also with Hibernate ORM 6.1.
-
-Over time, the role of Java/Jakarta EE in application development has evolved. In the
-early days of J2EE and Spring, applications were created to be deployed to an application
-server. Today, with the help of Spring Boot, applications are created in a devops- and
-cloud-friendly way, with the Servlet container embedded and trivial to change. As of
-Spring Framework 5, a WebFlux application does not even use the Servlet API directly
-and can run on servers (such as Netty) that are not Servlet containers.
-
-Spring continues to innovate and to evolve. Beyond the Spring Framework, there are other
-projects, such as Spring Boot, Spring Security, Spring Data, Spring Cloud, Spring Batch,
-among others. It’s important to remember that each project has its own source code repository,
-issue tracker, and release cadence. See {spring-site-projects}[spring.io/projects] for
-the complete list of Spring projects.
-
-
-
+* Root cause of it's origin
+   ** complexity of the early https://en.wikipedia.org/wiki/Java_Platform,_Enterprise_Edition[J2EE] specifications
+* vs Java EE or its modern-day successor Jakarta EE
+   ** complementary
+   ** Spring programming model 
+      *** does NOT embrace ALL the Jakarta EE platform specification
+      *** integrates with carefully SELECTED individual Java EE specifications
+         **** Servlet API ({JSR}340[JSR 340])
+         **** WebSocket API ({JSR}356[JSR 356])
+         **** Concurrency Utilities ({JSR}236[JSR 236])
+         **** JSON Binding API ({JSR}367[JSR 367])
+         **** Bean Validation ({JSR}303[JSR 303])
+         **** JPA ({JSR}338[JSR 338])
+         **** JMS ({JSR}914[JSR 914])
+         **** JTA/JCA setups | transaction coordination
+      *** supports / instead of  Spring-specific mechanisms
+         **** Dependency Injection ({JSR}330[JSR 330])
+         **** Common Annotations ({JSR}250[JSR 250]) 
+      *** From Spring Framework 6.0 -> upgraded to Jakarta EE 9
+         **** Spring -- is prepared to provide out-of-the-box -- support for the further evolution of the Jakarta EE APIs
+         **** fully compatible with
+            ***** web servers
+               ****** Tomcat 10.1
+               ****** Jetty 11
+               ****** Undertow 2.3
+            ***** Hibernate ORM 6.1
+* uses of Java/Jakarta EE & Spring
+   ** originally
+      *** applications / be deployed | an application server
+   ** nowadays
+      *** applications / 
+         **** Servlet container embedded
+         **** cloud-friendly way
+         **** NOT use the Servlet API & run | servers / != Servlet containers
+            ***** == Webflux applications
+* There are many Spring projects -- Check {spring-site-projects}[spring.io/projects] --
+   ** Spring Boot,
+   ** Spring Security,
+   ** Spring Data,
+   ** Spring Cloud,
+   ** Spring Batch,
+   ** ..
 
 [[overview-philosophy]]
 == Design Philosophy
 
+* TODO:
 When you learn about a framework, it’s important to know not only what it does but what
 principles it follows. Here are the guiding principles of the Spring Framework:
 
