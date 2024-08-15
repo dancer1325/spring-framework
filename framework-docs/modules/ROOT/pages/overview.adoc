@@ -2,50 +2,43 @@
 = Spring Framework Overview
 :docinfo1:
 
-Spring makes it easy to create Java enterprise applications. It provides everything you
-need to embrace the Java language in an enterprise environment, with support for Groovy
-and Kotlin as alternative languages on the JVM, and with the flexibility to create many
-kinds of architectures depending on an application's needs. As of Spring Framework 6.0,
-Spring requires Java 17+.
-
-Spring supports a wide range of application scenarios. In a large enterprise, applications
-often exist for a long time and have to run on a JDK and application server whose upgrade
-cycle is beyond the developer's control. Others may run as a single jar with the server embedded,
-possibly in a cloud environment. Yet others may be standalone applications (such as batch
-or integration workloads) that do not need a server.
-
-Spring is open source. It has a large and active community that provides continuous feedback
-based on a diverse range of real-world use cases. This has helped Spring to successfully
-evolve over a very long time.
-
-
-
+* Spring
+    ** makes it easy to create Java enterprise applications
+    ** support for
+        *** Groovy
+        *** Kotlin
+    ** let to create many kinds of architectures
+    ** Spring Framework 6.0+ -> require Java 17+
+    ** use cases
+        *** large enterprise, applications
+        *** 1! jar / server embedded (_Example:_ | cloud environment)
+        *** standalone applications / NOT require servers ( _Example:_ batch or integration workloads)
+    ** open source /
+        *** large and active community
 
 [[overview-spring]]
 == What We Mean by "Spring"
 
-The term "Spring" means different things in different contexts. It can be used to refer to
-the Spring Framework project itself, which is where it all started. Over time, other Spring
-projects have been built on top of the Spring Framework. Most often, when people say
-"Spring", they mean the entire family of projects. This reference documentation focuses on
-the foundation: the Spring Framework itself.
-
-The Spring Framework is divided into modules. Applications can choose which modules they need.
-At the heart are the modules of the core container, including a configuration model and a
-dependency injection mechanism. Beyond that, the Spring Framework provides foundational
-support for different application architectures, including messaging, transactional data and
-persistence, and web. It also includes the Servlet-based Spring MVC web framework and, in
-parallel, the Spring WebFlux reactive web framework.
-
-A note about modules: Spring's framework jars allow for deployment to JDK 9's module path
-("Jigsaw"). For use in Jigsaw-enabled applications, the Spring Framework 5 jars come with
+* Spring meaning -- based on the -- context
+    ** Spring Framework project itself
+        *** origin of ALL
+        *** this documentation
+    ** entire family of Spring projects
+* Spring Framework -- is divided into -- modules
+    ** main modules == "spring-core" + configuration model + DI mechanism
+    ** support for different
+        *** application architectures -- including messaging --
+        *** transactional data
+        *** persistence
+        *** web -- "spring-web" --
+                **** "spring-webmvc"
+                **** "spring-webflux"
+   ** Spring's framework jars -- allow for -- deployment | JDK 9's module path (=="Jigsaw")
+For use in Jigsaw-enabled applications, the Spring Framework 5 jars come with
 "Automatic-Module-Name" manifest entries which define stable language-level module names
 ("spring.core", "spring.context", etc.) independent from jar artifact names (the jars follow
 the same naming pattern with "-" instead of ".", e.g. "spring-core" and "spring-context").
 Of course, Spring's framework jars keep working fine on the classpath on both JDK 8 and 9+.
-
-
-
 
 [[overview-history]]
 == History of Spring and the Spring Framework
