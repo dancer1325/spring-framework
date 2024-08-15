@@ -32,44 +32,44 @@ Check
 &#160; &#160; - {spring-framework-api}++/aot/AotDetector.html#AOT_ENABLED++[`AotDetector`]
 
 | `spring.beaninfo.ignore`
-| TODO: Instructs Spring to use the `Introspector.IGNORE_ALL_BEANINFO` mode when calling the
-JavaBeans `Introspector`. See
-{spring-framework-api}++/beans/StandardBeanInfoFactory.html#IGNORE_BEANINFO_PROPERTY_NAME++[`CachedIntrospectionResults`]
-for details.
+| if Spring calls JavaBeans `Introspector` -> Spring uses the `Introspector.IGNORE_ALL_BEANINFO` mode
+
+
+Check {spring-framework-api}++/beans/StandardBeanInfoFactory.html#IGNORE_BEANINFO_PROPERTY_NAME++[`CachedIntrospectionResults`]
 
 | `spring.cache.reactivestreams.ignore`
-| Instructs Spring's caching infrastructure to ignore the presence of Reactive Streams,
-in particular Reactor's `Mono`/`Flux` in `@Cacheable` method return type declarations. See
-{spring-framework-api}++/cache/interceptor/CacheAspectSupport.html#IGNORE_REACTIVESTREAMS_PROPERTY_NAME++[`CacheAspectSupport`]
-for details.
+| Spring's caching infrastructure ignore the presence of Reactive Streams / Reactor's `Mono`/`Flux` in `@Cacheable` method return type declarations
+
+Check {spring-framework-api}++/cache/interceptor/CacheAspectSupport.html#IGNORE_REACTIVESTREAMS_PROPERTY_NAME++[`CacheAspectSupport`]
 
 | `spring.classformat.ignore`
-| Instructs Spring to ignore class format exceptions during classpath scanning, in
-particular for unsupported class file versions. See
-{spring-framework-api}++/context/annotation/ClassPathScanningCandidateComponentProvider.html#IGNORE_CLASSFORMAT_PROPERTY_NAME++[`ClassPathScanningCandidateComponentProvider`]
-for details.
+| Spring ignore class format exceptions / unsupported class file versions -- during -- classpath scanning
+
+Check {spring-framework-api}++/context/annotation/ClassPathScanningCandidateComponentProvider.html#IGNORE_CLASSFORMAT_PROPERTY_NAME++[`ClassPathScanningCandidateComponentProvider`]
 
 | `spring.context.checkpoint`
-| Property that specifies a common context checkpoint. See
-xref:integration/checkpoint-restore.adoc#_automatic_checkpointrestore_at_startup[Automatic
-checkpoint/restore at startup] and
-{spring-framework-api}++/context/support/DefaultLifecycleProcessor.html#CHECKPOINT_PROPERTY_NAME++[`DefaultLifecycleProcessor`]
-for details.
+| == common context checkpoint
+
+Check 
+
+&#160; &#160; - xref:integration/checkpoint-restore.adoc#_automatic_checkpointrestore_at_startup[Automatic checkpoint/restore at startup]
+&#160; &#160; - {spring-framework-api}++/context/support/DefaultLifecycleProcessor.html#CHECKPOINT_PROPERTY_NAME++[`DefaultLifecycleProcessor`]
 
 | `spring.context.exit`
-| Property for terminating the JVM when the context reaches a specific phase. See
-xref:integration/checkpoint-restore.adoc#_automatic_checkpointrestore_at_startup[Automatic
-checkpoint/restore at startup] and
-{spring-framework-api}++/context/support/DefaultLifecycleProcessor.html#EXIT_PROPERTY_NAME++[`DefaultLifecycleProcessor`]
-for details.
+| once context reaches a specific phase -> terminate the JVM
+
+Check 
+
+&#160; &#160; - xref:integration/checkpoint-restore.adoc#_automatic_checkpointrestore_at_startup[Automatic checkpoint/restore at startup] and
+&#160; &#160; - {spring-framework-api}++/context/support/DefaultLifecycleProcessor.html#EXIT_PROPERTY_NAME++[`DefaultLifecycleProcessor`]
 
 | `spring.context.expression.maxLength`
-| The maximum length for
-xref:core/expressions/evaluation.adoc#expressions-parser-configuration[Spring Expression Language]
-expressions used in XML bean definitions, `@Value`, etc.
+|  maximum length for xref:core/expressions/evaluation.adoc#expressions-parser-configuration[Spring Expression Language]
+
+_Example:_ expressions used in XML bean definitions, `@Value`, ...
 
 | `spring.expression.compiler.mode`
-| The mode to use when compiling expressions for the
+| // TODO:The mode to use when compiling expressions for the
 xref:core/expressions/evaluation.adoc#expressions-compiler-configuration[Spring Expression Language].
 
 | `spring.getenv.ignore`
