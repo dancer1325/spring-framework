@@ -1,45 +1,31 @@
 [[web-integration]]
 = Other Web Frameworks
 
-This chapter details Spring's integration with third-party web frameworks.
-
-One of the core value propositions of the Spring Framework is that of enabling
-_choice_. In a general sense, Spring does not force you to use or buy into any
-particular architecture, technology, or methodology (although it certainly recommends
-some over others). This freedom to pick and choose the architecture, technology, or
-methodology that is most relevant to a developer and their development team is
-arguably most evident in the web area, where Spring provides its own web frameworks
-(xref:web/webmvc.adoc#mvc[Spring MVC] and xref:web/webflux.adoc#webflux[Spring WebFlux]) while, at the same time,
-supporting integration with a number of popular third-party web frameworks.
-
-
-
+* goal
+	** Spring's integration -- with -- third-party web frameworks
+* Spring enable choose ANY
+	** architecture,
+	** technology,
+		*** _Example:_ | web area with (xref:web/webmvc.adoc#mvc[Spring MVC] & xref:web/webflux.adoc#webflux[Spring WebFlux])
+	** methodology
 
 [[web-integration-common]]
 == Common Configuration
 
-Before diving into the integration specifics of each supported web framework, let us
-first take a look at common Spring configuration that is not specific to any one web
-framework. (This section is equally applicable to Spring's own web framework variants.)
+* common Spring configuration
+	** layered architecture / web layer
+		*** one of many layers
+		*** == entry points | server-side application / -- delegates, to satisfy business-specific, to -- service objects (facades) /
+			**** defined | service layer
+			**** presentation-technology agnostic
+			**** vs other business-specific objects, data-access objects -- exist -- | distinct "business context"
+* goal
+	** configure a Spring container (`WebApplicationContext`) / contains ALL of the 'business beans' | your application
+		*** == 👁️ | your web application´s standard Jakarta EE servlet `web.xml` 👁️
+			**** declare {spring-framework-api}/web/context/ContextLoaderListener.html[`ContextLoaderListener`] 
+			**** add a `contextConfigLocation` `<context-param/>` / -- defines -- set of Spring XML configuration files to load
 
-One of the concepts (for want of a better word) espoused by Spring's lightweight
-application model is that of a layered architecture. Remember that in a "classic"
-layered architecture, the web layer is but one of many layers. It serves as one of the
-entry points into a server-side application, and it delegates to service objects
-(facades) that are defined in a service layer to satisfy business-specific (and
-presentation-technology agnostic) use cases. In Spring, these service objects, any other
-business-specific objects, data-access objects, and others exist in a distinct "business
-context", which contains no web or presentation layer objects (presentation objects,
-such as Spring MVC controllers, are typically configured in a distinct "presentation
-context"). This section details how you can configure a Spring container (a
-`WebApplicationContext`) that contains all of the 'business beans' in your application.
-
-Moving on to specifics, all you need to do is declare a
-{spring-framework-api}/web/context/ContextLoaderListener.html[`ContextLoaderListener`]
-in the standard Jakarta EE servlet `web.xml` file of your web application and add a
-`contextConfigLocation` `<context-param/>` section (in the same file) that defines which
-set of Spring XML configuration files to load.
-
+// TODO:
 Consider the following `<listener/>` configuration:
 
 [source,xml,indent=0,subs="verbatim,quotes"]
