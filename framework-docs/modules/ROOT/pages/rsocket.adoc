@@ -51,44 +51,41 @@
 [[rsocket-protocol]]
 === The Protocol
 
-TODO:
-One of the benefits of RSocket is that it has well defined behavior on the wire and an
-easy to read {rsocket-site}/about/protocol[specification] along with some protocol
-{rsocket-protocol-extensions}[extensions]. Therefore it is
-a good idea to read the spec, independent of language implementations and higher level
-framework APIs. This section provides a succinct overview to establish some context.
+* well defined behavior | wire
+	** {rsocket-site}/about/protocol[specification] + {rsocket-protocol-extensions}[protocol extensions]
 
 **Connecting**
 
-Initially a client connects to a server via some low level streaming transport such
-as TCP or WebSocket and sends a `SETUP` frame to the server to set parameters for the
-connection.
-
-The server may reject the `SETUP` frame, but generally after it is sent (for the client)
-and received (for the server), both sides can begin to make requests, unless `SETUP`
-indicates use of leasing semantics to limit the number of requests, in which case
-both sides must wait for a `LEASE` frame from the other end to permit making requests.
+* steps
+	** client -- connects, via some low level streaming transport (_Exmaple:_ TCP, WebSocket) , to a -- server
+	** client -- sends a `SETUP` frame, to the -- server
+		*** -> server set parameters for the connection
+		*** server -- may reject the -- `SETUP` frame
+		*** -> both sides can begin to make requests
+			**** except to `SETUP` / use leasing semantics -> both sides must wait for a `LEASE` frame from the other end / permit making requests
 
 **Making Requests**
 
-Once a connection is established, both sides may initiate a request through one of the
-frames `REQUEST_RESPONSE`, `REQUEST_STREAM`, `REQUEST_CHANNEL`, or `REQUEST_FNF`. Each of
-those frames carries one message from the requester to the responder.
-
-The responder may then return `PAYLOAD` frames with response messages, and in the case
-of `REQUEST_CHANNEL` the requester may also send `PAYLOAD` frames with more request
-messages.
-
-When a request involves a stream of messages such as `Request-Stream` and `Channel`,
-the responder must respect demand signals from the requester. Demand is expressed as a
-number of messages. Initial demand is specified in `REQUEST_STREAM` and
-`REQUEST_CHANNEL` frames. Subsequent demand is signaled via `REQUEST_N` frames.
-
-Each side may also send metadata notifications, via the `METADATA_PUSH` frame, that do not
-pertain to any individual request but rather to the connection as a whole.
+* Once a connection is established -> both sides -- may initiate a request through -- one of the frames
+	** available
+		*** `REQUEST_RESPONSE`,
+		*** `REQUEST_STREAM`,
+	 	*** `REQUEST_CHANNEL`,
+			**** requester -- may also send -- `PAYLOAD` frames / more request messages 
+		*** `REQUEST_FNF`
+	** / each frame carries 1 message from the requester -> to the responder
+* responder -- may then return -- `PAYLOAD` frames / + response messages
+	** if the request follows an interaction model / involves stream of messages (_Example:_`Request-Stream` and `Channel`) -> responder -- must respect -- demand signals from the requester
+		*** demand 
+			**** == # messages
+			**** initial demand -- is specified -- in `REQUEST_STREAM` & `REQUEST_CHANNEL` frames
+			**** subsequent demand -- is signaled via -- `REQUEST_N` frames.
+* each side -- may also send, via `METADATA_PUSH` frame,  -- metadata notifications
+	** pertain to the connection as a WHOLE
 
 **Message Format**
 
+TODO:
 RSocket messages contain data and metadata. Metadata can be used to send a route, a
 security token, etc. Data and metadata can be formatted differently. Mime types for each
 are declared in the `SETUP` frame and apply to all requests on a given connection.
