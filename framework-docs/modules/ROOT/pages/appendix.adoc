@@ -53,6 +53,7 @@ Check {spring-framework-api}++/context/annotation/ClassPathScanningCandidateComp
 Check 
 
 &#160; &#160; - xref:integration/checkpoint-restore.adoc#_automatic_checkpointrestore_at_startup[Automatic checkpoint/restore at startup]
+
 &#160; &#160; - {spring-framework-api}++/context/support/DefaultLifecycleProcessor.html#CHECKPOINT_PROPERTY_NAME++[`DefaultLifecycleProcessor`]
 
 | `spring.context.exit`
@@ -60,7 +61,8 @@ Check
 
 Check 
 
-&#160; &#160; - xref:integration/checkpoint-restore.adoc#_automatic_checkpointrestore_at_startup[Automatic checkpoint/restore at startup] and
+&#160; &#160; - xref:integration/checkpoint-restore.adoc#_automatic_checkpointrestore_at_startup[Automatic checkpoint/restore at startup] 
+
 &#160; &#160; - {spring-framework-api}++/context/support/DefaultLifecycleProcessor.html#EXIT_PROPERTY_NAME++[`DefaultLifecycleProcessor`]
 
 | `spring.context.expression.maxLength`
@@ -69,53 +71,54 @@ Check
 _Example:_ expressions used in XML bean definitions, `@Value`, ...
 
 | `spring.expression.compiler.mode`
-| // TODO:The mode to use when compiling expressions for the
-xref:core/expressions/evaluation.adoc#expressions-compiler-configuration[Spring Expression Language].
+| == mode / compiling expressions for the
+xref:core/expressions/evaluation.adoc#expressions-compiler-configuration[Spring Expression Language]
 
 | `spring.getenv.ignore`
-| Instructs Spring to ignore operating system environment variables if a Spring
-`Environment` property -- for example, a placeholder in a configuration String -- isn't
-resolvable otherwise. See
-{spring-framework-api}++/core/env/AbstractEnvironment.html#IGNORE_GETENV_PROPERTY_NAME++[`AbstractEnvironment`]
-for details.
+| == if a Spring `Environment` property (_Example:_ placeholder on configuration String) is NOT resolvable -> ignore OS environment variables 
+
+Check {spring-framework-api}++/core/env/AbstractEnvironment.html#IGNORE_GETENV_PROPERTY_NAME++[`AbstractEnvironment`]
 
 | `spring.jdbc.getParameterType.ignore`
-| Instructs Spring to ignore `java.sql.ParameterMetaData.getParameterType` completely.
-See the note in xref:data-access/jdbc/advanced.adoc#jdbc-batch-list[Batch Operations with a List of Objects].
+| == ignore `java.sql.ParameterMetaData.getParameterType` completely
+
+Check xref:data-access/jdbc/advanced.adoc#jdbc-batch-list[Batch Operations with a List of Objects]
 
 | `spring.jndi.ignore`
-| Instructs Spring to ignore a default JNDI environment, as an optimization for scenarios
-where nothing is ever to be found for such JNDI fallback searches to begin with, avoiding
-the repeated JNDI lookup overhead. See
-{spring-framework-api}++/jndi/JndiLocatorDelegate.html#IGNORE_JNDI_PROPERTY_NAME++[`JndiLocatorDelegate`]
-for details.
+| == ignore a default JNDI environment
+
+uses: nothing -- is ever to be found for -- JNDI fallback searches -> avoiding the repeated JNDI lookup overhead
+
+Check {spring-framework-api}++/jndi/JndiLocatorDelegate.html#IGNORE_JNDI_PROPERTY_NAME++[`JndiLocatorDelegate`]
 
 | `spring.objenesis.ignore`
-| Instructs Spring to ignore Objenesis, not even attempting to use it. See
-{spring-framework-api}++/objenesis/SpringObjenesis.html#IGNORE_OBJENESIS_PROPERTY_NAME++[`SpringObjenesis`]
-for details.
+| == ignore Objenesis / NOT even attempting to use it
+
+Check {spring-framework-api}++/objenesis/SpringObjenesis.html#IGNORE_OBJENESIS_PROPERTY_NAME++[`SpringObjenesis`]
 
 | `spring.test.aot.processing.failOnError`
-| A boolean flag that controls whether errors encountered during AOT processing in the
-_Spring TestContext Framework_ should result in an exception that fails the overall process.
-See xref:testing/testcontext-framework/aot.adoc[Ahead of Time Support for Tests].
+| := boolean flag / controls whether errors during AOT processing in _Spring TestContext Framework_  -- should result in -- exception / fails the overall process
+
+Check xref:testing/testcontext-framework/aot.adoc[Ahead of Time Support for Tests]
 
 | `spring.test.constructor.autowire.mode`
-| The default _test constructor autowire mode_ to use if `@TestConstructor` is not present
-on a test class. See xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-testconstructor[Changing the default test constructor autowire mode].
+| == if `@TestConstructor` is NOT present on a test class -> default _test constructor autowire mode_ 
+
+Check xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-testconstructor[Changing the default test constructor autowire mode]
 
 | `spring.test.context.cache.maxSize`
-| The maximum size of the context cache in the _Spring TestContext Framework_. See
-xref:testing/testcontext-framework/ctx-management/caching.adoc[Context Caching].
+| == maximum size of the context cache in the _Spring TestContext Framework_
+
+Check xref:testing/testcontext-framework/ctx-management/caching.adoc[Context Caching]
 
 | `spring.test.context.failure.threshold`
-| The failure threshold for errors encountered while attempting to load an `ApplicationContext`
-in the _Spring TestContext Framework_. See
-xref:testing/testcontext-framework/ctx-management/failure-threshold.adoc[Context Failure Threshold].
+| == failure threshold / errors attempting to load an `ApplicationContext` in the _Spring TestContext Framework_
+
+Check xref:testing/testcontext-framework/ctx-management/failure-threshold.adoc[Context Failure Threshold]
 
 | `spring.test.enclosing.configuration`
-| The default _enclosing configuration inheritance mode_ to use if
-`@NestedTestConfiguration` is not present on a test class. See
-xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-nestedtestconfiguration[Changing the default enclosing configuration inheritance mode].
+| == if `@NestedTestConfiguration` is NOT present on a test class -> default _enclosing configuration inheritance mode_ 
+
+Check xref:testing/annotations/integration-junit-jupiter.adoc#integration-testing-annotations-nestedtestconfiguration[Changing the default enclosing configuration inheritance mode]
 
 |===
