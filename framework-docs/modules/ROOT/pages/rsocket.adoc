@@ -1,48 +1,48 @@
 [[rsocket]]
 = RSocket
 
-This section describes Spring Framework's support for the RSocket protocol.
-
+* == Spring Framework's support -- for -- RSocket protocol
 
 [[rsocket-overview]]
 == Overview
 
-RSocket is an application protocol for multiplexed, duplex communication over TCP,
-WebSocket, and other byte stream transports, using one of the following interaction
-models:
-
-* `Request-Response` -- send one message and receive one back.
-* `Request-Stream` -- send one message and receive a stream of messages back.
-* `Channel` -- send streams of messages in both directions.
-* `Fire-and-Forget` -- send a one-way message.
-
-Once the initial connection is made, the "client" vs "server" distinction is lost as
-both sides become symmetrical and each side can initiate one of the above interactions.
-This is why in the protocol calls the participating sides "requester" and "responder"
-while the above interactions are called "request streams" or simply "requests".
-
-These are the key features and benefits of the RSocket protocol:
-
-* {reactive-streams-site}/[Reactive Streams] semantics across network boundary --
+* RSocket
+	** := application protocol
+		*** for
+			**** multiplexed,
+			**** duplex communication over TCP,
+			**** WebSocket,
+			**** other byte stream transports
+		*** / use one of the following interaction models
+			**** `Request-Response` -- send 1 message & receive 1 back
+			**** `Request-Stream` -- send 1 message & receive a stream of messages back
+			**** `Channel` -- send streams of messages in both directions
+			**** `Fire-and-Forget` -- send a 1-way message
+		*** 👁️Once the initial connection is made -> "client" == "server" 👁️
+			**** Reason: 🧠 both sides become symmetrical & each side can initiate one of the above interactions 🧠
+	** key features TODO:
+		*** {reactive-streams-site}/[Reactive Streams] semantics across network boundary --
 for streaming requests such as `Request-Stream` and `Channel`, back pressure signals
 travel between requester and responder, allowing a requester to slow down a responder at
 the source, hence reducing reliance on network layer congestion control, and the need
-for buffering at the network level or at any level.
-* Request throttling -- this feature is named "Leasing" after the `LEASE` frame that
+for buffering at the network level or at any level
+		*** Request throttling or "Leasing"
+			**** after the `LEASE` frame that
 can be sent from each end to limit the total number of requests allowed by other end
-for a given time. Leases are renewed periodically.
-* Session resumption -- this is designed for loss of connectivity and requires some state
+for a given time
+			**** Leases are renewed periodically
+		*** Session resumption -- this is designed for loss of connectivity and requires some state
 to be maintained. The state management is transparent for applications, and works well
 in combination with back pressure which can stop a producer when possible and reduce
-the amount of state required.
-* Fragmentation and re-assembly of large messages.
-* Keepalive (heartbeats).
+the amount of state required
+		*** Fragmentation and re-assembly of large messages
+		*** Keepalive (heartbeats)
 
-RSocket has {rsocket-github-org}[implementations] in multiple languages. The
-{rsocket-java}[Java library] is built on {reactor-site}/[Project Reactor],
-and {reactor-github-org}/reactor-netty[Reactor Netty] for the transport. That means
-signals from Reactive Streams Publishers in your application propagate transparently
-through RSocket across the network.
+	** {rsocket-github-org}[implementations] | multiple languages
+		*** {rsocket-java}[Java library] | {reactor-site}/[Project Reactor],
+		*** {reactor-github-org}/reactor-netty[Reactor Netty] -- for the -- transport
+			**** == signals from Reactive Streams Publishers in your application propagate transparently
+through RSocket across the network
 
 
 
