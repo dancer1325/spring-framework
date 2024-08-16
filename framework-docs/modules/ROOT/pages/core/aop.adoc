@@ -1,38 +1,25 @@
 [[aop]]
-= Aspect Oriented Programming with Spring
+= Aspect Oriented Programming (AOP) with Spring
 
-Aspect-oriented Programming (AOP) complements Object-oriented Programming (OOP) by
-providing another way of thinking about program structure. The key unit of modularity
-in OOP is the class, whereas in AOP the unit of modularity is the aspect. Aspects
-enable the modularization of concerns (such as transaction management) that cut across
-multiple types and objects. (Such concerns are often termed "crosscutting" concerns
-in AOP literature.)
-
-One of the key components of Spring is the AOP framework. While the Spring IoC
-container does not depend on AOP (meaning you do not need to use AOP if you don't want
-to), AOP complements Spring IoC to provide a very capable middleware solution.
-
-.Spring AOP with AspectJ pointcuts
-****
-Spring provides simple and powerful ways of writing custom aspects by using either a
-xref:core/aop/schema.adoc[schema-based approach] or the xref:core/aop/ataspectj.adoc[@AspectJ annotation style].
-Both of these styles offer fully typed advice and use of the AspectJ pointcut language
-while still using Spring AOP for weaving.
-
-This chapter discusses the schema- and @AspectJ-based AOP support.
-The lower-level AOP support is discussed in xref:core/aop-api.adoc[the following chapter].
-****
-
-AOP is used in the Spring Framework to:
-
-* Provide declarative enterprise services. The most important such service is
-  xref:data-access/transaction/declarative.adoc[declarative transaction management].
-* Let users implement custom aspects, complementing their use of OOP with AOP.
-
-NOTE: If you are interested only in generic declarative services or other pre-packaged
-declarative middleware services such as pooling, you do not need to work directly with
-Spring AOP, and can skip most of this chapter.
-
-
-
-
+* -- complements -- Object-oriented Programming (OOP)
+  ** Reason: 🧠 ANOTHER way of thinking about program structure 🧠
+    *** unit of modularity | OOP = class,
+    *** unit of modularity | AOP = aspect
+* Aspects
+  ** enable "crosscutting" concerns
+    *** := modularization of concerns (_Example:_ transaction management) / cut across multiple types and objects
+* Spring AOP framework
+  ** complements Spring IoC / -- provide a -- very capable middleware solution
+    *** 👁️ (in the other way around) Spring IoC -- does NOT depend on -- AOP 👁️
+  ** uses
+    *** provide declarative enterprise services -- _Example:_ xref:data-access/transaction/declarative.adoc[declarative transaction management] --
+      **** 👁️ if you are interested ONLY in generic declarative services or other pre-packaged declarative middleware services (_Example:_ pooling) -> NOT need to work with Spring AOP 👁️
+    *** implement custom aspects / -- complement -- OOP
+* goal
+  ** writing custom aspects | Spring /
+    *** fully typed advice + use of AspectJ pointcut language
+    *** still using Spring AOP
+    *** ways
+      **** xref:core/aop/schema.adoc[schema-based approach] or
+      **** xref:core/aop/ataspectj.adoc[@AspectJ annotation style]
+* lower-level AOP support -- xref:core/aop-api.adoc[the following chapter]
