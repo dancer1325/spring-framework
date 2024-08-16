@@ -229,20 +229,15 @@ Kotlin::
 
 
 [[expressions-type-conversion]]
-=== Type Conversion
+=== SpEL Type Conversion
 
-// TODO
-By default, SpEL uses the conversion service available in Spring core
-(`org.springframework.core.convert.ConversionService`). This conversion service comes
-with many built-in converters for common conversions, but is also fully extensible so
-that you can add custom conversions between types. Additionally, it is generics-aware.
-This means that, when you work with generic types in expressions, SpEL attempts
-conversions to maintain type correctness for any objects it encounters.
-
-What does this mean in practice? Suppose assignment, using `setValue()`, is being used
-to set a `List` property. The type of the property is actually `List<Boolean>`. SpEL
-recognizes that the elements of the list need to be converted to `Boolean` before
-being placed in it. The following example shows how to do so.
+* -- via, by default, -- `org.springframework.core.convert.ConversionService`
+	** == conversion service | Spring core
+	** many built-in converters
+	** fully extensible -> you can add custom conversions between types
+	** generics-aware
+		*** == if you work with generic types | expressions -> SpEL attempts conversions / maintain type correctness
+		*** _Example:_ pass `setValue(StringList)` / BooleanList is required -> convert it in advance
 
 [tabs]
 ======
@@ -259,8 +254,8 @@ Java::
 
 	EvaluationContext context = SimpleEvaluationContext.forReadOnlyDataBinding().build();
 
-	// "false" is passed in here as a String. SpEL and the conversion service
-	// will recognize that it needs to be a Boolean and convert it accordingly.
+	// "false" == String
+	// SpEL and the conversion service -- recognizes that -- Boolean is needed -> convert it accordingly
 	parser.parseExpression("booleanList[0]").setValue(context, simple, "false");
 
 	// b is false
@@ -280,8 +275,8 @@ Kotlin::
 
 	val context = SimpleEvaluationContext.forReadOnlyDataBinding().build()
 
-	// "false" is passed in here as a String. SpEL and the conversion service
-	// will recognize that it needs to be a Boolean and convert it accordingly.
+	// "false" == String
+	// SpEL and the conversion service -- recognizes that -- Boolean is needed -> convert it accordingly
 	parser.parseExpression("booleanList[0]").setValue(context, simple, "false")
 
 	// b is false
@@ -293,6 +288,7 @@ Kotlin::
 [[expressions-parser-configuration]]
 == Parser Configuration
 
+// TODO:
 It is possible to configure the SpEL expression parser by using a parser configuration
 object (`org.springframework.expression.spel.SpelParserConfiguration`). The configuration
 object controls the behavior of some of the expression components. For example, if you
