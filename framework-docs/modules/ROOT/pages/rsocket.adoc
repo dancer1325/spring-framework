@@ -20,35 +20,38 @@
 			**** `Fire-and-Forget` -- send a 1-way message
 		*** 👁️Once the initial connection is made -> "client" == "server" 👁️
 			**** Reason: 🧠 both sides become symmetrical & each side can initiate one of the above interactions 🧠
-	** key features TODO:
-		*** {reactive-streams-site}/[Reactive Streams] semantics across network boundary --
-for streaming requests such as `Request-Stream` and `Channel`, back pressure signals
-travel between requester and responder, allowing a requester to slow down a responder at
-the source, hence reducing reliance on network layer congestion control, and the need
-for buffering at the network level or at any level
-		*** Request throttling or "Leasing"
-			**** after the `LEASE` frame that
-can be sent from each end to limit the total number of requests allowed by other end
-for a given time
-			**** Leases are renewed periodically
-		*** Session resumption -- this is designed for loss of connectivity and requires some state
-to be maintained. The state management is transparent for applications, and works well
-in combination with back pressure which can stop a producer when possible and reduce
-the amount of state required
+	** key features 
+		*** {reactive-streams-site}/[Reactive Streams] semantics -- across -- network boundary
+			**** uses
+				***** streaming requests -- _Example:_ `Request-Stream` and `Channel`,
+				***** back pressure signals travel between requester and responder / requester slows down a responder | source -> reduce
+					****** reliance | network layer congestion control, 
+					****** need for buffering | network level or | ANY level
+		*** request throttling or "Leasing"
+			**** limit total allowed # of requests sent by other end | after the `LEASE` frame / given time
+			**** leases are renewed periodically
+		*** session resumption
+			**** requirements -- maintain a state --
+				***** state management
+					****** -- transparent for -- applications
+					****** + back pressure -- allows --
+						******* stoping a producer when possible
+						******* reducing the amount of state required
+			**** use cases
+				***** loss of connectivity
 		*** Fragmentation and re-assembly of large messages
 		*** Keepalive (heartbeats)
 
 	** {rsocket-github-org}[implementations] | multiple languages
 		*** {rsocket-java}[Java library] | {reactor-site}/[Project Reactor],
 		*** {reactor-github-org}/reactor-netty[Reactor Netty] -- for the -- transport
-			**** == signals from Reactive Streams Publishers in your application propagate transparently
-through RSocket across the network
-
+			**** == signals from Reactive Streams Publishers | your application / -- through RSocket across the network -- propagate transparently
 
 
 [[rsocket-protocol]]
 === The Protocol
 
+TODO:
 One of the benefits of RSocket is that it has well defined behavior on the wire and an
 easy to read {rsocket-site}/about/protocol[specification] along with some protocol
 {rsocket-protocol-extensions}[extensions]. Therefore it is
