@@ -2,11 +2,6 @@
 = Spring AOP APIs
 :page-section-summary-toc: 1
 
-The previous chapter described the Spring's support for AOP with @AspectJ and schema-based
-aspect definitions. In this chapter, we discuss the lower-level Spring AOP APIs. For common
-applications, we recommend the use of Spring AOP with AspectJ pointcuts as described in the
-previous chapter.
-
-
-
-
+* goal
+  ** lower-level Spring AOP APIs
+    *** recommendations: use link:https://github.com/dancer1325/spring-framework/blob/master/framework-docs/modules/ROOT/pages/core/aop.adoc[Spring AOP with AspectJ pointcuts (NOT this AOP API) ] | common applications
