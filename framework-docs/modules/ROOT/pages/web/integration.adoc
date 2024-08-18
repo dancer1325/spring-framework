@@ -2,7 +2,9 @@
 = Other Web Frameworks
 
 * goal
-	** Spring's integration -- with -- third-party web frameworks
+	** Spring's integration -- with -- third-party web frameworks / allows
+		*** looking up beans simpler 
+		*** using DI | their controllers
 * Spring enable choose ANY
 	** architecture,
 	** technology,
@@ -23,70 +25,56 @@
 	** configure a Spring container (`WebApplicationContext`) / contains ALL of the 'business beans' | your application
 		*** == 👁️ | your web application´s standard Jakarta EE servlet `web.xml` 👁️
 			**** declare {spring-framework-api}/web/context/ContextLoaderListener.html[`ContextLoaderListener`] 
-			**** add a `contextConfigLocation` `<context-param/>` / -- defines -- set of Spring XML configuration files to load
 
-// TODO:
-Consider the following `<listener/>` configuration:
+	[source,xml,indent=0,subs="verbatim,quotes"]
+	----
+		<listener>
+			<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+		</listener>
+	----
 
-[source,xml,indent=0,subs="verbatim,quotes"]
-----
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-----
+			**** add a `contextConfigLocation` as `<context-param/>` / -- defines -- set of Spring XML configuration files to load
+				***** if you do NOT add it -> `ContextLoaderListener` looks for the file `/WEB-INF/applicationContext.xml` to load 
 
-Further consider the following `<context-param/>` configuration:
+	[source,xml,indent=0,subs="verbatim,quotes"]
+	----
+		<context-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/applicationContext*.xml</param-value>
+		</context-param>
+	----
 
-[source,xml,indent=0,subs="verbatim,quotes"]
-----
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/applicationContext*.xml</param-value>
-	</context-param>
-----
+	** once the context files are loaded -> Spring creates a {spring-framework-api}/web/context/WebApplicationContext.html[`WebApplicationContext`] object
+		*** -- based on the -- bean definitions
+		*** stores it | web application's `ServletContext`
 
-If you do not specify the `contextConfigLocation` context parameter, the
-`ContextLoaderListener` looks for a file called `/WEB-INF/applicationContext.xml` to
-load. Once the context files are loaded, Spring creates a
-{spring-framework-api}/web/context/WebApplicationContext.html[`WebApplicationContext`]
-object based on the bean definitions and stores it in the `ServletContext` of the web
-application.
-
-All Java web frameworks are built on top of the Servlet API, so you can use the
-following code snippet to get access to this "business context" `ApplicationContext`
-created by the `ContextLoaderListener`.
-
-The following example shows how to get the `WebApplicationContext`:
+* ALL Java web frameworks -- are built -- | Servlet API
+	** _Example:_ get access to -- this "business context" `ApplicationContext` / -- created by the -- `ContextLoaderListener`
 
 [source,java,indent=0,subs="verbatim,quotes"]
 ----
 	WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(servletContext);
 ----
 
-The
-{spring-framework-api}/web/context/support/WebApplicationContextUtils.html[`WebApplicationContextUtils`]
-class is for convenience, so you need not remember the name of the `ServletContext`
-attribute. Its `getWebApplicationContext()` method returns `null` if an object
-does not exist under the `WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE`
-key. Rather than risk getting `NullPointerExceptions` in your application, it is better
-to use the `getRequiredWebApplicationContext()` method. This method throws an exception
-when the `ApplicationContext` is missing.
-
-Once you have a reference to the `WebApplicationContext`, you can retrieve beans by their
-name or type. Most developers retrieve beans by name and then cast them to one of their
-implemented interfaces.
-
-Fortunately, most of the frameworks in this section have simpler ways of looking up beans.
-Not only do they make it easy to get beans from a Spring container, but they also let you
-use dependency injection on their controllers. Each web framework section has more detail
-on its specific integration strategies.
-
-
+* {spring-framework-api}/web/context/support/WebApplicationContextUtils.html[`WebApplicationContextUtils`]
+	** := class / 
+		*** `getWebApplicationContext()`
+			**** NO need to remember the name of the `ServletContext`
+			**** if an object does NOT exist | `WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE` -> returns `null` 
+		*** `getRequiredWebApplicationContext()`
+			**** if `ApplicationContext` is missing ->  throws an exception
+			**** vs `getWebApplicationContext()`
+				***** recommended `getRequiredWebApplicationContext()`
+* once you have a reference to the `WebApplicationContext` -> you can retrieve beans -- by -- their
+	** name
+		*** then, you -- cast to -- one of their implemented interfaces
+	** type
 
 
 [[jsf]]
 == JSF
 
+// TODO:
 JavaServer Faces (JSF) is the JCP's standard component-based, event-driven web
 user interface framework. It is an official part of the Jakarta EE umbrella but also
 individually usable, e.g. through embedding Mojarra or MyFaces within Tomcat.
