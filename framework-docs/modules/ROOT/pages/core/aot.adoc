@@ -39,12 +39,13 @@
 
 [[aot.basics]]
 == AOT engine overview
+
 * `ApplicationContextAotGenerator`
 	** entry point of the AOT engine / -- process an -- `ApplicationContext`
 	** steps, / -- based on a -- `GenericApplicationContext` that represents the application, to optimize a {spring-framework-api}/aot/generate/GenerationContext.html[`GenerationContext`]
 		*** refresh an `ApplicationContext` -- for -- AOT processing
 			**** vs traditional refresh
-				***** it creates bean definitions
+				***** ⭐ it creates bean definitions (!= instances) ⭐
 				***** traditional refresh create bean instances
 		*** invoke the available `BeanFactoryInitializationAotProcessor` implementations + apply their contributions against the `GenerationContext`
 			**** _Example:_ core implementation iterates over ALL candidate bean definitions & generates the necessary code to restore the state of the `BeanFactory`
@@ -56,44 +57,48 @@
 [[aot.refresh]]
 == Refresh for AOT Processing
 
-* TODO:
-Refresh for AOT processing is supported on all `GenericApplicationContext` implementations.
-An application context is created with any number of entry points, usually in the form of `@Configuration`-annotated classes.
 
-Let's look at a basic example:
-
-include-code::./AotProcessingSample[tag=myapplication]
-
-Starting this application with the regular runtime involves a number of steps including classpath scanning, configuration class parsing, bean instantiation, and lifecycle callback handling.
-Refresh for AOT processing only applies a subset of what happens with a xref:core/beans/introduction.adoc[regular `refresh`].
-AOT processing can be triggered as follows:
-
-include-code::./AotProcessingSample[tag=aotcontext]
-
-In this mode, xref:core/beans/factory-extension.adoc#beans-factory-extension-factory-postprocessors[`BeanFactoryPostProcessor` implementations] are invoked as usual.
-This includes configuration class parsing, import selectors, classpath scanning, etc.
-Such steps make sure that the `BeanRegistry` contains the relevant bean definitions for the application.
-If bean definitions are guarded by conditions (such as `@Profile`), these are evaluated,
-and bean definitions that don't match their conditions are discarded at this stage.
-
-If custom code needs to register extra beans programmatically, make sure that custom
-registration code uses `BeanDefinitionRegistry` instead of `BeanFactory` as only bean
-definitions are taken into account. A good pattern is to implement
-`ImportBeanDefinitionRegistrar` and register it via an `@Import` on one of your
-configuration classes.
-
-Because this mode does not actually create bean instances, `BeanPostProcessor` implementations are not invoked, except for specific variants that are relevant for AOT processing.
-These are:
-
-* `MergedBeanDefinitionPostProcessor` implementations post-process bean definitions to extract additional settings, such as `init` and `destroy` methods.
-* `SmartInstantiationAwareBeanPostProcessor` implementations determine a more precise bean type if necessary.
-This makes sure to create any proxy that will be required at runtime.
-
-Once this part completes, the `BeanFactory` contains the bean definitions that are necessary for the application to run. It does not trigger bean instantiation but allows the AOT engine to inspect the beans that will be created at runtime.
+* supported | ALL `GenericApplicationContext` implementations
+* application context -- is created with -- ANY number of entry points / -- in the form of -- `@Configuration`-annotated classes
+	** _Example:_
+	include-code::./AotProcessingSample[tag=myapplication]
+		*** steps to start this application -- with the -- regular runtime
+			**** classpath scanning,
+			**** configuration class parsing,
+			**** bean instantiation,
+			**** lifecycle callback handling
+* refresh for AOT processing == subset of steps of xref:core/beans/introduction.adoc[regular `refresh`]
+* way to trigger the AOT processing
+	include-code::./AotProcessingSample[tag=aotcontext]
+* invocation of xref:core/beans/factory-extension.adoc#beans-factory-extension-factory-postprocessors[`BeanFactoryPostProcessor` implementations] == usual invocation
+	** goal
+		*** guarantee `BeanRegistry` -- contains the -- relevant bean definitions / application
+	** steps
+		*** configuration class parsing,
+		*** import selectors,
+		*** classpath scanning,
+		*** etc.
+	** if bean definitions are guarded by conditions ( -- _Example:_ `@Profile` -- ) -> 
+		*** conditions are evaluated,
+		*** bean definitions / do NOT match their conditions -> discarded
+	** if custom code -- needs to register -- extra beans programmatically -> use `BeanDefinitionRegistry` (-- instead of `BeanFactory` --)
+		*** good pattern
+			**** implement `ImportBeanDefinitionRegistrar`
+			**** register it -- via an -- `@Import` | one of your configuration classes
+	** are NOT invoked
+		*** Reason: 🧠 AOT processing does NOT create bean instances 🧠 
+		*** exceptions of variants / -- relevant for -- AOT processing
+			**** `MergedBeanDefinitionPostProcessor` implementations
+				***** post-process bean definitions -- to extract -- additional settings (_Example:_ `init` and `destroy` methods)
+			**** `SmartInstantiationAwareBeanPostProcessor` implementations
+				***** if necessary -> determine a more precise bean type
+				***** guarantee to create any proxy / required | runtime
+	** bean instantiation NOT triggered, BUT allows the AOT engine, inspect the beans / will be created | runtime
 
 [[aot.bean-factory-initialization-contributions]]
 == Bean Factory Initialization AOT Contributions
 
+* TODO:
 Components that want to participate in this step can implement the {spring-framework-api}/beans/factory/aot/BeanFactoryInitializationAotProcessor.html[`BeanFactoryInitializationAotProcessor`] interface.
 Each implementation can return an AOT contribution, based on the state of the bean factory.
 
