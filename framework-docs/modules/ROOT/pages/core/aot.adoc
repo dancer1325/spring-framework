@@ -3,57 +3,60 @@
 
 * goal
     ** Spring's Ahead of Time (AOT) optimizations
+	*** Spring applications -- are deployed, via GraalVM, as -- native images
 * For AOT | integration tests -> Check xref:testing/testcontext-framework/aot.adoc[Ahead of Time Support for Tests]
 
 [[aot.introduction]]
 == Introduction to Ahead of Time Optimizations
-* TODO:
-Spring's support for AOT optimizations is meant to inspect an `ApplicationContext` at build time and apply decisions and discovery logic that usually happens at runtime.
-Doing so allows building an application startup arrangement that is more straightforward and focused on a fixed set of features based mainly on the classpath and the `Environment`.
 
-Applying such optimizations early implies the following restrictions:
-
-* The classpath is fixed and fully defined at build time.
-* The beans defined in your application cannot change at runtime, meaning:
-** `@Profile`, in particular profile-specific configuration, needs to be chosen at build time and is automatically enabled at runtime when AOT is enabled.
-** `Environment` properties that impact the presence of a bean (`@Conditional`) are only considered at build time.
-* Bean definitions with instance suppliers (lambdas or method references) cannot be transformed ahead-of-time.
-* Beans registered as singletons (using `registerSingleton`, typically from
-`ConfigurableListableBeanFactory`) cannot be transformed ahead-of-time either.
-* As we cannot rely on the instance, make sure that the bean type is as precise as
-possible.
-
-TIP: See also the xref:core/aot.adoc#aot.bestpractices[] section.
-
-When these restrictions are in place, it becomes possible to perform ahead-of-time processing at build time and generate additional assets.
-A Spring AOT processed application typically generates:
-
-* Java source code
-* Bytecode (usually for dynamic proxies)
-* {spring-framework-api}/aot/hint/RuntimeHints.html[`RuntimeHints`] for the use of reflection, resource loading, serialization, and JDK proxies
-
-NOTE: At the moment, AOT is focused on allowing Spring applications to be deployed as native images using GraalVM.
-We intend to support more JVM-based use cases in future generations.
+* Spring's support for AOT optimizations == `ApplicationContext` | build time + apply decisions and discovery logic / usually happens | runtime ->
+	** application startup arrangement / -- is more straightforward and focused on a -- fixed set of features / -- based mainly -- | classpath & `Environment`
+	** restrictions
+		*** classpath is fixed and fully defined | build time
+		*** beans / defined | your application can NOT change | runtime, ==
+			**** `@Profile` (== particular profile-specific configuration)
+				***** -- needs to be chosen -- | build time
+				***** if AOT is enabled -> automatically enabled | runtime 
+			**** `Environment` properties / impact the presence of a bean (`@Conditional`) -- are only considered --  | build time
+		*** Bean definitions / instance suppliers (lambdas or method references) can NOT be transformed ahead-of-time
+		*** Beans / registered as singletons -- can NOT be transformed -- ahead-of-time
+			**** `ConfigurableListableBeanFactory.registerSingleton` -- way to register singleton bean --
+		*** bean type must be as precise as possible
+			**** Reason: 🧠 can NOT rely on the instance 🧠
+	** check xref:core/aot.adoc#aot.bestpractices[]
+* Spring AOT processed application -- typically generates --
+	** Java source code
+	** Bytecode 
+		*** use cases
+			**** dynamic proxies
+	** {spring-framework-api}/aot/hint/RuntimeHints.html[`RuntimeHints`]
+		*** use cases
+			**** reflection,
+			**** resource loading,
+			**** serialization,
+			**** JDK proxies
+			**** generate relevant GraalVM native image configuration files
 
 [[aot.basics]]
 == AOT engine overview
+* `ApplicationContextAotGenerator`
+	** entry point of the AOT engine / -- process an -- `ApplicationContext`
+	** steps, / -- based on a -- `GenericApplicationContext` that represents the application, to optimize a {spring-framework-api}/aot/generate/GenerationContext.html[`GenerationContext`]
+		*** refresh an `ApplicationContext` -- for -- AOT processing
+			**** vs traditional refresh
+				***** it creates bean definitions
+				***** traditional refresh create bean instances
+		*** invoke the available `BeanFactoryInitializationAotProcessor` implementations + apply their contributions against the `GenerationContext`
+			**** _Example:_ core implementation iterates over ALL candidate bean definitions & generates the necessary code to restore the state of the `BeanFactory`
+	** once, previous steps are completed -> `GenerationContext` -- will have been updated with the generated -- code, resources, and classes / -- necessary for -- the application to run
+	** `.processAheadOfTime`
+		*** returns the `ApplicationContextInitializer`'s class name entry point / -- allows -- context is started with AOT optimizations
 
-The entry point of the AOT engine for processing an `ApplicationContext` is `ApplicationContextAotGenerator`. It takes care of the following steps, based on a `GenericApplicationContext` that represents the application to optimize and a {spring-framework-api}/aot/generate/GenerationContext.html[`GenerationContext`]:
-
-* Refresh an `ApplicationContext` for AOT processing. Contrary to a traditional refresh, this version only creates bean definitions, not bean instances.
-* Invoke the available `BeanFactoryInitializationAotProcessor` implementations and apply their contributions against the `GenerationContext`.
-For instance, a core implementation iterates over all candidate bean definitions and generates the necessary code to restore the state of the `BeanFactory`.
-
-Once this process completes, the `GenerationContext` will have been updated with the generated code, resources, and classes that are necessary for the application to run.
-The `RuntimeHints` instance can also be used to generate the relevant GraalVM native image configuration files.
-
-`ApplicationContextAotGenerator#processAheadOfTime` returns the class name of the `ApplicationContextInitializer` entry point that allows the context to be started with AOT optimizations.
-
-Those steps are covered in greater detail in the sections below.
 
 [[aot.refresh]]
 == Refresh for AOT Processing
 
+* TODO:
 Refresh for AOT processing is supported on all `GenericApplicationContext` implementations.
 An application context is created with any number of entry points, usually in the form of `@Configuration`-annotated classes.
 
