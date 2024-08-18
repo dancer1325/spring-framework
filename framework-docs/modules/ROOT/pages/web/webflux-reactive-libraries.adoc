@@ -1,20 +1,32 @@
 [[webflux-reactive-libraries]]
 = Reactive Libraries
 
-`spring-webflux` depends on `reactor-core` and uses it internally to compose asynchronous
-logic and to provide Reactive Streams support. Generally, WebFlux APIs return `Flux` or
-`Mono` (since those are used internally) and leniently accept any Reactive Streams
-`Publisher` implementation as input.
-When a `Publisher` is provided, it can be treated only as a stream with unknown semantics (0..N).
-If, however, the semantics are known, you should wrap it with `Flux` or `Mono.from(Publisher)` instead
-of passing the raw `Publisher`.
-The use of `Flux` versus `Mono` is important, because it helps to express cardinality --
-for example, whether a single or multiple asynchronous values are expected,
-and that can be essential for making decisions (for example, when encoding or decoding HTTP messages).
-
-For annotated controllers, WebFlux transparently adapts to the reactive library chosen by
-the application. This is done with the help of the
-{spring-framework-api}/core/ReactiveAdapterRegistry.html[`ReactiveAdapterRegistry`], which
-provides pluggable support for reactive library and other asynchronous types. The registry
-has built-in support for RxJava 3, Kotlin coroutines and SmallRye Mutiny, but you can
-register others, too.
+* `spring-webflux`
+  ** -- depends on -- `reactor-core` / 
+    *** uses
+      **** internally to
+        ***** compose asynchronous logic
+        ***** provide Reactive Streams support
+* WebFlux APIs
+  ** return 
+    *** `Flux` or
+    *** `Mono`
+      **** used internally
+  ** leniently accept as input
+    *** ANY Reactive Streams `Publisher` implementation
+      **** if `Publisher` is provided -> it -- can be treated ONLY as a -- stream / unknown semantics (0..N)
+    ** if semantics are known -> wrap it with `Flux` or `Mono.from(Publisher)` 
+      *** ⚠️ instead of passing the raw `Publisher` ⚠️
+      *** helps to express cardinality
+        **** _Example:_ 1 or >1 asynchronous values are expected / -- can be essential for -- making decisions (for example, when encoding or decoding HTTP messages)
+* WebFlux
+  ** | annotated controllers
+    *** -- transparently adapts, thanks to {spring-framework-api}/core/ReactiveAdapterRegistry.html[`ReactiveAdapterRegistry`], to the -- reactive library / chosen by the application
+      **** {spring-framework-api}/core/ReactiveAdapterRegistry.html[`ReactiveAdapterRegistry`]
+        ***** built-in support for
+          ****** RxJava 3
+          ****** Kotlin coroutines
+          ****** SmallRye Mutiny
+        ***** -- provides -- pluggable support for
+          ****** reactive library
+          ****** other asynchronous types
