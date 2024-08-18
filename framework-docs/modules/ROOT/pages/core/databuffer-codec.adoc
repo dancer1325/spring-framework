@@ -86,39 +86,42 @@
 [[databuffers-utils]]
 == `DataBufferUtils`
 
-* TODO:
-`DataBufferUtils` offers a number of utility methods to operate on data buffers:
-
-* Join a stream of data buffers into a single buffer possibly with zero copy, e.g. via
-composite buffers, if that's supported by the underlying byte buffer API.
-* Turn `InputStream` or NIO `Channel` into `Flux<DataBuffer>`, and vice versa a
-`Publisher<DataBuffer>` into `OutputStream` or NIO `Channel`.
-* Methods to release or retain a `DataBuffer` if the buffer is an instance of
-`PooledDataBuffer`.
-* Skip or take from a stream of bytes until a specific byte count.
-
-
-
+* := class / has utility methods to operate | data buffers
+	** stream of data buffers -- can be joined into a -- 1! buffer / possibly with 0 copy
+		*** _Example:_ via composite buffers -- if it's supported | underlying byte buffer API --
+	** `InputStream` or NIO `Channel` <- are turned into -> `Flux<DataBuffer>` & `Publisher<DataBuffer>` <- is turned into -> `OutputStream` or NIO `Channel`
+	** if the buffer is an instance of `PooledDataBuffer` -> release or retain a `DataBuffer`
+	** skip or take -- from a -- stream of bytes till specific byte count
 
 [[codecs]]
 == Codecs
 
-The `org.springframework.core.codec` package provides the following strategy interfaces:
-
-* `Encoder` to encode `Publisher<T>` into a stream of data buffers.
-* `Decoder` to decode `Publisher<DataBuffer>` into a stream of higher level objects.
-
-The `spring-core` module provides `byte[]`, `ByteBuffer`, `DataBuffer`, `Resource`, and
-`String` encoder and decoder implementations. The `spring-web` module adds Jackson JSON,
-Jackson Smile, JAXB2, Protocol Buffers and other encoders and decoders. See
-xref:web/webflux/reactive-spring.adoc#webflux-codecs[Codecs] in the WebFlux section.
-
-
+* `org.springframework.core.codec`
+	** := package / provides the strategy interfaces
+		*** `Encoder`
+			**** `Publisher<T>` -- is encoded into a -- stream of data buffers
+		*** `Decoder`
+			**** `Publisher<DataBuffer>` -- is decoded into a -- stream of higher level objects
+* encoder and decoder implementations / 
+	** provided by `spring-core`
+		*** `byte[]`
+		*** `ByteBuffer`
+		*** `DataBuffer`
+		*** `Resource`
+		*** `String`
+	** provided by `spring-web`
+		*** `spring-core` ones
+		*** Jackson JSON,
+		*** Jackson Smile,
+		*** JAXB2,
+		*** Protocol Buffers
+		*** Check xref:web/webflux/reactive-spring.adoc#webflux-codecs[Codecs]
 
 
 [[databuffers-using]]
 == Using `DataBuffer`
 
+* TODO:
 When working with data buffers, special care must be taken to ensure buffers are released
 since they may be xref:core/databuffer-codec.adoc#databuffers-buffer-pooled[pooled]. We'll use codecs to illustrate
 how that works but the concepts apply more generally. Let's see what codecs must do
