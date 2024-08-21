@@ -1,21 +1,28 @@
 [[testcontext-ctx-management-env-profiles]]
 = Context Configuration with Environment Profiles
 
-The Spring Framework has first-class support for the notion of environments and profiles
-(AKA "bean definition profiles"), and integration tests can be configured to activate
-particular bean definition profiles for various testing scenarios. This is achieved by
-annotating a test class with the `@ActiveProfiles` annotation and supplying a list of
-profiles that should be activated when loading the `ApplicationContext` for the test.
+* Spring Framework -- has first-class support for --
+  ** environments &
+  ** profiles (AKA "bean definition profiles")
+* uses
+  ** | integration tests
+    *** activate particular bean definition profiles / different testing scenarios -- via --
+      **** `@ActiveProfiles` | test class + list of profiles / -- should be activated -- | loading the `ApplicationContext` -- for the -- test
+* `@ActiveProfiles`
+  ** -- can be used -- |
+    *** ANY implementation of the `SmartContextLoader` SPI
+    *** 👁️ NOT for implementations of the older `ContextLoader` SPI 👁️
+  ** `default` profile
+    *** uses
+      **** NO other profile is specifically activated
+      **** define "`fallback`" beans / -- be used -- | application's default state
 
-NOTE: You can use `@ActiveProfiles` with any implementation of the `SmartContextLoader`
-SPI, but `@ActiveProfiles` is not supported with implementations of the older
-`ContextLoader` SPI.
-
-Consider two examples with XML configuration and `@Configuration` classes:
+* _Example1:_ applicationContext and active profiles -- via -- XML configuration
 
 [source,xml,indent=0,subs="verbatim,quotes"]
 ----
 	<!-- app-config.xml -->
+    <!-- ALL is included here -->
 	<beans xmlns="http://www.springframework.org/schema/beans"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xmlns:jdbc="http://www.springframework.org/schema/jdbc"
@@ -30,13 +37,15 @@ Consider two examples with XML configuration and `@Configuration` classes:
 
 		<bean id="accountRepository"
 				class="com.bank.repository.internal.JdbcAccountRepository">
-			<constructor-arg ref="dataSource"/>
+			<constructor-arg ref="dataSource"/> <!-- == dependency on a `dataSource` bean -->
 		</bean>
 
 		<bean id="feePolicy"
 			class="com.bank.service.internal.ZeroFeePolicy"/>
 
+        <!-- `dataSource` bean is defined 3 times, 1 / profile -->
 		<beans profile="dev">
+            <!-- embedded database / created and populated with test data -->
 			<jdbc:embedded-database id="dataSource">
 				<jdbc:script
 					location="classpath:com/bank/config/sql/schema.sql"/>
@@ -66,8 +75,9 @@ Java::
 [source,java,indent=0,subs="verbatim,quotes",role="primary"]
 ----
 	@ExtendWith(SpringExtension.class)
-	// ApplicationContext will be loaded from "classpath:/app-config.xml"
+	// ApplicationContext will be loaded from "classpath:/app-config.xml" == root of the classpath
 	@ContextConfiguration("/app-config.xml")
+    // -> Spring TestContext Framework will load the `ApplicationContext` with the active profiles set to `{"dev"}`
 	@ActiveProfiles("dev")
 	class TransferServiceTest {
 
@@ -86,8 +96,9 @@ Kotlin::
 [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
 ----
 	@ExtendWith(SpringExtension::class)
-	// ApplicationContext will be loaded from "classpath:/app-config.xml"
+	// ApplicationContext will be loaded from "classpath:/app-config.xml" == root of the classpath
 	@ContextConfiguration("/app-config.xml")
+    // -> Spring TestContext Framework will load the `ApplicationContext` with the active profiles set to `{"dev"}`
 	@ActiveProfiles("dev")
 	class TransferServiceTest {
 
@@ -102,27 +113,7 @@ Kotlin::
 ----
 ======
 
-When `TransferServiceTest` is run, its `ApplicationContext` is loaded from the
-`app-config.xml` configuration file in the root of the classpath. If you inspect
-`app-config.xml`, you can see that the `accountRepository` bean has a dependency on a
-`dataSource` bean. However, `dataSource` is not defined as a top-level bean. Instead,
-`dataSource` is defined three times: in the `production` profile, in the `dev` profile,
-and in the `default` profile.
-
-By annotating `TransferServiceTest` with `@ActiveProfiles("dev")`, we instruct the Spring
-TestContext Framework to load the `ApplicationContext` with the active profiles set to
-`{"dev"}`. As a result, an embedded database is created and populated with test data, and
-the `accountRepository` bean is wired with a reference to the development `DataSource`.
-That is likely what we want in an integration test.
-
-It is sometimes useful to assign beans to a `default` profile. Beans within the default
-profile are included only when no other profile is specifically activated. You can use
-this to define "`fallback`" beans to be used in the application's default state. For
-example, you may explicitly provide a data source for `dev` and `production` profiles,
-but define an in-memory data source as a default when neither of these is active.
-
-The following code listings demonstrate how to implement the same configuration and
-integration test with `@Configuration` classes instead of XML:
+* _Example2:_ applicationContext and active profiles -- via -- `@Configuration`
 
 [tabs]
 ======
@@ -342,6 +333,7 @@ Kotlin::
 ----
 ======
 
+* TODO:
 In this variation, we have split the XML configuration into four independent
 `@Configuration` classes:
 
