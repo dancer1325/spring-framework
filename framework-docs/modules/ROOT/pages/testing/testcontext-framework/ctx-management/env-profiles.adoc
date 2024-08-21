@@ -414,7 +414,6 @@ Kotlin::
 ----
 ======
 
-
 * `@ActiveProfiles(inheritProfiles=boolean)`
   ** allows
     *** disabling the inheritance of active profiles
@@ -447,22 +446,20 @@ Kotlin::
 
 [[testcontext-ctx-management-env-profiles-ActiveProfilesResolver]]
 
-* TODO:
-Furthermore, it is sometimes necessary to resolve active profiles for tests
-programmatically instead of declaratively -- for example, based on:
-
-* The current operating system.
-* Whether tests are being run on a continuous integration build server.
-* The presence of certain environment variables.
-* The presence of custom class-level annotations.
-* Other concerns.
-
-To resolve active bean definition profiles programmatically, you can implement
-a custom `ActiveProfilesResolver` and register it by using the `resolver`
-attribute of `@ActiveProfiles`. For further information, see the corresponding
-{spring-framework-api}/test/context/ActiveProfilesResolver.html[javadoc].
-The following example demonstrates how to implement and register a custom
-`OperatingSystemActiveProfilesResolver`:
+* resolve active profiles
+    ** uses
+        *** | tests
+    ** programmatically -- can be based on --
+        *** current OS
+        *** differentiate if tests are being run | CI build server
+        *** presence of certain environment variables
+        *** presence of custom class-level annotations
+        *** ...
+    ** via
+        *** implement a custom `ActiveProfilesResolver` + register it -- via the -- `resolver`
+attribute of `@ActiveProfiles`
+            **** Check {spring-framework-api}/test/context/ActiveProfilesResolver.html[javadoc]
+            **** _Example:_
 
 [tabs]
 ======
@@ -470,7 +467,7 @@ Java::
 +
 [source,java,indent=0,subs="verbatim,quotes",role="primary"]
 ----
-	// "dev" profile overridden programmatically via a custom resolver
+	// "dev" profile overridden (due to `inheritProfiles = false`) programmatically via a custom resolver
 	@ActiveProfiles(
 			resolver = OperatingSystemActiveProfilesResolver.class,
 			inheritProfiles = false)
@@ -483,7 +480,7 @@ Kotlin::
 +
 [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
 ----
-	// "dev" profile overridden programmatically via a custom resolver
+	// "dev" profile overridden (due to `inheritProfiles = false`) programmatically via a custom resolver
 	@ActiveProfiles(
 			resolver = OperatingSystemActiveProfilesResolver::class,
 			inheritProfiles = false)
@@ -524,4 +521,3 @@ Kotlin::
 	}
 ----
 ======
-
