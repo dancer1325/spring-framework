@@ -1,20 +1,16 @@
 [[testcontext-ctx-management]]
 = Context Management
 
-Each `TestContext` provides context management and caching support for the test instance
-for which it is responsible. Test instances do not automatically receive access to the
-configured `ApplicationContext`. However, if a test class implements the
-`ApplicationContextAware` interface, a reference to the `ApplicationContext` is supplied
-to the test instance. Note that `AbstractJUnit4SpringContextTests` and
-`AbstractTestNGSpringContextTests` implement `ApplicationContextAware` and, therefore,
-provide access to the `ApplicationContext` automatically.
-
-.@Autowired ApplicationContext
-[TIP]
-=====
-As an alternative to implementing the `ApplicationContextAware` interface, you can inject
-the application context for your test class through the `@Autowired` annotation on either
-a field or setter method, as the following example shows:
+* Each `TestContext` -- provides for the test instance --
+    ** context management
+    ** caching support
+* Test instances -- do NOT automatically receive access to the -- configured `ApplicationContext`
+* 👁️ ways a test class / -- can access to -- `ApplicationContext` 👁️
+    ** implements the `ApplicationContextAware`
+        *** -> reference to the `ApplicationContext` / test instance -> provide access automatically to the -- `ApplicationContext`
+            **** Reason: 🧠 `AbstractJUnit4SpringContextTests` and `AbstractTestNGSpringContextTests`-- implement -- `ApplicationContextAware` 🧠
+    ** -- via the `@Autowired` | field or setter method -- inject the `ApplicationContext`
+        *** _Example:_
 
 [tabs]
 ======
@@ -25,13 +21,12 @@ Java::
 	@SpringJUnitConfig
 	class MyTest {
 
-		@Autowired // <1>
+		@Autowired // Inject the `ApplicationContext`
 		ApplicationContext applicationContext;
 
 		// class body...
 	}
 ----
-<1> Injecting the `ApplicationContext`.
 
 Kotlin::
 +
@@ -40,18 +35,17 @@ Kotlin::
 	@SpringJUnitConfig
 	class MyTest {
 
-		@Autowired // <1>
+		@Autowired // Inject the `ApplicationContext`
 		lateinit var applicationContext: ApplicationContext
 
 		// class body...
 	}
 ----
-<1> Injecting the `ApplicationContext`.
 ======
 
-
-Similarly, if your test is configured to load a `WebApplicationContext`, you can inject
-the web application context into your test, as follows:
+* 👁️ ways a test class / -- can access to -- `WebApplicationContext` 👁️
+    **  -- via the `@Autowired` -- inject the `WebApplicationContext`
+        *** _Example:_
 
 [tabs]
 ======
@@ -59,35 +53,32 @@ Java::
 +
 [source,java,indent=0,subs="verbatim,quotes",role="primary"]
 ----
-	@SpringJUnitWebConfig // <1>
+	@SpringJUnitWebConfig // Configuring the `WebApplicationContext`
 	class MyWebAppTest {
 
-		@Autowired // <2>
+		@Autowired // Inject the `WebApplicationContext`
 		WebApplicationContext wac;
 
 		// class body...
 	}
 ----
-<1> Configuring the `WebApplicationContext`.
-<2> Injecting the `WebApplicationContext`.
+
 
 Kotlin::
 +
 [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
 ----
-	@SpringJUnitWebConfig // <1>
+	@SpringJUnitWebConfig // Configuring the `WebApplicationContext`
 	class MyWebAppTest {
 
-		@Autowired // <2>
+		@Autowired // Inject the `WebApplicationContext`
 		lateinit var wac: WebApplicationContext
 		// class body...
 	}
 ----
-<1> Configuring the `WebApplicationContext`.
-<2> Injecting the `WebApplicationContext`.
 ======
 
-
+* TODO:
 Dependency injection by using `@Autowired` is provided by the
 `DependencyInjectionTestExecutionListener`, which is configured by default
 (see xref:testing/testcontext-framework/fixture-di.adoc[Dependency Injection of Test Fixtures]).
