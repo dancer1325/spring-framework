@@ -114,6 +114,11 @@ Kotlin::
 ======
 
 * _Example2:_ applicationContext and active profiles -- via -- `@Configuration`
+  ** 1 XML configuration -> 4 `@Configuration` classes
+    *** `TransferServiceConfig`
+    *** `StandaloneDataConfig`
+    *** `JndiDataConfig`
+    *** `DefaultDataConfig`
 
 [tabs]
 ======
@@ -292,7 +297,8 @@ Java::
 +
 [source,java,indent=0,subs="verbatim,quotes",role="primary"]
 ----
-	@SpringJUnitConfig({
+	// Alternative to specify how to load the ApplicationContext
+    @SpringJUnitConfig({
 			TransferServiceConfig.class,
 			StandaloneDataConfig.class,
 			JndiDataConfig.class,
@@ -314,7 +320,8 @@ Kotlin::
 +
 [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
 ----
-	@SpringJUnitConfig(
+	// Alternative to specify how to load the ApplicationContext
+    @SpringJUnitConfig(
 			TransferServiceConfig::class,
 			StandaloneDataConfig::class,
 			JndiDataConfig::class,
@@ -333,33 +340,9 @@ Kotlin::
 ----
 ======
 
-* TODO:
-In this variation, we have split the XML configuration into four independent
-`@Configuration` classes:
-
-* `TransferServiceConfig`: Acquires a `dataSource` through dependency injection by using
-  `@Autowired`.
-* `StandaloneDataConfig`: Defines a `dataSource` for an embedded database suitable for
-  developer tests.
-* `JndiDataConfig`: Defines a `dataSource` that is retrieved from JNDI in a production
-  environment.
-* `DefaultDataConfig`: Defines a `dataSource` for a default embedded database, in case no
-  profile is active.
-
-As with the XML-based configuration example, we still annotate `TransferServiceTest` with
-`@ActiveProfiles("dev")`, but this time we specify all four configuration classes by
-using the `@ContextConfiguration` annotation. The body of the test class itself remains
-completely unchanged.
-
-It is often the case that a single set of profiles is used across multiple test classes
-within a given project. Thus, to avoid duplicate declarations of the `@ActiveProfiles`
-annotation, you can declare `@ActiveProfiles` once on a base class, and subclasses
-automatically inherit the `@ActiveProfiles` configuration from the base class. In the
-following example, the declaration of `@ActiveProfiles` (as well as other annotations)
-has been moved to an abstract superclass, `AbstractIntegrationTest`:
-
-NOTE: Test configuration may also be inherited from enclosing classes. See
-xref:testing/testcontext-framework/support-classes.adoc#testcontext-junit-jupiter-nested-test-configuration[`@Nested` test class configuration] for details.
+* if you declare `@ActiveProfiles` & test configuration | base class -> subclasses -- automatically -- inherit it
+  ** Check xref:testing/testcontext-framework/support-classes.adoc#testcontext-junit-jupiter-nested-test-configuration[`@Nested` test class configuration]
+  ** _Example:__
 
 [tabs]
 ======
@@ -373,6 +356,7 @@ Java::
 			JndiDataConfig.class,
 			DefaultDataConfig.class})
 	@ActiveProfiles("dev")
+    // base class
 	abstract class AbstractIntegrationTest {
 	}
 ----
@@ -387,6 +371,7 @@ Kotlin::
 			JndiDataConfig::class,
 			DefaultDataConfig::class)
 	@ActiveProfiles("dev")
+    // base class
 	abstract class AbstractIntegrationTest {
 	}
 ----
@@ -429,8 +414,11 @@ Kotlin::
 ----
 ======
 
-`@ActiveProfiles` also supports an `inheritProfiles` attribute that can be used to
-disable the inheritance of active profiles, as the following example shows:
+
+* `@ActiveProfiles(inheritProfiles=boolean)`
+  ** allows
+    *** disabling the inheritance of active profiles
+  ** _Example:_
 
 [tabs]
 ======
@@ -458,6 +446,8 @@ Kotlin::
 ======
 
 [[testcontext-ctx-management-env-profiles-ActiveProfilesResolver]]
+
+* TODO:
 Furthermore, it is sometimes necessary to resolve active profiles for tests
 programmatically instead of declaratively -- for example, based on:
 
