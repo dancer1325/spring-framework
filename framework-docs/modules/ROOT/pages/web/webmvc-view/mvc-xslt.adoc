@@ -1,23 +1,19 @@
 [[mvc-view-xslt]]
 = XSLT Views
 
-XSLT is a transformation language for XML and is popular as a view technology within web
-applications. XSLT can be a good choice as a view technology if your application
-naturally deals with XML or if your model can easily be converted to XML. The following
-section shows how to produce an XML document as model data and have it transformed with
-XSLT in a Spring Web MVC application.
-
-This example is a trivial Spring application that creates a list of words in the
-`Controller` and adds them to the model map. The map is returned, along with the view
-name of our XSLT view. See xref:web/webmvc/mvc-controller.adoc[Annotated Controllers] for details of Spring Web MVC's
-`Controller` interface. The XSLT controller turns the list of words into a simple XML
-document ready for transformation.
-
-
+* XSLT
+    ** == transformation language -- for -- XML
+    ** uses
+        *** view technology | web applications /
+            **** -- deals ofently with -- XML or
+            *** model -- can easily be converted to -- XML
+* goal
+    ** produce a XML document as model data / -- have it transformed with -- XSLT | Spring Web MVC application
 
 [[mvc-view-xslt-beandefs]]
 == Beans
 
+* TODO:
 Configuration is standard for a simple Spring web application: The MVC configuration
 has to define an `XsltViewResolver` bean and regular MVC annotation configuration.
 The following example shows how to do so:
@@ -70,6 +66,11 @@ We also need a Controller that encapsulates our word-generation logic.
 The controller logic is encapsulated in a `@Controller` class, with the
 handler method being defined as follows:
 
+* _Example:_ `Controller`
+    ** Check xref:web/webmvc/mvc-controller.adoc[Annotated Controllers]
+    ** -- creates a -- list of words / -- are added them to the -- model map (XML document)
+        *** XML document -- is ready for -- transformation
+    ** returns the map + view name of the XSLT view
 [tabs]
 ======
 Java::
