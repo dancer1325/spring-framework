@@ -54,3 +54,4 @@ cached-antora-playbook.yml
 /framework-docs/*/target/
 
 node_modules
+/framework-docs/examples/*/target/*
