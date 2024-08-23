@@ -1,71 +1,61 @@
 [[context-introduction]]
 = Additional Capabilities of the `ApplicationContext`
 
-As discussed in the xref:web/webmvc-view/mvc-xslt.adoc#mvc-view-xslt-beandefs[chapter introduction], the `org.springframework.beans.factory`
-package provides basic functionality for managing and manipulating beans, including in a
-programmatic way. The `org.springframework.context` package adds the
-{spring-framework-api}/context/ApplicationContext.html[`ApplicationContext`]
-interface, which extends the `BeanFactory` interface, in addition to extending other
-interfaces to provide additional functionality in a more application
-framework-oriented style. Many people use the `ApplicationContext` in a completely
-declarative fashion, not even creating it programmatically, but instead relying on
-support classes such as `ContextLoader` to automatically instantiate an
-`ApplicationContext` as part of the normal startup process of a Jakarta EE web application.
-
-To enhance `BeanFactory` functionality in a more framework-oriented style, the context
-package also provides the following functionality:
-
-* Access to messages in i18n-style, through the `MessageSource` interface.
-* Access to resources, such as URLs and files, through the `ResourceLoader` interface.
-* Event publication, namely to beans that implement the `ApplicationListener` interface,
-  through the use of the `ApplicationEventPublisher` interface.
-* Loading of multiple (hierarchical) contexts, letting each be focused on one
-  particular layer, such as the web layer of an application, through the
-  `HierarchicalBeanFactory` interface.
-
+* `org.springframework.beans.factory` package
+  ** provides about beans, basic functionality (ALSO programmatically) for
+    *** managing
+    *** manipulating
+  ** Check xref:core/beans/basics.adoc[chapter introduction]
+* `org.springframework.context` package
+  ** adds the {spring-framework-api}/context/ApplicationContext.html[`ApplicationContext`] / extends in a way framework-oriented style
+    *** `BeanFactory` interface
+    *** other interfaces
+  ** uses
+    *** declarative fashion
+      **** _Example:_ via `ContextLoader` -- to automatically instantiate an -- `ApplicationContext` / part of the normal startup process of a Jakarta EE web application
+    *** enhance `BeanFactory` functionality / more framework-oriented style
+      **** `MessageSource`
+        ***** -- access to messages in -- i18n-style
+      **** `ResourceLoader`
+        ***** -- access to -- resources (_Example:_ URLs and files)
+      **** `ApplicationEventPublisher`
+        ***** -- publish events == beans / implement `ApplicationListener`
+      **** `HierarchicalBeanFactory`
+        ***** -- load -- several (hierarchical) contexts / each one can be focused | particular layer (_Example:_ web layer)
 
 
 [[context-functionality-messagesource]]
 == Internationalization using `MessageSource`
 
-The `ApplicationContext` interface extends an interface called `MessageSource` and,
-therefore, provides internationalization ("`i18n`") functionality. Spring also provides the
-`HierarchicalMessageSource` interface, which can resolve messages hierarchically.
-Together, these interfaces provide the foundation upon which Spring effects message
-resolution. The methods defined on these interfaces include:
-
-* `String getMessage(String code, Object[] args, String default, Locale loc)`: The basic
-  method used to retrieve a message from the `MessageSource`. When no message is found
-  for the specified locale, the default message is used. Any arguments passed in become
-  replacement values, using the `MessageFormat` functionality provided by the standard
-  library.
-* `String getMessage(String code, Object[] args, Locale loc)`: Essentially the same as
-  the previous method but with one difference: No default message can be specified. If
-  the message cannot be found, a `NoSuchMessageException` is thrown.
-* `String getMessage(MessageSourceResolvable resolvable, Locale locale)`: All properties
-  used in the preceding methods are also wrapped in a class named
-  `MessageSourceResolvable`, which you can use with this method.
-
-When an `ApplicationContext` is loaded, it automatically searches for a `MessageSource`
-bean defined in the context. The bean must have the name `messageSource`. If such a bean
-is found, all calls to the preceding methods are delegated to the message source. If no
-message source is found, the `ApplicationContext` attempts to find a parent containing a
-bean with the same name. If it does, it uses that bean as the `MessageSource`. If the
-`ApplicationContext` cannot find any source for messages, an empty
-`DelegatingMessageSource` is instantiated in order to be able to accept calls to the
-methods defined above.
-
-Spring provides three `MessageSource` implementations, `ResourceBundleMessageSource`, `ReloadableResourceBundleMessageSource`
-and `StaticMessageSource`. All of them implement `HierarchicalMessageSource` in order to do nested
-messaging. The `StaticMessageSource` is rarely used but provides programmatic ways to
-add messages to the source. The following example shows `ResourceBundleMessageSource`:
+* `MessageSource`
+  ** provides
+    *** internationalization ("`i18n`") functionality
+  ** some implementations of it
+    *** `ResourceBundleMessageSource`
+    *** `ReloadableResourceBundleMessageSource`
+    *** `StaticMessageSource`
+* `HierarchicalMessageSource`
+  ** resolve messages hierarchically
+  ** some implementations of it
+    *** `ResourceBundleMessageSource`
+    *** `ReloadableResourceBundleMessageSource`
+    *** `StaticMessageSource`
+* `MessageSource` + `HierarchicalMessageSource` == base of Spring message resolution
+* `ApplicationContext` extends `MessageSource`
+  ** when an `ApplicationContext` is loaded -> 👁️automatically searches for a `MessageSource` bean | context / 👁
+    *** bean name -- must be -- `messageSource`
+    *** if the bean is NOT found -> `ApplicationContext` attempts to find a parent / contains a bean with name `messageSource` / it's used as the `MessageSource`
+    *** if NO bean is found for messages -> empty `DelegatingMessageSource` is instantiated
+* _Example1:_ `ResourceBundleMessageSource` -- Check 'examples/third' --
 
 [source,xml,indent=0,subs="verbatim,quotes"]
 ----
-	<beans>
+	<!-- in "beans.xml" -->
+    <beans>
 		<bean id="messageSource"
 				class="org.springframework.context.support.ResourceBundleMessageSource">
 			<property name="basenames">
+                <!-- next "basenames" must be defined in the classpath -->
 				<list>
 					<value>format</value>
 					<value>exceptions</value>
@@ -76,27 +66,12 @@ add messages to the source. The following example shows `ResourceBundleMessageSo
 	</beans>
 ----
 
-The example assumes that you have three resource bundles called `format`, `exceptions` and `windows`
-defined in your classpath. Any request to resolve a message is
-handled in the JDK-standard way of resolving messages through `ResourceBundle` objects. For the
-purposes of the example, assume the contents of two of the above resource bundle files
-are as follows:
-
 [source,properties,indent=0,subs="verbatim,quotes"]
 ----
-	# in format.properties
+    # in format.properties
+    # let's be content of the resource bundle files
 	message=Alligators rock!
 ----
-
-[source,properties,indent=0,subs="verbatim,quotes"]
-----
-	# in exceptions.properties
-	argument.required=The {0} argument is required.
-----
-
-The next example shows a program to run the `MessageSource` functionality.
-Remember that all `ApplicationContext` implementations are also `MessageSource`
-implementations and so can be cast to the `MessageSource` interface.
 
 [tabs]
 ======
@@ -130,12 +105,16 @@ The resulting output from the above program is as follows:
 Alligators rock!
 ----
 
-To summarize, the `MessageSource` is defined in a file called `beans.xml`, which
-exists at the root of your classpath. The `messageSource` bean definition refers to a
-number of resource bundles through its `basenames` property. The three files that are
-passed in the list to the `basenames` property exist as files at the root of your
-classpath and are called `format.properties`, `exceptions.properties`, and
-`windows.properties`, respectively.
+* _Example2:_ run the `MessageSource` functionality
+
+[source,properties,indent=0,subs="verbatim,quotes"]
+----
+	# in exceptions.properties
+	argument.required=The {0} argument is required.
+----
+
+// TODO: Check and pass to the example!!
+
 
 The next example shows arguments passed to the message lookup. These arguments are
 converted into `String` objects and inserted into placeholders in the lookup message.
