@@ -86,8 +86,15 @@ This requires the `com.google.code.gson:gson` dependency.
 This requires the `jakarta.json.bind:jakarta.json.bind-api` dependency and an implementation available.
 
 | `ProtobufHttpMessageConverter`
-| An `HttpMessageConverter` implementation that can read and write Protobuf messages in binary format with the `"application/x-protobuf"`
-content type. This requires the `com.google.protobuf:protobuf-java` dependency.
+| - `HttpMessageConverter` implementation / can read and write Protobuf messages
+
+&nbsp; &nbsp; - in binary format
+
+&nbsp; &nbsp; - `"application/x-protobuf"` as content type
+
+- requirements
+
+&nbsp; &nbsp; - `com.google.protobuf:protobuf-java` dependency
 
 | `ProtobufJsonFormatHttpMessageConverter`
 | An `HttpMessageConverter` implementation that can read and write JSON documents to and from Protobuf messages.
