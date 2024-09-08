@@ -34,10 +34,15 @@ public class WebConfiguration implements WebMvcConfigurer {
 
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+		// Jackson2ObjectMapperBuilder used to create a common configuration for both next converters
 		Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder()
-				.indentOutput(true)
+				.indentOutput(true)		// enable indentation
 				.dateFormat(new SimpleDateFormat("yyyy-MM-dd"))
-				.modulesToInstall(new ParameterNamesModule());
+				.modulesToInstall(new ParameterNamesModule());		// allows accessing to parameter names -- feature Java v8 --
+				// other default properties
+				// DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES		disabled
+				// MapperFeature.DEFAULT_VIEW_INCLUSION						disabled
+
 		converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
 		converters.add(new MappingJackson2XmlHttpMessageConverter(builder.createXmlMapper(true).build()));
 	}
