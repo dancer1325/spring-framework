@@ -97,8 +97,11 @@ This requires the `jakarta.json.bind:jakarta.json.bind-api` dependency and an im
 &nbsp; &nbsp; - `com.google.protobuf:protobuf-java` dependency
 
 | `ProtobufJsonFormatHttpMessageConverter`
-| An `HttpMessageConverter` implementation that can read and write JSON documents to and from Protobuf messages.
-This requires the `com.google.protobuf:protobuf-java-util` dependency.
+| - `HttpMessageConverter` implementation / can read and write JSON documents -- to & from -- Protobuf messages
+
+- requirements
+
+&nbsp; &nbsp; - `com.google.protobuf:protobuf-java-util` dependency
 
 |===
 
