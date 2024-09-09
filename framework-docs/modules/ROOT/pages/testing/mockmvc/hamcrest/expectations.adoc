@@ -1,9 +1,12 @@
 [[mockmvc-server-defining-expectations]]
 = Defining Expectations
 
-You can define expectations by appending one or more `andExpect(..)` calls after
-performing a request, as the following example shows. As soon as one expectation fails,
-no other expectations will be asserted.
+* `.andExpect(..)` | after performing a request
+    ** >=1 can be added
+    ** allows
+        *** defining expectations
+            **** if an expectation fails -> next expectations will NOT be asserted
+    ** _Example:_
 
 [tabs]
 ======
@@ -28,10 +31,13 @@ Kotlin::
 ----
 ======
 
-You can define multiple expectations by appending `andExpectAll(..)` after performing a
-request, as the following example shows. In contrast to `andExpect(..)`,
-`andExpectAll(..)` guarantees that all supplied expectations will be asserted and that
-all failures will be tracked and reported.
+* `.andExpectAll(..)` | after performing a request
+    ** allows
+        *** defining multiple expectations
+    ** vs `andExpect(..)`
+        *** ALL supplied expectations will be asserted
+        *** ALL failures will be tracked and reported
+    ** _Example:_
 
 [tabs]
 ======
@@ -59,20 +65,19 @@ Kotlin::
 ----
 ======
 
-`MockMvcResultMatchers.*` provides a number of expectations, some of which are further
-nested with more detailed expectations.
+* `MockMvcResultMatchers.*`
+    ** provides expectations / some of them can be nested
 
-Expectations fall in two general categories. The first category of assertions verifies
-properties of the response (for example, the response status, headers, and content).
-These are the most important results to assert.
-
-The second category of assertions goes beyond the response. These assertions let you
-inspect Spring MVC specific aspects, such as which controller method processed the
-request, whether an exception was raised and handled, what the content of the model is,
-what view was selected, what flash attributes were added, and so on. They also let you
-inspect Servlet specific aspects, such as request and session attributes.
-
-The following test asserts that binding or validation failed:
+* expectations categories
+    ** assertions / verify properties of the response
+        *** _Example:_ response status, headers, and content
+        *** most important results / assert
+    ** assertions / goes beyond the response
+        *** inspect Spring MVC specific aspects
+            **** _Example:_ controller method / processed the request, an exception was raised and handled, content of the model is, view was selected, flash attributes were added
+        *** inspect Servlet specific aspects
+            **** _Example:_ request and session attributes
+* _Example:_ assert / binding or validation failed
 
 [tabs]
 ======
@@ -100,9 +105,21 @@ Kotlin::
 ----
 ======
 
-Many times, when writing tests, it is useful to dump the results of the performed
-request. You can do so as follows, where `print()` is a static import from
-`MockMvcResultHandlers`:
+* `static ...MockMvcResultHandlers.print`
+    ** uses
+        *** writing tests
+    ** allows
+        *** if request processing does NOT cause an unhandled exception -> dump the results of the performed request -- to -- `System.out`
+    ** variants
+        *** `print(OutputStream)`
+        *** `print(Writer)`
+            **** _Example:_ `print(myWriter)` -- prints the result data to a -- custom writer
+            **** _Example:_ `print(System.err)` -- prints the result data to -- `System.err`
+    ** alternative
+        *** `log()`
+            **** result data is logged as `DEBUG` | `org.springframework.test.web.servlet.result`
+                ***** != printed
+    ** _Example:_
 
 [tabs]
 ======
@@ -133,18 +150,12 @@ Kotlin::
 ----
 ======
 
-As long as request processing does not cause an unhandled exception, the `print()` method
-prints all the available result data to `System.out`. There is also a `log()` method and
-two additional variants of the `print()` method, one that accepts an `OutputStream` and
-one that accepts a `Writer`. For example, invoking `print(System.err)` prints the result
-data to `System.err`, while invoking `print(myWriter)` prints the result data to a custom
-writer. If you want to have the result data logged instead of printed, you can invoke the
-`log()` method, which logs the result data as a single `DEBUG` message under the
-`org.springframework.test.web.servlet.result` logging category.
 
-In some cases, you may want to get direct access to the result and verify something that
-cannot be verified otherwise. This can be achieved by appending `.andReturn()` after all
-other expectations, as the following example shows:
+* `.andReturn()` | after ALL other expectations
+    ** allows
+        *** getting direct access to the result
+        *** verifying something / can NOT be verified otherwise
+    ** _Example:_
 
 [tabs]
 ======
@@ -165,8 +176,10 @@ Kotlin::
 ----
 ======
 
-If all tests repeat the same expectations, you can set up common expectations once when
-building the `MockMvc` instance, as the following example shows:
+
+* if all tests repeat the same expectations -> you can set up COMMON expectations | building the `MockMvc` instance
+    ** common expectations are ALWAYS applied & NOT possible to override
+        *** ⚠️if you want to change -> you need to create a separate `MockMvc` instance ⚠️
 
 [tabs]
 ======
@@ -188,9 +201,8 @@ Kotlin::
 ----
 ======
 
-Note that common expectations are always applied and cannot be overridden without
-creating a separate `MockMvc` instance.
 
+* TODO:
 When a JSON response content contains hypermedia links created with
 {spring-github-org}/spring-hateoas[Spring HATEOAS], you can verify the
 resulting links by using JsonPath expressions, as the following example shows:
