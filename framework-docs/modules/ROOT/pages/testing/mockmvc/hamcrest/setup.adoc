@@ -1,100 +1,97 @@
 [[mockmvc-setup]]
 = Configuring MockMvc
 
-MockMvc can be setup in one of two ways. One is to point directly to the controllers you
-want to test and programmatically configure Spring MVC infrastructure. The second is to
-point to Spring configuration with Spring MVC and controller infrastructure in it.
+* ways to set up MockMvc
+    ** point directly to the controllers & programmatically configure Spring MVC infrastructure
+        *** _Example:_
 
-TIP: For a comparison of those two modes, check xref:testing/mockmvc/setup-options.adoc[Setup Options].
+    [tabs]
+    ======
+    Java::
+    +
+    [source,java,indent=0,subs="verbatim,quotes",role="primary"]
+    ----
+        class MyWebTests {
 
-To set up MockMvc for testing a specific controller, use the following:
+            MockMvc mockMvc;
 
-[tabs]
-======
-Java::
-+
-[source,java,indent=0,subs="verbatim,quotes",role="primary"]
-----
-	class MyWebTests {
+            @BeforeEach
+            void setup() {
+                // set up MockMvc / test a specific controller
+                this.mockMvc = MockMvcBuilders.standaloneSetup(new AccountController()).build();
 
-		MockMvc mockMvc;
+            }
 
-		@BeforeEach
-		void setup() {
-			this.mockMvc = MockMvcBuilders.standaloneSetup(new AccountController()).build();
-		}
+            // ...
 
-		// ...
+        }
+    ----
 
-	}
-----
+    Kotlin::
+    +
+    [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
+    ----
+        class MyWebTests {
 
-Kotlin::
-+
-[source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
-----
-	class MyWebTests {
+            lateinit var mockMvc : MockMvc
 
-		lateinit var mockMvc : MockMvc
+            @BeforeEach
+            fun setup() {
+                // set up MockMvc / test a specific controller
+                mockMvc = MockMvcBuilders.standaloneSetup(AccountController()).build()
+            }
 
-		@BeforeEach
-		fun setup() {
-			mockMvc = MockMvcBuilders.standaloneSetup(AccountController()).build()
-		}
+            // ...
 
-		// ...
+        }
+    ----
+    ======
 
-	}
-----
-======
+    ** point to Spring configuration / Spring MVC & controller infrastructure in it
+        *** _Example:_
 
-Or you can also use this setup when testing through the
-xref:testing/webtestclient.adoc#webtestclient-controller-config[WebTestClient] which delegates to the same builder
-as shown above.
+    [tabs]
+    ======
+    Java::
+    +
+    [source,java,indent=0,subs="verbatim,quotes",role="primary"]
+    ----
+        @SpringJUnitWebConfig(locations = "my-servlet-context.xml")
+        class MyWebTests {
 
-To set up MockMvc through Spring configuration, use the following:
+            MockMvc mockMvc;
 
-[tabs]
-======
-Java::
-+
-[source,java,indent=0,subs="verbatim,quotes",role="primary"]
-----
-	@SpringJUnitWebConfig(locations = "my-servlet-context.xml")
-	class MyWebTests {
+            @BeforeEach
+            void setup(WebApplicationContext wac) {
+                // set up MockMvc -- via -- Spring configuration
+                this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+                // ALSO valid, testing -- via -- xref:testing/webtestclient.adoc#webtestclient-context-config[WebTestClient]
+            }
 
-		MockMvc mockMvc;
+            // ...
 
-		@BeforeEach
-		void setup(WebApplicationContext wac) {
-			this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		}
+        }
+    ----
 
-		// ...
+    Kotlin::
+    +
+    [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
+    ----
+        @SpringJUnitWebConfig(locations = ["my-servlet-context.xml"])
+        class MyWebTests {
 
-	}
-----
+            lateinit var mockMvc: MockMvc
 
-Kotlin::
-+
-[source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
-----
-	@SpringJUnitWebConfig(locations = ["my-servlet-context.xml"])
-	class MyWebTests {
+            @BeforeEach
+            fun setup(wac: WebApplicationContext) {
+                // set up MockMvc -- via -- Spring configuration
+                mockMvc = MockMvcBuilders.webAppContextSetup(wac).build()
+            }
 
-		lateinit var mockMvc: MockMvc
+            // ...
 
-		@BeforeEach
-		fun setup(wac: WebApplicationContext) {
-			mockMvc = MockMvcBuilders.webAppContextSetup(wac).build()
-		}
+        }
+    ----
+    ======
 
-		// ...
-
-	}
-----
-======
-
-Or you can also use this setup when testing through the
-xref:testing/webtestclient.adoc#webtestclient-context-config[WebTestClient] which delegates to the same builder
-as shown above.
+* if you want to compare 2 previous ways -> check xref:testing/mockmvc/setup-options.adoc[Setup Options]
