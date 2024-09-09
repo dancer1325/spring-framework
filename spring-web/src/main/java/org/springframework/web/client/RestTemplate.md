@@ -9,3 +9,10 @@
       * _Example:_ "java.net.http"
   * 👁️ it's configuration must be prepared on startup 👁️
     * Reason: 🧠 configuration does NOT support concurrent modifications 🧠
+* vs `RestClient`
+  * recommended `RestClient` | sync HTTP access
+  * share infrastructure
+    * `ClientHttpRequestFactory`
+    * `ClientHttpRequestInterceptor`
+    * `ClientHttpRequestInitializer`
+    * `HttpMessageConverter`
