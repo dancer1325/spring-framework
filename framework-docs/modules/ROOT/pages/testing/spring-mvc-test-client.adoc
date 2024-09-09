@@ -1,10 +1,19 @@
 [[spring-mvc-test-client]]
 = Testing Client Applications
 
-You can use client-side tests to test code that internally uses the `RestTemplate`. The
-idea is to declare expected requests and to provide "`stub`" responses so that you can
-focus on testing the code in isolation (that is, without running a server). The following
-example shows how to do so:
+* == client-side tests / test code -- internally uses -- `RestTemplate`
+* goal
+    ** declare expected requests
+    ** provide "`stub`" responses
+    ** focus on testing the code | isolation (== WITHOUT running a server)
+* `MockRestServiceServer`
+    ** == central class for client-side REST tests
+    ** `RestTemplate` is used as usual
+    ** request are expected
+        *** by default, -- based on -- expectations declared
+        *** if you set `ignoreExpectOrder` | building the server -> ALL expectations are checked -- to find a -- match / given request == requests are allowed | ANY order
+            **** JUST applied | first HTTP request
+* _Example:_
 
 [tabs]
 ======
@@ -15,6 +24,7 @@ Java::
 	RestTemplate restTemplate = new RestTemplate();
 
 	MockRestServiceServer mockServer = MockRestServiceServer.bindTo(restTemplate).build();
+    // expect a request to `/greeting` & want to return 200 response with `text/plain` content
 	mockServer.expect(requestTo("/greeting")).andRespond(withSuccess());
 
 	// Test code that uses the above RestTemplate ...
@@ -29,6 +39,7 @@ Kotlin::
 	val restTemplate = RestTemplate()
 
 	val mockServer = MockRestServiceServer.bindTo(restTemplate).build()
+    // expect a request to `/greeting` & want to return 200 response with `text/plain` content
 	mockServer.expect(requestTo("/greeting")).andRespond(withSuccess())
 
 	// Test code that uses the above RestTemplate ...
@@ -37,19 +48,7 @@ Kotlin::
 ----
 ======
 
-In the preceding example, `MockRestServiceServer` (the central class for client-side REST
-tests) configures the `RestTemplate` with a custom `ClientHttpRequestFactory` that
-asserts actual requests against expectations and returns "`stub`" responses. In this
-case, we expect a request to `/greeting` and want to return a 200 response with
-`text/plain` content. We can define additional expected requests and stub responses as
-needed. When we define expected requests and stub responses, the `RestTemplate` can be
-used in client-side code as usual. At the end of testing, `mockServer.verify()` can be
-used to verify that all expectations have been satisfied.
-
-By default, requests are expected in the order in which expectations were declared. You
-can set the `ignoreExpectOrder` option when building the server, in which case all
-expectations are checked (in order) to find a match for a given request. That means
-requests are allowed to come in any order. The following example uses `ignoreExpectOrder`:
+* _Example:_ specify `ignoreExpectOrder`
 
 [tabs]
 ======
@@ -68,11 +67,9 @@ Kotlin::
 ----
 ======
 
-Even with unordered requests by default, each request is allowed to run once only.
-The `expect` method provides an overloaded variant that accepts an `ExpectedCount`
-argument that specifies a count range (for example, `once`, `manyTimes`, `max`, `min`,
-`between`, and so on). The following example uses `times`:
-
+* _Example:_ specify range of expectations / HTTP request -- via -- `expect(ExpectedCount count, RequestMatcher matcher)`
+    ** `ignoreExpectOrder` is NOT set == default == requests are expected in order of declaration
+        *** order applies ONLY | first of any expected request
 [tabs]
 ======
 Java::
@@ -82,6 +79,10 @@ Java::
 	RestTemplate restTemplate = new RestTemplate();
 
 	MockRestServiceServer mockServer = MockRestServiceServer.bindTo(restTemplate).build();
+    // expected order
+    // 1. request to
+    // 2. another request to "/something" or request to "/somewhere"
+    // 3. another request to whatever
 	mockServer.expect(times(2), requestTo("/something")).andRespond(withSuccess());
 	mockServer.expect(times(3), requestTo("/somewhere")).andRespond(withSuccess());
 
@@ -97,6 +98,10 @@ Kotlin::
 	val restTemplate = RestTemplate()
 
 	val mockServer = MockRestServiceServer.bindTo(restTemplate).build()
+    // expected order
+    // 1. request to
+    // 2. another request to "/something" or request to "/somewhere"
+    // 3. another request to whatever
 	mockServer.expect(times(2), requestTo("/something")).andRespond(withSuccess())
 	mockServer.expect(times(3), requestTo("/somewhere")).andRespond(withSuccess())
 
@@ -106,13 +111,7 @@ Kotlin::
 ----
 ======
 
-Note that, when `ignoreExpectOrder` is not set (the default), and, therefore, requests
-are expected in order of declaration, then that order applies only to the first of any
-expected request. For example if "/something" is expected two times followed by
-"/somewhere" three times, then there should be a request to "/something" before there is
-a request to "/somewhere", but, aside from that subsequent "/something" and "/somewhere",
-requests can come at any time.
-
+* TODO:
 As an alternative to all of the above, the client-side test support also provides a
 `ClientHttpRequestFactory` implementation that you can configure into a `RestTemplate` to
 bind it to a `MockMvc` instance. That allows processing requests using actual server-side
