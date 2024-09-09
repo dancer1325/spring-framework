@@ -201,11 +201,8 @@ Kotlin::
 ----
 ======
 
-
-* TODO:
-When a JSON response content contains hypermedia links created with
-{spring-github-org}/spring-hateoas[Spring HATEOAS], you can verify the
-resulting links by using JsonPath expressions, as the following example shows:
+* if JSON response content / contains hypermedia links -- created with -- {spring-github-org}/spring-hateoas[Spring HATEOAS] -> verify the
+resulting links -- via -- JsonPath expressions
 
 [tabs]
 ======
@@ -231,9 +228,8 @@ Kotlin::
 ----
 ======
 
-When XML response content contains hypermedia links created with
-{spring-github-org}/spring-hateoas[Spring HATEOAS], you can verify the
-resulting links by using XPath expressions:
+* if XML response content / contains hypermedia links -- created with -- {spring-github-org}/spring-hateoas[Spring HATEOAS] -> verify the
+resulting links -- via -- XPath expressions
 
 [tabs]
 ======
