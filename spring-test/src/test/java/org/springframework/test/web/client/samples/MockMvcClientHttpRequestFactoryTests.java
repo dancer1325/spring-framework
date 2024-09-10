@@ -44,10 +44,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
- * Tests that use a {@link RestTemplate} configured with a
- * {@link MockMvcClientHttpRequestFactory} that is in turn configured with a
- * {@link MockMvc} instance that uses a {@link WebApplicationContext} loaded by
- * the TestContext framework.
+ * {@link RestTemplate} / -- configured with a -- {@link MockMvcClientHttpRequestFactory}
+ * {@link MockMvcClientHttpRequestFactory} / -- configured with a -- {@link MockMvc} instance
+ * {@link MockMvc} instance / uses a {@link WebApplicationContext} -- loaded by the -- TestContext framework
  *
  * @author Rossen Stoyanchev
  * @author Juergen Hoeller
