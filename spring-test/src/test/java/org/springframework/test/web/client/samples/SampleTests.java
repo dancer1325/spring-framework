@@ -45,10 +45,11 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 /**
- * Examples to demonstrate writing client-side REST tests with Spring MVC Test.
- * While the tests in this class invoke the RestTemplate directly, in actual
- * tests the RestTemplate may likely be invoked indirectly, i.e. through client
- * code.
+ * Examples test!!
+ * goal
+ * 		how to write client-side REST tests -- via -- Spring MVC Test
+ * tests | this class -- invoke directly -- RestTemplate
+ * actual tests -- may likely invoke indirectly, through client code, -- RestTemplate
  *
  * @author Rossen Stoyanchev
  */
@@ -178,6 +179,7 @@ public class SampleTests {
 			this.mockServer.verify();
 		}
 		catch (AssertionError error) {
+			// error message comes from `AbstractRequestExpectationManager`
 			assertThat(error.getMessage()).as(error.getMessage()).contains("2 unsatisfied expectation(s)");
 		}
 	}
