@@ -1,0 +1,1 @@
+* == static factory methods -- for -- `ResultMatcher`-based result actions
