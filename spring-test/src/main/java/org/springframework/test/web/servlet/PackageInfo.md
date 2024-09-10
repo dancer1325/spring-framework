@@ -1,0 +1,1 @@
+* == server-side support -- for -- testing Spring MVC application
