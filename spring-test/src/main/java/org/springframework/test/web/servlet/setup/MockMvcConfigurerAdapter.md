@@ -1,0 +1,1 @@
+* == empty implementation of `MockMvcConfigurer`
