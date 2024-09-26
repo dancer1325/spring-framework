@@ -1,17 +1,23 @@
 [[rest-client-access]]
 = REST Clients
 
-The Spring Framework provides the following choices for making calls to REST endpoints:
-
-* xref:integration/rest-clients.adoc#rest-restclient[`RestClient`] - synchronous client with a fluent API.
-* xref:integration/rest-clients.adoc#rest-webclient[`WebClient`] - non-blocking, reactive client with fluent API.
-* xref:integration/rest-clients.adoc#rest-resttemplate[`RestTemplate`] - synchronous client with template method API.
-* xref:integration/rest-clients.adoc#rest-http-interface[HTTP Interface] - annotated interface with generated, dynamic proxy implementation.
+* Spring Framework provides -- for -- making calls to REST endpoints
+    ** xref:integration/rest-clients.adoc#rest-restclient[`RestClient`]
+        *** synchronous client / fluent API
+    ** xref:integration/rest-clients.adoc#rest-webclient[`WebClient`]
+        *** non-blocking, reactive client / fluent API
+    ** xref:integration/rest-clients.adoc#rest-resttemplate[`RestTemplate`]
+        *** synchronous client / template method API
+    ** xref:integration/rest-clients.adoc#rest-http-interface[HTTP Interface]
+        *** annotated interface / proxy implementation
+            **** generated
+            **** dynamic
 
 
 [[rest-restclient]]
 == `RestClient`
 
+* TODO:
 The `RestClient` is a synchronous HTTP client that offers a modern, fluent API.
 It offers an abstraction over HTTP libraries that allows for convenient conversion from a Java object to an HTTP request, and the creation of objects from an HTTP response.
 
