@@ -345,8 +345,11 @@ You can declare a shared `consumes` attribute at the class level. Unlike most ot
 request-mapping attributes, however, when used at the class level, a method-level `consumes` attribute
 overrides rather than extends the class-level declaration.
 
-TIP: `MediaType` provides constants for commonly used media types, such as
-`APPLICATION_JSON_VALUE` and `APPLICATION_XML_VALUE`.
+* `MediaType`
+    ** provides constants for commonly used media types
+        *** _Example:_
+            **** `APPLICATION_JSON_VALUE`
+            **** `APPLICATION_XML_VALUE`
 
 
 [[mvc-ann-requestmapping-produces]]
@@ -389,9 +392,6 @@ The media type can specify a character set. Negated expressions are supported --
 You can declare a shared `produces` attribute at the class level. Unlike most other
 request-mapping attributes, however, when used at the class level, a method-level `produces` attribute
 overrides rather than extends the class-level declaration.
-
-TIP: `MediaType` provides constants for commonly used media types, such as
-`APPLICATION_JSON_VALUE` and `APPLICATION_XML_VALUE`.
 
 
 [[mvc-ann-requestmapping-params-and-headers]]
