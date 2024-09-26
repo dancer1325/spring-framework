@@ -1,8 +1,10 @@
 [[webflux-client-body]]
 = Request Body
 
-The request body can be encoded from any asynchronous type handled by `ReactiveAdapterRegistry`,
-like `Mono` or Kotlin Coroutines `Deferred` as the following example shows:
+* Request body
+    ** can be encoded -- from -- ANY asynchronous type / handled by `ReactiveAdapterRegistry`
+        *** _Example1:_ `Mono`
+        *** _Example2:_ Kotlin Coroutines `Deferred`
 
 [tabs]
 ======
@@ -35,7 +37,7 @@ Kotlin::
 ----
 ======
 
-You can also have a stream of objects be encoded, as the following example shows:
+* _Example3:_ stream of objects encoded
 
 [tabs]
 ======
@@ -68,6 +70,7 @@ Kotlin::
 ----
 ======
 
+* TODO:
 Alternatively, if you have the actual value, you can use the `bodyValue` shortcut method,
 as the following example shows:
 
@@ -211,14 +214,13 @@ Kotlin::
 ----
 ======
 
-In most cases, you do not have to specify the `Content-Type` for each part. The content
-type is determined automatically based on the `HttpMessageWriter` chosen to serialize it
-or, in the case of a `Resource`, based on the file extension. If necessary, you can
-explicitly provide the `MediaType` to use for each part through one of the overloaded
-builder `part` methods.
+* `Content-Type` / each part | MOST cases -- does NOT have to -- be specified
+    ** Reason: 🧠 determined automatically -- based on --
+        *** `HttpMessageWriter` / chosen to serialize it
+        *** if it's `Resource` -> -- based on the -- file extension 🧠
+    ** it can be provided -- through -- one of the overloaded builder `part` methods
 
-Once a `MultiValueMap` is prepared, the easiest way to pass it to the `WebClient` is
-through the `body` method, as the following example shows:
+* if `MultiValueMap` is prepared -> easiest way to pass it to the `WebClient` -- is through the -- `body` method
 
 [tabs]
 ======
