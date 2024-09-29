@@ -92,7 +92,6 @@ does not require the `kotlin-noarg` plugin if the module uses Spring Data object
 (such as MongoDB, Redis, Cassandra, and others).
 
 
-
 [[injecting-dependencies]]
 == Injecting Dependencies
 
@@ -171,43 +170,41 @@ such bean by name, or add `@JvmName("sampleBean")` to disable name mangling.
 [[injecting-configuration-properties]]
 == Injecting Configuration Properties
 
-In Java, you can inject configuration properties by using annotations (such as pass:q[`@Value("${property}")`)].
-However, in Kotlin, `$` is a reserved character that is used for
-{kotlin-docs}/idioms.html#string-interpolation[string interpolation].
+* ways to inject configuration properties
+    ** | Java
+        *** -- via -- annotations
+            **** pass:q[`@Value("${property}")`)]
+               ***** NOT valid | Kotlin, because 🧠 `$` is a reserved character -- for -- {kotlin-docs}/idioms.html#string-interpolation[string interpolation] 🧠
+            **** if you use Spring Boot -> use {spring-boot-docs}/boot-features-external-config.html#boot-features-external-config-typesafe-configuration-properties[`@ConfigurationProperties`]
+    ** | Kotlin
+        *** -- via -- annotations
+            ****  pass:q[`@Value("\${property}")`]
+                ***** escaping  `$` == `\$`
+            **** if you use Spring Boot -> use {spring-boot-docs}/boot-features-external-config.html#boot-features-external-config-typesafe-configuration-properties[`@ConfigurationProperties`]
+* configuring bean `PropertySourcesPlaceholderConfigurer` -> you can customize
+    ** property placeholder prefix
 
-Therefore, if you wish to use the `@Value` annotation in Kotlin, you need to escape the `$`
-character by writing pass:q[`@Value("\${property}")`].
+    [source,kotlin,indent=0]
+    ----
+        @Bean
+        fun propertyConfigurer() = PropertySourcesPlaceholderConfigurer().apply {
+            setPlaceholderPrefix("%{")
+        }
+    ----
 
-NOTE: If you use Spring Boot, you should probably use
-{spring-boot-docs}/boot-features-external-config.html#boot-features-external-config-typesafe-configuration-properties[`@ConfigurationProperties`]
-instead of `@Value` annotations.
+    ** existing code ( _Example:_ Spring Boot actuators or `@LocalServerPort`)
 
-As an alternative, you can customize the property placeholder prefix by declaring the
-following configuration beans:
+    [source,kotlin,indent=0]
+    ----
+        @Bean
+        fun kotlinPropertyConfigurer() = PropertySourcesPlaceholderConfigurer().apply {
+            setPlaceholderPrefix("%{")
+            setIgnoreUnresolvablePlaceholders(true)
+        }
 
-[source,kotlin,indent=0]
-----
-	@Bean
-	fun propertyConfigurer() = PropertySourcesPlaceholderConfigurer().apply {
-		setPlaceholderPrefix("%{")
-	}
-----
-
-You can customize existing code (such as Spring Boot actuators or `@LocalServerPort`)
-that uses the `${...}` syntax, with configuration beans, as the following example shows:
-
-[source,kotlin,indent=0]
-----
-	@Bean
-	fun kotlinPropertyConfigurer() = PropertySourcesPlaceholderConfigurer().apply {
-		setPlaceholderPrefix("%{")
-		setIgnoreUnresolvablePlaceholders(true)
-	}
-
-	@Bean
-	fun defaultPropertyConfigurer() = PropertySourcesPlaceholderConfigurer()
-----
-
+        @Bean
+        fun defaultPropertyConfigurer() = PropertySourcesPlaceholderConfigurer()
+    ----
 
 
 [[checked-exceptions]]
@@ -222,7 +219,6 @@ an `UndeclaredThrowableException`.
 To get the original exception thrown like in Java, methods should be annotated with
 {kotlin-api}/jvm/stdlib/kotlin.jvm/-throws/index.html[`@Throws`]
 to specify explicitly the checked exceptions thrown (for example `@Throws(IOException::class)`).
-
 
 
 [[annotation-array-attributes]]
@@ -269,7 +265,6 @@ use a shortcut annotation, such as `@GetMapping`, `@PostMapping`, and others.
 
 NOTE: If the `@RequestMapping` `method` attribute is not specified, all HTTP methods will
 be matched, not only the `GET` method.
-
 
 
 [[declaration-site-variance]]
