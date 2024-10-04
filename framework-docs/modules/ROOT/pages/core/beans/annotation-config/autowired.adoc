@@ -493,13 +493,12 @@ class MovieRecommender {
 ----
 ======
 
-[NOTE]
-====
-The `@Autowired`, `@Inject`, `@Value`, and `@Resource` annotations are handled by Spring
-`BeanPostProcessor` implementations. This means that you cannot apply these annotations
-within your own `BeanPostProcessor` or `BeanFactoryPostProcessor` types (if any).
-These types must be 'wired up' explicitly by using XML or a Spring `@Bean` method.
-====
+* 👁️`@Autowired`, `@Inject`, `@Value`, & `@Resource` annotations -- are handled by -- Spring `BeanPostProcessor` implementations 👁️->
+    ** you can NOT apply them | your own `BeanPostProcessor` or `BeanFactoryPostProcessor` types
+    ** these types -- MUST be 'wired up' explicitly by using --
+        *** XML or
+        *** `@Bean` | method
+
 
 
 
