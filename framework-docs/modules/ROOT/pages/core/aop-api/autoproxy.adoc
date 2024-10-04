@@ -30,9 +30,9 @@ This section covers the  auto-proxy creators provided by the
 [[aop-api-autoproxy]]
 === `BeanNameAutoProxyCreator`
 
-The `BeanNameAutoProxyCreator` class is a `BeanPostProcessor` that automatically creates
-AOP proxies for beans with names that match literal values or wildcards. The following
-example shows how to create a `BeanNameAutoProxyCreator` bean:
+* `BeanNameAutoProxyCreator`
+  ** == `BeanPostProcessor` / automatically creates AOP proxies | beans / names == literal values OR wildcards
+  ** _Example:_ how to create a `BeanNameAutoProxyCreator` bean
 
 [source,xml,indent=0,subs="verbatim,quotes"]
 ----
@@ -46,6 +46,7 @@ example shows how to create a `BeanNameAutoProxyCreator` bean:
 	</bean>
 ----
 
+* TODO:
 As with `ProxyFactoryBean`, there is an `interceptorNames` property rather than a list
 of interceptors, to allow correct behavior for prototype advisors. Named "`interceptors`"
 can be advisors or any advice type.
