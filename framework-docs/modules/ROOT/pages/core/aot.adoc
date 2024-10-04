@@ -254,11 +254,12 @@ This section lists the best practices that make sure your application is ready f
 [[aot.bestpractices.bean-registration]]
 == Programmatic bean registration
 
-The AOT engine takes care of the `@Configuration` model and any callback that might be
-invoked as part of processing your configuration. If you need to register additional
-beans programmatically, make sure to use a `BeanDefinitionRegistry` to register
-bean definitions.
+* AOT engine takes care of
+	** `@Configuration` model
+	** ANY callback / -- might be invoked as part of -- processing your configuration
+* if you need to register additional beans programmatically -> use a `BeanDefinitionRegistry`
 
+* TODO:
 This can typically be done via a `BeanDefinitionRegistryPostProcessor`. Note that, if it
 is registered itself as a bean, it will be invoked again at runtime unless you make
 sure to implement `BeanFactoryInitializationAotProcessor` as well. A more idiomatic
