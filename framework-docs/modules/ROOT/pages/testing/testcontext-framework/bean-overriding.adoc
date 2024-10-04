@@ -1,24 +1,21 @@
 [[testcontext-bean-overriding]]
 = Bean Overriding in Tests
 
-Bean overriding in tests refers to the ability to override specific beans in the
-`ApplicationContext` for a test class, by annotating one or more fields in the test class.
-
-NOTE: This feature is intended as a less risky alternative to the practice of registering
-a bean via `@Bean` with the `DefaultListableBeanFactory`
-`setAllowBeanDefinitionOverriding` flag set to `true`.
-
-The Spring TestContext framework provides two sets of annotations for bean overriding.
-
-* xref:testing/annotations/integration-spring/annotation-testbean.adoc[`@TestBean`]
-* xref:testing/annotations/integration-spring/annotation-mockitobean.adoc[`@MockitoBean` and `@MockitoSpyBean`]
-
-The former relies purely on Spring, while the latter set relies on the
-https://site.mockito.org/[Mockito] third-party library.
+* Bean overriding in tests
+  ** == override specific test class's beans |
+`ApplicationContext`
+  ** vs registering `@Bean(setAllowBeanDefinitionOverriding=true)`
+    *** 👁️less risky 👁️
+  ** annotations / provided by Spring TestContext framework
+    *** xref:testing/annotations/integration-spring/annotation-testbean.adoc[`@TestBean`]
+      **** by Spring
+    *** xref:testing/annotations/integration-spring/annotation-mockitobean.adoc[`@MockitoBean` and `@MockitoSpyBean`]
+      **** by https://site.mockito.org/[Mockito TP library]
 
 [[testcontext-bean-overriding-custom]]
 == Custom Bean Override Support
 
+* TODO:
 The three annotations mentioned above build upon the `@BeanOverride` meta-annotation and
 associated infrastructure, which allows one to define custom bean overriding variants.
 
