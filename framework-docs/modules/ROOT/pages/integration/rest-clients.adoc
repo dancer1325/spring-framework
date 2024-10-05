@@ -538,8 +538,9 @@ Objects passed into and returned from `RestTemplate` methods are converted to an
 
 === Migrating from `RestTemplate` to `RestClient`
 
-The following table shows `RestClient` equivalents for `RestTemplate` methods.
-It can be used to migrate from the latter to the former.
+* table / `RestClient` methods == `RestTemplate` methods
+    ** uses
+        *** migrating
 
 .RestClient equivalents for RestTemplate methods
 [cols="1,1", options="header"]
