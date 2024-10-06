@@ -3,7 +3,9 @@
 
 Spring provides comprehensive support for annotation-based configuration, operating on
 metadata in the component class itself by using annotations on the relevant class,
-method, or field declaration. As mentioned in
+method, or field declaration.
+
+As mentioned in
 xref:core/beans/factory-extension.adoc#beans-factory-extension-bpp-examples-aabpp[Example: The `AutowiredAnnotationBeanPostProcessor`],
 Spring uses `BeanPostProcessors` in conjunction with annotations to make the core IOC
 container aware of specific annotations.
