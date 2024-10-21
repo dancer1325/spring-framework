@@ -480,56 +480,57 @@ or even infinite publishers).
 [[scheduling-annotation-support-async]]
 === The `@Async` annotation
 
-You can provide the `@Async` annotation on a method so that invocation of that method
-occurs asynchronously. In other words, the caller returns immediately upon
-invocation, while the actual execution of the method occurs in a task that has been
-submitted to a Spring `TaskExecutor`. In the simplest case, you can apply the annotation
-to a method that returns `void`, as the following example shows:
+* allows
+  ** | method -> invocation of that method occurs asynchronously
+    *** ==
+      **** caller returns immediately | invocation
+      **** execution of the method | task / -- has been submitted to a -- Spring `TaskExecutor`
+    *** _Example:_
 
-[source,java,indent=0,subs="verbatim,quotes"]
-----
-	@Async
-	void doSomething() {
-		// this will be run asynchronously
-	}
-----
+      [source,java,indent=0,subs="verbatim,quotes"]
+      ----
+          @Async
+          void doSomething() {
+              // this will be run asynchronously
+          }
+      ----
 
-Unlike the methods annotated with the `@Scheduled` annotation, these methods can expect
-arguments, because they are invoked in the "`normal`" way by callers at runtime rather
-than from a scheduled task being managed by the container. For example, the following
-code is a legitimate application of the `@Async` annotation:
+    *** 👀vs methods / annotated with `@Scheduled` annotation 👀
+      **** methods / annotated with `@Async` -- can --
+        ***** accept -- arguments
+          ****** Reason: 🧠the invokers are "`normal`" callers | runtime, != scheduled task / -- managed by the -- container 🧠
+          ****** _Example:_
 
-[source,java,indent=0,subs="verbatim,quotes"]
-----
-	@Async
-	void doSomething(String s) {
-		// this will be run asynchronously
-	}
-----
+          [source,java,indent=0,subs="verbatim,quotes"]
+          ----
+              @Async
+              void doSomething(String s) {
+                  // this will be run asynchronously
+                  // method accepts arguments
+              }
+          ----
 
-Even methods that return a value can be invoked asynchronously. However, such methods
-are required to have a `Future`-typed return value. This still provides the benefit of
-asynchronous execution so that the caller can perform other tasks prior to calling
-`get()` on that `Future`. The following example shows how to use `@Async` on a method
-that returns a value:
+        ***** return -- a value
+          ****** requirements
+            ******* `Future`-typed return value
+              ******** caller -- can perform -- other tasks | prior to calling `Future.get()`
+              ******** BUT, Spring v4.2+, could be also
+                ********* `org.springframework.util.concurrent.ListenableFuture`
+                ********* `java.util.concurrent.CompletableFuture`
+          ****** _Example:_
 
-[source,java,indent=0,subs="verbatim,quotes"]
-----
-	@Async
-	Future<String> returnSomething(int i) {
-		// this will be run asynchronously
-	}
-----
+            [source,java,indent=0,subs="verbatim,quotes"]
+            ----
+                @Async
+                Future<String> returnSomething(int i) {
+                    // this will be run asynchronously
+                }
+            ----
 
-TIP: `@Async` methods may not only declare a regular `java.util.concurrent.Future` return
-type but also Spring's `org.springframework.util.concurrent.ListenableFuture` or, as of
-Spring 4.2, JDK 8's `java.util.concurrent.CompletableFuture`, for richer interaction with
-the asynchronous task and for immediate composition with further processing steps.
-
-You can not use `@Async` in conjunction with lifecycle callbacks such as `@PostConstruct`.
-To asynchronously initialize Spring beans, you currently have to use a separate
-initializing Spring bean that then invokes the `@Async` annotated method on the target,
-as the following example shows:
+* `@Async` + lifecycle callbacks (_Example:_ `@PostConstruct`) NOT possible
+  ** 👀if you want too asynchronously initialize Spring beans -> use a separate
+initializing Spring bean / invokes `@Async` annotated method | target 👀
+    *** _Example:_
 
 [source,java,indent=0,subs="verbatim,quotes"]
 ----
@@ -558,11 +559,9 @@ as the following example shows:
 	}
 ----
 
-NOTE: There is no direct XML equivalent for `@Async`, since such methods should be designed
-for asynchronous execution in the first place, not externally re-declared to be asynchronous.
-However, you can manually set up Spring's `AsyncExecutionInterceptor` with Spring AOP,
-in combination with a custom pointcut.
-
+* 👀NO == | XML 👀
+  ** alternative
+    *** manually set up Spring's `AsyncExecutionInterceptor` + Spring AOP / exist custom pointcut
 
 [[scheduling-annotation-support-qualification]]
 === Executor Qualification with `@Async`
