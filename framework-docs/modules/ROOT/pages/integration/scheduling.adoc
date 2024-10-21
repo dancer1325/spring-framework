@@ -1,80 +1,86 @@
 [[scheduling]]
 = Task Execution and Scheduling
 
-The Spring Framework provides abstractions for the asynchronous execution and scheduling of
-tasks with the `TaskExecutor` and `TaskScheduler` interfaces, respectively. Spring also
-features implementations of those interfaces that support thread pools or delegation to
-CommonJ within an application server environment. Ultimately, the use of these
-implementations behind the common interfaces abstracts away the differences between
-Java SE and Jakarta EE environments.
-
-Spring also features integration classes to support scheduling with the
-https://www.quartz-scheduler.org/[Quartz Scheduler].
-
-
+* Spring Framework -- provides --
+  ** abstractions -- for the --
+    *** asynchronous execution of tasks -- via -- `TaskExecutor`
+    *** asynchronous scheduling of tasks -- via -- `TaskScheduler`
+  ** implementations of interfaces /
+    *** -- support --
+      **** thread pools | application server environment
+      **** delegation to CommonJ | application server environment
+    *** it's use / behind the interfaces -> abstracts away the differences Java SE environments vs Jakarta EE environments
+  ** integration classes / -- support scheduling with the --
+https://www.quartz-scheduler.org/[Quartz Scheduler]
 
 [[scheduling-task-executor]]
 == The Spring `TaskExecutor` Abstraction
 
-Executors are the JDK name for the concept of thread pools. The "`executor`" naming is
-due to the fact that there is no guarantee that the underlying implementation is
-actually a pool. An executor may be single-threaded or even synchronous. Spring's
-abstraction hides implementation details between the Java SE and Jakarta EE environments.
-
-Spring's `TaskExecutor` interface is identical to the `java.util.concurrent.Executor`
-interface. In fact, originally, its primary reason for existence was to abstract away
-the need for Java 5 when using thread pools. The interface has a single method
-(`execute(Runnable task)`) that accepts a task for execution based on the semantics
-and configuration of the thread pool.
-
-The `TaskExecutor` was originally created to give other Spring components an abstraction
-for thread pooling where needed. Components such as the `ApplicationEventMulticaster`,
-JMS's `AbstractMessageListenerContainer`, and Quartz integration all use the
-`TaskExecutor` abstraction to pool threads. However, if your beans need thread pooling
-behavior, you can also use this abstraction for your own needs.
-
+* Executors
+  ** == JDK name -- for the concept of -- thread pools
+  ** Reason of the name: 🧠 NO guarantee / underlying implementation is a pool 🧠
+  ** types
+    *** 1!-threaded
+    *** synchronous
+* Spring's
+  ** abstraction -- hides -- implementation details between Java SE environments vs Jakarta EE environments
+  ** `TaskExecutor` interface
+    *** == `java.util.concurrent.Executor` interface
+    *** Reason for existence: 🧠
+      **** abstract away the need for Java 5 | using thread pools
+      **** give other Spring components an abstraction | thread pooling / was needed 🧠
+    *** `execute(Runnable task)`
+      **** 1! method of the interface / task as input for execution -- based on -- thread pool
+        ***** semantics
+        ***** configuration
+    *** uses
+      **** pool threads
+        ***** _Example:_ by `ApplicationEventMulticaster`, JMS's `AbstractMessageListenerContainer`, Quartz integration
+      **** thread pooling behavior -- for your -- beans
 
 [[scheduling-task-executor-types]]
 === `TaskExecutor` Types
 
-Spring includes a number of pre-built implementations of `TaskExecutor`.
-In all likelihood, you should never need to implement your own.
-The variants that Spring provides are as follows:
-
-* `SyncTaskExecutor`:
-  This implementation does not run invocations asynchronously. Instead, each
-  invocation takes place in the calling thread. It is primarily used in situations
-  where multi-threading is not necessary, such as in simple test cases.
-* `SimpleAsyncTaskExecutor`:
-  This implementation does not reuse any threads. Rather, it starts up a new thread
-  for each invocation. However, it does support a concurrency limit that blocks
-  any invocations that are over the limit until a slot has been freed up. If you
-  are looking for true pooling, see `ThreadPoolTaskExecutor`, later in this list.
-* `ConcurrentTaskExecutor`:
-  This implementation is an adapter for a `java.util.concurrent.Executor` instance.
-  There is an alternative (`ThreadPoolTaskExecutor`) that exposes the `Executor`
-  configuration parameters as bean properties. There is rarely a need to use
-  `ConcurrentTaskExecutor` directly. However, if the `ThreadPoolTaskExecutor` is not
-  flexible enough for your needs, `ConcurrentTaskExecutor` is an alternative.
-* `ThreadPoolTaskExecutor`:
-  This implementation is most commonly used. It exposes bean properties for configuring
-  a `java.util.concurrent.ThreadPoolExecutor` and wraps it in a `TaskExecutor`.
-  If you need to adapt to a different kind of `java.util.concurrent.Executor`,
-  we recommend that you use a `ConcurrentTaskExecutor` instead.
-* `DefaultManagedTaskExecutor`:
-  This implementation uses a JNDI-obtained `ManagedExecutorService` in a JSR-236
-  compatible runtime environment (such as a Jakarta EE application server),
-  replacing a CommonJ WorkManager for that purpose.
-
-As of 6.1, `ThreadPoolTaskExecutor` provides a pause/resume capability and graceful
-shutdown through Spring's lifecycle management. There is also a new "virtualThreads"
-option on `SimpleAsyncTaskExecutor` which is aligned with JDK 21's Virtual Threads,
-as well as a graceful shutdown capability for `SimpleAsyncTaskExecutor` as well.
-
+* Spring's pre-built implementations of `TaskExecutor`
+  ** `SyncTaskExecutor`
+    *** does NOT run invocations asynchronously
+      **** each invocation | calling thread
+    *** uses
+      **** situations / multi-threading NOT necessary
+        ***** _Example:_ simple test cases
+  ** `SimpleAsyncTaskExecutor`
+    *** does NOT reuse any threads
+      **** == NEW thread / each invocation
+      **** 👀concurrency limit == maximum # of threads 👀
+        ***** if invocations > limit -> wait UNTIL a slot is freed up
+        ***** != true pooling
+    *** Spring v6.1+, provides
+      **** graceful shutdown capabilities
+    *** "virtualThreads" option / -- aligned with -- JDK 21's Virtual Threads
+  ** `ConcurrentTaskExecutor`
+    *** == adapter for a `java.util.concurrent.Executor` instance
+    *** uses
+      **** RARELY
+      **** if `ThreadPoolTaskExecutor` is NOT flexible enough
+  ** `ThreadPoolTaskExecutor`
+    *** uses
+      **** MOSTLY
+    *** exposes bean properties -- for --
+      **** configuring a `java.util.concurrent.ThreadPoolExecutor`
+      **** wrapping it | `TaskExecutor`
+    *** Spring v6.1+, provides the capabilities
+      **** pause/resume
+      **** graceful shutdown
+        ***** -- through -- Spring's lifecycle management
+  ** `DefaultManagedTaskExecutor`
+    *** -- uses a -- JNDI-obtained `ManagedExecutorService` | JSR-236
+  compatible runtime environment (_Example:_ Jakarta EE application server)
+      **** -> -- replace a -- CommonJ WorkManager
 
 [[scheduling-task-executor-usage]]
 === Using a `TaskExecutor`
 
+* TODO:
 Spring's `TaskExecutor` implementations are commonly used with dependency injection.
 In the following example, we define a bean that uses the `ThreadPoolTaskExecutor`
 to asynchronously print out a set of messages:
