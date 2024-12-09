@@ -316,24 +316,19 @@ Kotlin::
 
 
 [[testcontext-junit-jupiter-di]]
-=== Dependency Injection with the `SpringExtension`
+=== Dependency Injection -- via -- `SpringExtension`
 
-* TODO:
-The `SpringExtension` implements the
-link:https://junit.org/junit5/docs/current/user-guide/#extensions-parameter-resolution[`ParameterResolver`]
-extension API from JUnit Jupiter, which lets Spring provide dependency injection for test
-constructors, test methods, and test lifecycle callback methods.
-
-Specifically, the `SpringExtension` can inject dependencies from the test's
-`ApplicationContext` into test constructors and methods that are annotated with
-Spring's `@BeforeTransaction` and `@AfterTransaction` or JUnit's `@BeforeAll`,
-`@AfterAll`, `@BeforeEach`, `@AfterEach`, `@Test`, `@RepeatedTest`, `@ParameterizedTest`,
-and others.
-
+* `SpringExtension` -- implements the --
+link:https://junit.org/junit5/docs/current/user-guide/#extensions-parameter-resolution[JUnit Jupiter's `ParameterResolver`] extension API
+    ** -> Spring can inject dependencies from test's `ApplicationContext` |
+        *** test constructors,
+        *** test methods -- `@BeforeAll`, `@AfterAll`, `@BeforeEach`, `@AfterEach`, `@Test`, `@RepeatedTest`, `@ParameterizedTest`, ... --
+        *** test lifecycle callback methods -- `@BeforeTransaction` and `@AfterTransaction` --
 
 [[testcontext-junit-jupiter-di-constructor]]
 ==== Constructor Injection
 
+* TODO:
 If a specific parameter in a constructor for a JUnit Jupiter test class is of type
 `ApplicationContext` (or a sub-type thereof) or is annotated or meta-annotated with
 `@Autowired`, `@Qualifier`, or `@Value`, Spring injects the value for that specific
