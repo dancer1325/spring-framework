@@ -89,45 +89,48 @@ integration tests about
 [[testing-tx]]
 === Transaction Management
 
-* TODO:
-One common issue in tests that access a real database is their effect on the state of the
-persistence store. Even when you use a development database, changes to the state may
-affect future tests. Also, many operations -- such as inserting or modifying persistent
-data -- cannot be performed (or verified) outside of a transaction.
+* state of the persistence store (EVEN, it's a development database)
+  ** COMMON issues related
+    *** | tests / access a real database
+    *** transactionality-related
+      **** MANY operations (_Example:_ inserting or modifying persistent data) can NOT be performed (or verified) OUTSIDE a transaction
 
-The TestContext framework addresses this issue. By default, the framework creates and
-rolls back a transaction for each test. You can write code that can assume the existence
-of a transaction. If you call transactionally proxied objects in your tests, they behave
-correctly, according to their configured transactional semantics. In addition, if a test
-method deletes the contents of selected tables while running within the transaction
-managed for the test, the transaction rolls back by default, and the database returns to
-its state prior to execution of the test. Transactional support is provided to a test by
-using a `PlatformTransactionManager` bean defined in the test's application context.
+* TestContext framework
+  ** addresses previous issues
+    *** 👀by default, the framework creates & rolls back a transaction / EACH test 👀
 
-If you want a transaction to commit (unusual, but occasionally useful when you want a
-particular test to populate or modify the database), you can tell the TestContext
-framework to cause the transaction to commit instead of roll back by using the
-xref:testing/annotations.adoc[`@Commit`] annotation.
+* if you call transactionally proxied objects | your tests -> they behave -- according to their -- configured transactional semantics
 
-See transaction management with the xref:testing/testcontext-framework/tx.adoc[TestContext framework].
+* if a test method deletes selected tables' contents | running the transaction managed for the test ->
+  ** 👀transaction rolls back by default 👀
+  ** database returns to its state -- prior to -- execution of the test
+
+* transactional support -- is provided, by using a `PlatformTransactionManager` bean / defined | test's application context, to a -- test
+
+* 👀if you want a transaction to commit -> tell the TestContext framework to cause the transaction to commit -- via -- xref:testing/annotations.adoc[`@Commit` annotation]👀
+  ** instead of, the default roll back
+  ** use cases
+    *** (unusual) you want a particular test / populate OR modify the database
+
+* see xref:testing/testcontext-framework/tx.adoc[transaction management -- via --TestContext framework]
 
 [[testing-support-classes]]
 === Support Classes for Integration Testing
 
-The Spring TestContext Framework provides several `abstract` support classes that
-simplify the writing of integration tests. These base test classes provide well-defined
-hooks into the testing framework as well as convenient instance variables and methods,
-which let you access:
+* Spring TestContext Framework
+  ** provides
+    *** 👀several `abstract` support classes / simplify the writing of integration tests 👀
+    *** well-defined hooks | testing framework
+    *** convenient instance variables and methods / let you access
+      **** `ApplicationContext` -- for --
+        ***** performing explicit bean lookups or
+        ***** testing the state of the context -- as a -- WHOLE
+      **** `JdbcTemplate` -- for -- executing SQL statements to query the database
+        ***** allows
+          ****** confirm database state (before & after execution of database-related application code)
+        ***** Spring ensures that such queries' scope == transaction as the application code's scope
+  ** you can create your OWN custom, application-wide superclass / instance variables & methods -- specific to -- your project
+  ** + ORM tool
+    *** avoid xref:testing/testcontext-framework/tx.adoc#testcontext-tx-false-positives[false positives]
 
-* The `ApplicationContext`, for performing explicit bean lookups or testing the state of
-  the context as a whole.
-* A `JdbcTemplate`, for executing SQL statements to query the database. You can use such
-  queries to confirm database state both before and after execution of database-related
-  application code, and Spring ensures that such queries run in the scope of the same
-  transaction as the application code. When used in conjunction with an ORM tool, be sure
-  to avoid xref:testing/testcontext-framework/tx.adoc#testcontext-tx-false-positives[false positives].
-
-In addition, you may want to create your own custom, application-wide superclass with
-instance variables and methods specific to your project.
-
-See support classes for the xref:testing/testcontext-framework/support-classes.adoc[TestContext framework].
+* see xref:testing/testcontext-framework/support-classes.adoc[support classes -- for the -- TestContext framework]
