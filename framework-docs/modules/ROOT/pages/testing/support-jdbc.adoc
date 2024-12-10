@@ -4,32 +4,31 @@
 [[integration-testing-support-jdbc-test-utils]]
 == JdbcTestUtils
 
-The `org.springframework.test.jdbc` package contains `JdbcTestUtils`, which is a
-collection of JDBC-related utility functions intended to simplify standard database
-testing scenarios. Specifically, `JdbcTestUtils` provides the following static utility
-methods.
-
-* `countRowsInTable(..)`: Counts the number of rows in the given table.
-* `countRowsInTableWhere(..)`: Counts the number of rows in the given table by using the
-  provided `WHERE` clause.
-* `deleteFromTables(..)`: Deletes all rows from the specified tables.
-* `deleteFromTableWhere(..)`: Deletes rows from the given table by using the provided
-  `WHERE` clause.
-* `dropTables(..)`: Drops the specified tables.
-
-[TIP]
-====
-xref:testing/testcontext-framework/support-classes.adoc#testcontext-support-classes-junit4[`AbstractTransactionalJUnit4SpringContextTests`]
-and xref:testing/testcontext-framework/support-classes.adoc#testcontext-support-classes-testng[`AbstractTransactionalTestNGSpringContextTests`]
-provide convenience methods that delegate to the aforementioned methods in
-`JdbcTestUtils`.
-====
+* `org.springframework.test.jdbc.JdbcTestUtils`
+    ** == collection of JDBC-related utility functions / simplify standard database
+testing scenarios
+        *** `countRowsInTable(..)`
+            **** counts the # of rows | given table
+        *** `countRowsInTableWhere(..)`
+            **** ounts the # of rows | given table -- by using -- `WHERE` clause
+        *** `deleteFromTables(..)`
+            **** deletes ALL rows / placed | specified tables
+        *** `deleteFromTableWhere(..)`
+            **** deletes ALL rows / placed | specified tables -- by using -- `WHERE` clause
+        *** `dropTables(..)`
+            **** drops the specified tables
+    ** see
+        *** xref:testing/testcontext-framework/support-classes.adoc#testcontext-support-classes-junit4[`AbstractTransactionalJUnit4SpringContextTests`]
+        *** xref:testing/testcontext-framework/support-classes.adoc#testcontext-support-classes-testng[`AbstractTransactionalTestNGSpringContextTests`]
 
 [[integration-testing-support-jdbc-embedded-database]]
 == Embedded Databases
 
-The `spring-jdbc` module provides support for configuring and launching an embedded
-database, which you can use in integration tests that interact with a database.
-For details, see xref:data-access/jdbc/embedded-database-support.adoc[Embedded Database Support]
- and <<data-access.adoc#jdbc-embedded-database-dao-testing, Testing Data Access
-Logic with an Embedded Database>>.
+* `spring-jdbc` module
+    ** provides
+        *** support for configuring & launching an embedded database
+            **** -> uses: integration tests / interact with a database
+* see
+    ** xref:data-access/jdbc/embedded-database-support.adoc[Embedded Database Support]
+    ** <<data-access.adoc#jdbc-embedded-database-dao-testing, Testing Data Access
+Logic -- with a -- Embedded Database>>
