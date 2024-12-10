@@ -25,73 +25,71 @@
 [[integration-testing-goals]]
 == Goals of Spring's Integration Testing support
 
-* Manage xref:testing/integration.adoc#testing-ctx-management[Spring IoC container caching] between tests.
-* Provide xref:testing/integration.adoc#testing-fixture-di[Dependency Injection of test fixture instances].
-* Provide xref:testing/integration.adoc#testing-tx[transaction management] / -- appropriate to -- integration testing.
-* Supply xref:testing/integration.adoc#testing-support-classes[Spring-specific base classes] / assist
+* manage xref:testing/integration.adoc#testing-ctx-management[Spring IoC container caching] between tests.
+* provide
+  ** xref:testing/integration.adoc#testing-fixture-di[Dependency Injection of test fixture instances].
+  ** xref:testing/integration.adoc#testing-tx[transaction management] / -- appropriate to -- integration testing.
+* supply xref:testing/integration.adoc#testing-support-classes[Spring-specific base classes] / assist
   developers | writing integration tests.
 
 [[testing-ctx-management]]
-=== Context Management and Caching
+=== Context Management & Caching
 
-* TODO:
-The Spring TestContext Framework provides consistent loading of Spring
-`ApplicationContext` instances and `WebApplicationContext` instances as well as caching
-of those contexts. Support for the caching of loaded contexts is important, because
-startup time can become an issue -- not because of the overhead of Spring itself, but
-because the objects instantiated by the Spring container take time to instantiate. For
-example, a project with 50 to 100 Hibernate mapping files might take 10 to 20 seconds to
-load the mapping files, and incurring that cost before running every test in every test
-fixture leads to slower overall test runs that reduce developer productivity.
+* Spring TestContext Framework
+  ** provides consistent loading of
+    *** Spring `ApplicationContext` instances
+      **** 👀by default, once it's loaded -> the configured `ApplicationContext` is reused | EACH test 👀
+        ***** -> setup cost is incurred ONLY 1! / test suite -> subsequent test execution is MUCH faster
+      **** see xref:testing/testcontext-framework/ctx-management.adoc[Context Management]
+    *** `WebApplicationContext` instances
+    *** caching of those contexts
+      **** 👀IMPORTANT👀
+        ***** Reason: 🧠 startup time can become an issue,  because the objects instantiated by the Spring container -- take -- time to instantiate 🧠
+        ***** _Example:_ project / 50 to 100 Hibernate mapping files -- MIGHT take -- 20" to load the mapping files -> can lead to slower overall test / reduce developer productivity
+      **** see xref:testing/testcontext-framework/ctx-management/caching.adoc[Context Caching]
 
-Test classes typically declare either an array of resource locations for XML or Groovy
-configuration metadata -- often in the classpath -- or an array of component classes that
-is used to configure the application. These locations or classes are the same as or
-similar to those specified in `web.xml` or other configuration files for production
-deployments.
+* Test classes -- typically -- declare
+  ** array of resource locations for XML or
+    *** == those / specified |
+      **** `web.xml` or
+      **** other configuration files -- for -- production deployments
+  ** Groovy configuration metadata
+    *** OFTEN | classpath
+  ** array of component classes / -- is used to -- configure the application
+    *** == those / specified |
+      **** `web.xml` or
+      **** other configuration files -- for -- production deployments
 
-By default, once loaded, the configured `ApplicationContext` is reused for each test.
-Thus, the setup cost is incurred only once per test suite, and subsequent test execution
-is much faster. In this context, the term "`test suite`" means all tests run in the same
-JVM -- for example, all tests run from an Ant, Maven, or Gradle build for a given project
-or module. In the unlikely case that a test corrupts the application context and requires
-reloading (for example, by modifying a bean definition or the state of an application
-object) the TestContext framework can be configured to reload the configuration and
-rebuild the application context before executing the next test.
+* "`test suite`"
+  ** == ALL tests / run | SAME JVM
 
-See xref:testing/testcontext-framework/ctx-management.adoc[Context Management] and xref:testing/testcontext-framework/ctx-management/caching.adoc[Context Caching] with the
-TestContext framework.
-
+* if unlikely case that a test corrupts the application context & requires reloading (_Example:_  modifying a bean definition or the state of an application
+object) -> TestContext framework -- can be configured to --
+  ** reload the configuration and
+  ** rebuild the application context | BEFORE executing the NEXT test
 
 [[testing-fixture-di]]
 === Dependency Injection of Test Fixtures
 
-When the TestContext framework loads your application context, it can optionally
-configure instances of your test classes by using Dependency Injection. This provides a
-convenient mechanism for setting up test fixtures by using preconfigured beans from your
-application context. A strong benefit here is that you can reuse application contexts
-across various testing scenarios (for example, for configuring Spring-managed object
-graphs, transactional proxies, `DataSource` instances, and others), thus avoiding the
-need to duplicate complex test fixture setup for individual test cases.
+* | TestContext framework loads your application context, it -- can optionally, via Dependency Injection -- configure instances of your test classes
+  ** 👀setting up test fixtures -- by using -- application context's preconfigured beans👀
+  ** application contexts -- can be reused ACROSS -- VARIOUS testing scenarios
+    *** _Example:_ configuring Spring-managed object graphs, transactional proxies, `DataSource` instances,
+    *** NO need to duplicate complex test fixture setup -- for -- individual test cases
+  ** see xref:testing/testcontext-framework/fixture-di.adoc[DI of test fixtures + TestContext framework]
 
-As an example, consider a scenario where we have a class (`HibernateTitleRepository`)
-that implements data access logic for a `Title` domain entity. We want to write
-integration tests that test the following areas:
-
-* The Spring configuration: Basically, is everything related to the configuration of the
-  `HibernateTitleRepository` bean correct and present?
-* The Hibernate mapping file configuration: Is everything mapped correctly and are the
-  correct lazy-loading settings in place?
-* The logic of the `HibernateTitleRepository`: Does the configured instance of this class
-  perform as anticipated?
-
-See dependency injection of test fixtures with the
-xref:testing/testcontext-framework/fixture-di.adoc[TestContext framework].
-
+* _Example:_ let's have `HibernateTitleRepository` / implements data access logic for a `Title` domain entity -> write
+integration tests about
+  ** Spring configuration
+    *** everything -- related to the -- configuration of the `HibernateTitleRepository` bean correct
+  ** Hibernate mapping file configuration
+    *** everything mapped correctly, lazy-loading settings
+  ** logic of the `HibernateTitleRepository`
 
 [[testing-tx]]
 === Transaction Management
 
+* TODO:
 One common issue in tests that access a real database is their effect on the state of the
 persistence store. Even when you use a development database, changes to the state may
 affect future tests. Also, many operations -- such as inserting or modifying persistent
@@ -112,7 +110,6 @@ framework to cause the transaction to commit instead of roll back by using the
 xref:testing/annotations.adoc[`@Commit`] annotation.
 
 See transaction management with the xref:testing/testcontext-framework/tx.adoc[TestContext framework].
-
 
 [[testing-support-classes]]
 === Support Classes for Integration Testing
