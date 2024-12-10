@@ -30,24 +30,26 @@
 [[testcontextmanager]]
 == `TestContextManager`
 
-* TODO:
-`TestContextManager` is the main entry point into the Spring TestContext Framework and is
-responsible for managing a single `TestContext` and signaling events to each registered
-`TestExecutionListener` at well-defined test execution points:
-
-* Prior to any "`before class`" or "`before all`" methods of a particular testing framework.
-* Test instance post-processing.
-* Prior to any "`before`" or "`before each`" methods of a particular testing framework.
-* Immediately before execution of the test method but after test setup.
-* Immediately after execution of the test method but before test tear down.
-* After any "`after`" or "`after each`" methods of a particular testing framework.
-* After any "`after class`" or "`after all`" methods of a particular testing framework.
+* `TestContextManager`
+  ** == MAIN entry point into Spring TestContext Framework
+  ** responsible for
+    *** managing 1! `TestContext`
+    *** signaling events / EACH registered `TestExecutionListener` | well-defined test execution points
+      **** PRIOR to any testing framework's "`before class`" or "`before all`" methods
+      **** Test instance post-processing
+      **** PRIOR to any testing framework's "`before`" or "`before each`" methods
+      **** [after test setup, IMMEDIATELY before executing the test method]
+      **** [IMMEDIATELY after executing the test method, before test tear down]
+      **** After any testing framework's "`after`" or "`after each`" methods
+      **** After any testing framework's "`after class`" or "`after all`" methods
 
 [[testexecutionlistener]]
 == `TestExecutionListener`
 
-`TestExecutionListener` defines the API for reacting to test-execution events published by
-the `TestContextManager` with which the listener is registered. See xref:testing/testcontext-framework/tel-config.adoc[`TestExecutionListener` Configuration].
+* `TestExecutionListener`
+  ** == API -- for reacting to -- test-execution events / published by the `TestContextManager`
+  ** registered with the `TestExecutionListener`
+  ** see xref:testing/testcontext-framework/tel-config.adoc[`TestExecutionListener` Configuration]
 
 [[context-loaders]]
 == Context Loaders
@@ -67,35 +69,40 @@ the `TestContextManager` with which the listener is registered. See xref:testing
     *** `WebApplicationContext`
 * built-in implementations
   ** `DelegatingSmartContextLoader`
-    *** One of two default loaders, it delegates internally to
-  an `AnnotationConfigContextLoader`, a `GenericXmlContextLoader`, or a
-  `GenericGroovyXmlContextLoader`, depending either on the configuration declared for the
-  test class or on the presence of default locations or default configuration classes.
-  Groovy support is enabled only if Groovy is on the classpath.
+    *** == 1 or 2 default loaders / delegates internally
+      **** based on the
+        ***** configuration declared for the test class or
+        ***** presence of default locations or
+        ***** default configuration classes
+      **** to
+        ***** `AnnotationConfigContextLoader`,
+        ***** `GenericXmlContextLoader`,
+        ***** `GenericGroovyXmlContextLoader`,
+          ****** requirements: Groovy is | classpath
   ** `WebDelegatingSmartContextLoader`
-    *** One of two default loaders, it delegates internally
-  to an `AnnotationConfigWebContextLoader`, a `GenericXmlWebContextLoader`, or a
-  `GenericGroovyXmlWebContextLoader`, depending either on the configuration declared for
-  the test class or on the presence of default locations or default configuration
-  classes. A web `ContextLoader` is used only if `@WebAppConfiguration` is present on the
-  test class. Groovy support is enabled only if Groovy is on the classpath.
+    *** == 1 or 2 default loaders / delegates internally
+      **** based on the
+        ***** configuration declared for the test class or
+        ***** presence of default locations or
+        ***** default configuration classes
+      **** to
+        ***** `AnnotationConfigWebContextLoader`,
+        ***** `GenericXmlWebContextLoader`,
+        ***** `GenericGroovyXmlWebContextLoader`,
+          ****** requirements: Groovy is | classpath
+    *** web `ContextLoader`
+      **** requirements: `@WebAppConfiguration` is | test class
   ** `AnnotationConfigContextLoader`
-    *** Loads a standard `ApplicationContext` from component
-  classes.
+    *** loads a standard `ApplicationContext` -- from -- component classes
   ** `AnnotationConfigWebContextLoader`
-    *** Loads a `WebApplicationContext` from component
-  classes.
+    *** loads a `WebApplicationContext` -- from -- component classes
   ** `GenericGroovyXmlContextLoader`
-    *** Loads a standard `ApplicationContext` from resource
-  locations that are either Groovy scripts or XML configuration files.
+    *** loads a standard `ApplicationContext` -- from -- resource
+  locations / are Groovy scripts or .xml
   ** `GenericGroovyXmlWebContextLoader`
-    *** Loads a `WebApplicationContext` from resource
-  locations that are either Groovy scripts or XML configuration files.
+    *** loads a `WebApplicationContext` -- from -- resource
+  locations / are Groovy scripts or .xml
   ** `GenericXmlContextLoader`
-    *** Loads a standard `ApplicationContext` from XML resource
-  locations.
+    *** loads a standard `ApplicationContext` -- from -- .xml resource locations
   ** `GenericXmlWebContextLoader`
-    *** Loads a `WebApplicationContext` from XML resource
-  locations.
-
-
+    *** loads a `WebApplicationContext` -- from -- .xml resource locations
