@@ -35,13 +35,17 @@
   ** responsible for
     *** managing 1! `TestContext`
     *** signaling events / EACH registered `TestExecutionListener` | well-defined test execution points
-      **** PRIOR to any testing framework's "`before class`" or "`before all`" methods
-      **** Test instance post-processing
-      **** PRIOR to any testing framework's "`before`" or "`before each`" methods
-      **** [after test setup, IMMEDIATELY before executing the test method]
-      **** [IMMEDIATELY after executing the test method, before test tear down]
-      **** After any testing framework's "`after`" or "`after each`" methods
-      **** After any testing framework's "`after class`" or "`after all`" methods
+      **** PRIOR to any testing framework's "`before class`" (`beforeTestClass(){}`) or "`before all`" methods (`beforeTestMethod(){}`)
+        ***** _Example:_ `@BeforeAll`
+      **** Test instance post-processing (`prepareTestInstance(){}`)
+      **** PRIOR to any testing framework's "`before`" (`beforeTestClass(){}`) or "`before each`" methods (`beforeTestMethod(){}`)
+        ***** _Example:_ `@BeforeAll`
+      **** [after test setup, IMMEDIATELY before executing the test method] (`beforeTestExecution(){}`)
+      **** [IMMEDIATELY after executing the test method, before test tear down] (`afterTestExecution(){}`)
+      **** After any testing framework's "`after`"  or "`after each`" methods (`afterTestMethod(){}`)
+        ***** _Example:_ `@AfterEach`
+      **** After any testing framework's "`after class`" (`afterTestClass(){}`) or "`after all`" methods
+        ***** _Example:_ `@AfterAll`
 
 [[testexecutionlistener]]
 == `TestExecutionListener`
