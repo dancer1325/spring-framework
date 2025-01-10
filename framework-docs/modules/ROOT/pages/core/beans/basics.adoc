@@ -67,23 +67,23 @@ image::container-magic.png[]
     ...
 
     ** _Example:_
-
-    [source,xml,indent=0,subs="verbatim,quotes"]
-    ----
-        <?xml version="1.0" encoding="UTF-8"?>
-        <beans xmlns="http://www.springframework.org/schema/beans"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.springframework.org/schema/beans
-                https://www.springframework.org/schema/beans/spring-beans.xsd">
-            <bean id="..." class="..."> <1> <2>
-                <!-- collaborators and configuration for this bean go here -->
-            </bean>
-            <bean id="..." class="...">
-                <!-- collaborators and configuration for this bean go here -->
-            </bean>
-            <!-- more bean definitions go here -->
-        </beans>
-    ----
++
+[source,xml,indent=0,subs="verbatim,quotes"]
+----
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+            https://www.springframework.org/schema/beans/spring-beans.xsd">
+        <bean id="..." class="..."> <1> <2>
+            <!-- collaborators and configuration for this bean go here -->
+        </bean>
+        <bean id="..." class="...">
+            <!-- collaborators and configuration for this bean go here -->
+        </bean>
+        <!-- more bean definitions go here -->
+    </beans>
+----
 
         *** <1>
             **** `attributeId`
@@ -97,66 +97,66 @@ image::container-magic.png[]
             **** local file system
             **** Java `CLASSPATH`
         *** Example:
-
-        [tabs]
-        ======
-        Java::
-        +
-        [source,java,indent=0,subs="verbatim,quotes",role="primary"]
-        ----
-            ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");
-        ----
-        Kotlin::
-        +
-        [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
-        ----
-            val context = ClassPathXmlApplicationContext("services.xml", "daos.xml")
-        ----
-        ======
++
+[tabs]
+======
+Java::
++
+[source,java,indent=0,subs="verbatim,quotes",role="primary"]
+----
+    ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");
+----
+Kotlin::
++
+[source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
+----
+    val context = ClassPathXmlApplicationContext("services.xml", "daos.xml")
+----
+======
 
 * Check Spring's `Resource` abstraction -- xref:core/resources.adoc[Resources] --
 * _Example:_ dependency between collaborating objects -- via -- the elements `id` and `ref`
     ** Check xref:core/beans/dependencies.adoc[Dependencies]
     ** service layer objects `(services.xml)`
-
-    [source,xml,indent=0,subs="verbatim,quotes"]
-    ----
-        <?xml version="1.0" encoding="UTF-8"?>
-        <beans xmlns="http://www.springframework.org/schema/beans"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.springframework.org/schema/beans
-                https://www.springframework.org/schema/beans/spring-beans.xsd">
-            <!-- services -->
-            <bean id="petStore" class="org.springframework.samples.jpetstore.services.PetStoreServiceImpl">
-                <!-- ref          -- refer to -- another bean  -->
-                <property name="accountDao" ref="accountDao"/>
-                <property name="itemDao" ref="itemDao"/>
-                <!-- additional collaborators and configuration for this bean go here -->
-            </bean>
-            <!-- more bean definitions for services go here -->
-        </beans>
-    ----
++
+[source,xml,indent=0,subs="verbatim,quotes"]
+----
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+            https://www.springframework.org/schema/beans/spring-beans.xsd">
+        <!-- services -->
+        <bean id="petStore" class="org.springframework.samples.jpetstore.services.PetStoreServiceImpl">
+            <!-- ref          -- refer to -- another bean  -->
+            <property name="accountDao" ref="accountDao"/>
+            <property name="itemDao" ref="itemDao"/>
+            <!-- additional collaborators and configuration for this bean go here -->
+        </bean>
+        <!-- more bean definitions for services go here -->
+    </beans>
+----
 
     **  DAO (`daos.xml`)
-
-    [source,xml,indent=0,subs="verbatim,quotes"]
-    ----
-        <?xml version="1.0" encoding="UTF-8"?>
-        <beans xmlns="http://www.springframework.org/schema/beans"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.springframework.org/schema/beans
-                https://www.springframework.org/schema/beans/spring-beans.xsd">
-            <!-- class          attribute / marks the types of DAOs-->
-            <bean id="accountDao"
-                class="org.springframework.samples.jpetstore.dao.jpa.JpaAccountDao">
-                <!-- additional collaborators and configuration for this bean go here -->
-            </bean>
-            <bean id="itemDao" class="org.springframework.samples.jpetstore.dao.jpa.JpaItemDao">
-                <!-- additional collaborators and configuration for this bean go here -->
-            </bean>
-            <!-- more bean definitions for data access objects go here -->
-        </beans>
-    ----
++
+[source,xml,indent=0,subs="verbatim,quotes"]
+----
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+            https://www.springframework.org/schema/beans/spring-beans.xsd">
+        <!-- class          attribute / marks the types of DAOs-->
+        <bean id="accountDao"
+            class="org.springframework.samples.jpetstore.dao.jpa.JpaAccountDao">
+            <!-- additional collaborators and configuration for this bean go here -->
+        </bean>
+        <bean id="itemDao" class="org.springframework.samples.jpetstore.dao.jpa.JpaItemDao">
+            <!-- additional collaborators and configuration for this bean go here -->
+        </bean>
+        <!-- more bean definitions for data access objects go here -->
+    </beans>
+----
 
 * each .xml
     ** == logical layer or module | your architecture
@@ -188,17 +188,17 @@ image::container-magic.png[]
         *** -- are resolved against -- JVM  system properties at runtime
     ** imported files' content -- must be -- valid XML bean definitions
     ** _Example:_
-
-        [source,xml,indent=0,subs="verbatim,quotes"]
-        ----
-            <beans>
-                <import resource="services.xml"/>
-                <import resource="resources/messageSource.xml"/>
-                <import resource="/resources/themeSource.xml"/>
-                <bean id="bean1" class="..."/>
-                <bean id="bean2" class="..."/>
-            </beans>
-        ----
++
+[source,xml,indent=0,subs="verbatim,quotes"]
+----
+    <beans>
+        <import resource="services.xml"/>
+        <import resource="resources/messageSource.xml"/>
+        <import resource="/resources/themeSource.xml"/>
+        <bean id="bean1" class="..."/>
+        <bean id="bean2" class="..."/>
+    </beans>
+----
 
 * namespace
     ** TODO: What's it?
@@ -213,12 +213,16 @@ image::container-magic.png[]
 [[beans-factory-groovy]]
 === The Groovy Bean Definition DSL
 
-* TODO:
-As a further example for externalized configuration metadata, bean definitions can also
-be expressed in Spring's Groovy Bean Definition DSL, as known from the Grails framework.
-Typically, such configuration live in a ".groovy" file with the structure shown in the
-following example:
-
+* Spring's Groovy Bean Definition DSL
+    ** == ANOTHER way -- to express -- bean definitions
+        *** == ANOTHER way for externalized configuration metadata
+    ** KNOW as Grails framework
+    ** 's configuration == ".groovy" file / structure
+        *** == XML bean definitions / EVEN supports
+            **** Spring's XML configuration namespaces
+            **** importing XML bean definition files -- through an -- `importBeans` directive
+*** _Example:_ of the structure
++
 [source,groovy,indent=0,subs="verbatim,quotes"]
 ----
 	beans {
@@ -240,12 +244,6 @@ following example:
 	}
 ----
 
-This configuration style is largely equivalent to XML bean definitions and even
-supports Spring's XML configuration namespaces. It also allows for importing XML
-bean definition files through an `importBeans` directive.
-
-
-
 [[beans-factory-client]]
 == Using the Container
 
@@ -253,95 +251,95 @@ bean definition files through an `importBeans` directive.
     ** := `ApplicationContext` 's method / retrieve instances of your beans
         *** 👁️application code should have NO calls to it 👁️
         *** _Example1:_ via Java and Kotlin
-
-    [tabs]
-    ======
-    Java::
-    +
-    [source,java,indent=0,subs="verbatim,quotes",role="primary"]
-    ----
-        // create and configure beans
-        ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");
-        // retrieve configured instance
-        PetStoreService service = context.getBean("petStore", PetStoreService.class);
-        // use configured instance
-        List<String> userList = service.getUsernameList();
-    ----
-    Kotlin::
-    +
-    [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
-    ----
-        import org.springframework.beans.factory.getBean
-        // create and configure beans
-        val context = ClassPathXmlApplicationContext("services.xml", "daos.xml")
-        // retrieve configured instance
-        val service = context.getBean<PetStoreService>("petStore")
-        // use configured instance
-        var userList = service.getUsernameList()
-    ----
-    ======
++
+[tabs]
+======
+Java::
++
+[source,java,indent=0,subs="verbatim,quotes",role="primary"]
+----
+    // create and configure beans
+    ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");
+    // retrieve configured instance
+    PetStoreService service = context.getBean("petStore", PetStoreService.class);
+    // use configured instance
+    List<String> userList = service.getUsernameList();
+----
+Kotlin::
++
+[source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
+----
+    import org.springframework.beans.factory.getBean
+    // create and configure beans
+    val context = ClassPathXmlApplicationContext("services.xml", "daos.xml")
+    // retrieve configured instance
+    val service = context.getBean<PetStoreService>("petStore")
+    // use configured instance
+    var userList = service.getUsernameList()
+----
+======
 
         *** _Example2:_ via Groovy configuration
             **** bootstrapping looks similar
             **** available context implementation
                 ***** Groovy-aware
-
-            [tabs]
-            ======
-            Java::
-            +
-            [source,java,indent=0,subs="verbatim,quotes",role="primary"]
-            ----
-                ApplicationContext context = new GenericGroovyApplicationContext("services.groovy", "daos.groovy");
-            ----
-            Kotlin::
-            +
-            [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
-            ----
-            val context = GenericGroovyApplicationContext("services.groovy", "daos.groovy")
-            ----
-            ======
++
+[tabs]
+======
+Java::
++
+[source,java,indent=0,subs="verbatim,quotes",role="primary"]
+----
+    ApplicationContext context = new GenericGroovyApplicationContext("services.groovy", "daos.groovy");
+----
+Kotlin::
++
+[source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
+----
+val context = GenericGroovyApplicationContext("services.groovy", "daos.groovy")
+----
+======
 
                 ***** `GenericApplicationContext` + `XmlBeanDefinitionReader` (reader delegates)
-
-            [tabs]
-            ======
-            Java::
-            +
-            [source,java,indent=0,subs="verbatim,quotes",role="primary"]
-            ----
-                GenericApplicationContext context = new GenericApplicationContext();
-                new XmlBeanDefinitionReader(context).loadBeanDefinitions("services.xml", "daos.xml");
-                context.refresh();
-            ----
-            Kotlin::
-            +
-            [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
-            ----
-                val context = GenericApplicationContext()
-                XmlBeanDefinitionReader(context).loadBeanDefinitions("services.xml", "daos.xml")
-                context.refresh()
-            ----
-            ======
++
+[tabs]
+======
+Java::
++
+[source,java,indent=0,subs="verbatim,quotes",role="primary"]
+----
+    GenericApplicationContext context = new GenericApplicationContext();
+    new XmlBeanDefinitionReader(context).loadBeanDefinitions("services.xml", "daos.xml");
+    context.refresh();
+----
+Kotlin::
++
+[source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
+----
+    val context = GenericApplicationContext()
+    XmlBeanDefinitionReader(context).loadBeanDefinitions("services.xml", "daos.xml")
+    context.refresh()
+----
+======
 
                 ***** `GenericApplicationContext` + `GroovyBeanDefinitionReader`
-
-            [tabs]
-            ======
-            Java::
-            +
-            [source,java,indent=0,subs="verbatim,quotes",role="primary"]
-            ----
-                GenericApplicationContext context = new GenericApplicationContext();
-                new GroovyBeanDefinitionReader(context).loadBeanDefinitions("services.groovy", "daos.groovy");
-                context.refresh();
-            ----
-            Kotlin::
-            +
-            [source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
-            ----
-                val context = GenericApplicationContext()
-                GroovyBeanDefinitionReader(context).loadBeanDefinitions("services.groovy", "daos.groovy")
-                context.refresh()
-            ----
-            ======
++
+[tabs]
+======
+Java::
++
+[source,java,indent=0,subs="verbatim,quotes",role="primary"]
+----
+    GenericApplicationContext context = new GenericApplicationContext();
+    new GroovyBeanDefinitionReader(context).loadBeanDefinitions("services.groovy", "daos.groovy");
+    context.refresh();
+----
+Kotlin::
++
+[source,kotlin,indent=0,subs="verbatim,quotes",role="secondary"]
+----
+    val context = GenericApplicationContext()
+    GroovyBeanDefinitionReader(context).loadBeanDefinitions("services.groovy", "daos.groovy")
+    context.refresh()
+----
+======
