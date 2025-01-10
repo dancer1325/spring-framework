@@ -7,6 +7,7 @@
 [[testcontext-junit4-runner]]
 == Spring JUnit 4 Runner
 
+* TODO:
 The Spring TestContext Framework offers full integration with JUnit 4 through a custom
 runner (supported on JUnit 4.12 or higher). By annotating test classes with
 `@RunWith(SpringJUnit4ClassRunner.class)` or the shorter `@RunWith(SpringRunner.class)`
@@ -174,7 +175,7 @@ classes by using `@RunWith(SpringRunner.class)` or xref:testing/testcontext-fram
     *** `@ExtendWith(SpringExtension.class)` | classes OR
     *** `@SpringJUnitConfig(ConfigurationClass)` | classes OR
         **** == composed annotation / simplify the configuration of the `ApplicationContext` & JUnit Jupiter
-            ***** Reason: annotations | JUnit 5 -- can be used as -- meta-annotations
+            ***** Reason: 🧠annotations | JUnit 5 -- can be used as -- meta-annotations 🧠
         **** Check xref:testing/annotations/integration-junit-jupiter.adoc[Spring JUnit Jupiter Testing Annotations]
     *** `@SpringJUnitWebConfig(ConfigurationClass)` | classes
         **** similar as previous one

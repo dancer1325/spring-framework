@@ -83,17 +83,20 @@ Kotlin::
   ** {spring-framework-api}/test/context/junit/jupiter/SpringJUnitConfig.html[`@SpringJUnitConfig`]
   ** {spring-framework-api}/test/context/ContextConfiguration.html[`@ContextConfiguration`]
 
-
 [[integration-testing-annotations-junit-jupiter-springjunitwebconfig]]
 == `@SpringJUnitWebConfig`
-
 * TODO:
-`@SpringJUnitWebConfig` is a composed annotation that combines
-`@ExtendWith(SpringExtension.class)` from JUnit Jupiter with `@ContextConfiguration` and
-`@WebAppConfiguration` from the Spring TestContext Framework. You can use it at the class
-level as a drop-in replacement for `@ContextConfiguration` and `@WebAppConfiguration`.
-With regard to configuration options, the only difference between `@ContextConfiguration`
-and `@SpringJUnitWebConfig` is that you can declare component classes by using the
+* := composed annotation /
+  ** == `@ExtendWith(SpringExtension.class)` + `@ContextConfiguration` +
+`@WebAppConfiguration`
+    *** `@ExtendWith(SpringExtension.class)` -- from -- JUnit Jupiter
+    *** `@ContextConfiguration` -- from -- Spring TestContext Framework
+    *** `@WebAppConfiguration` -- from -- Spring TestContext Framework
+  ** uses
+    *** | class level
+      **** -- alternative to -- `@ContextConfiguration` + `@WebAppConfiguration`
+  ** 's configuration options vs `@ContextConfiguration` 's configuration options
+    *** you can declare component classes by using the
 `value` attribute in `@SpringJUnitWebConfig`. In addition, you can override the `value`
 attribute from `@WebAppConfiguration` only by using the `resourcePath` attribute in
 `@SpringJUnitWebConfig`.
