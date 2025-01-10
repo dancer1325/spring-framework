@@ -30,11 +30,13 @@ public class HotelControllerTests {
 	void perform() {
 		// tag::perform[]
 		// Static import on MockMvcRequestBuilders.get
+		// assertThat(mockMvcAPI)
 		assertThat(mockMvc.perform(get("/hotels/{id}", 42)))
 				.hasStatusOk();
 		// end::perform[]
 	}
 
+	// == previously, BUT using the `MockMvc`'s `ResultMatcher` implementation
 	void performWithCustomMatcher() {
 		// tag::matches[]
 		// Static import on MockMvcResultMatchers.status
